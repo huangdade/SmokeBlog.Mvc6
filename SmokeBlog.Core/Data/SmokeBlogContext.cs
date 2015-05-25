@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace SmokeBlog.Core.Data
 {
-    public class SmokeBlogContext : DbContext
+    public partial class SmokeBlogContext : DbContext
     {
-        public SmokeBlogContext()
-        {
+        public DbSet<User> Users { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>(MappingUser);
         }
     }
 }

@@ -8,6 +8,11 @@ namespace SmokeBlog.Web.Controllers
 {
     public class HomeController : Controller
     {
+        public HomeController(Core.Data.SmokeBlogContext db)
+        {
+            var user = db.Users.FirstOrDefault();
+        }
+
         [Route("")]
         public IActionResult Index()
         {

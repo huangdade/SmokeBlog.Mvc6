@@ -18,7 +18,8 @@ namespace SmokeBlog.Web
         {
             this.Configuration = new Configuration()
                 .AddJsonFile("config.json")
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables()
+                .AddUserSecrets();
         }
 
         public void ConfigureServices(IServiceCollection services)
