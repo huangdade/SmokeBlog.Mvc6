@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "*",
-    "angular": "*"
+    "angularjs": "*",
+    "angular-route": "*"
   }
 }

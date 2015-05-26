@@ -1,6 +1,7 @@
 ﻿<html>
 <head>
     <title>管理平台</title>
+    <base href="/admin/" />
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -8,15 +9,76 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    <link href="~/styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/styles/app.css" rel="stylesheet" />
+
     <script src="~/scripts/jquery.min.js"></script>
     <script src="~/scripts/bootstrap.min.js"></script>
     <script src="~/scripts/angular.min.js"></script>
+    <script src="~/scripts/angular-route.min.js"></script>
+
+    <script src="~/apps/app.js"></script>
 </head>
-<body ng-app="">
-    <div id="container" class="app-wrapper">
-        <div data-ng-app="blogAdmin" data-ng-view="" id="ng-view"></div>
+<body ng-app="blogAdmin">
+    <div id="Container" class="app-wrapper">
+        <div id="wrap">
+            <nav class="navbar navbar-inverse admin-views-nav ng-scope" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <span class="navbar-brand hide">
+                            <a class="btn btn-xs btn-default" href="/Account/login.aspx?logoff"><i class="fa fa-power-off fa-lg"></i></a>
+                            <a class="btn btn-xs btn-default" href="/" target="_blank"><i class="fa fa-home fa-lg"></i></a>
+                        </span>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-ex1-collapse ng-scope">
+                        <ul class="nav navbar-nav">
+                            <li data-ng-class="{ active: isActive('/')}" class="ng-scope active"><a href="#/dashboard" class="ng-binding">控制台</a></li><!-- end ngIf: security.showTabDashboard -->
+                            <!-- ngIf: security.showTabBlogs -->
+                            <li data-ng-class="{ active: isActive('/blogs')}" class="ng-scope"><a href="#/blogs" class="ng-binding">博客</a></li><!-- end ngIf: security.showTabBlogs -->
+                            <!-- ngIf: security.showTabContent -->
+                            <li data-ng-class="{ active: isActive('/content')}" class="ng-scope"><a href="#/content" class="ng-binding">内容</a></li><!-- end ngIf: security.showTabContent -->
+                            <!-- ngIf: security.showTabCustom -->
+                            <li data-ng-class="{ active: isActive('/custom')}" class="ng-scope"><a href="#/custom" class="ng-binding">自定义</a></li><!-- end ngIf: security.showTabCustom -->
+                            <!-- ngIf: security.showTabUsers -->
+                            <li data-ng-class="{ active: isActive('/users')}" class="ng-scope"><a href="#/users" class="ng-binding">管理用户</a></li><!-- end ngIf: security.showTabUsers -->
+                            <!-- ngIf: security.showTabSettings -->
+                            <li data-ng-class="{ active: isActive('/settings')}" class="ng-scope"><a href="#/settings" class="ng-binding">设置</a></li><!-- end ngIf: security.showTabSettings -->
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle ng-binding" data-toggle="dropdown"><i class="fa fa-user"></i> admin <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/" target="_blank" class="ng-binding"><i class="fa fa-home"></i>查看我的博客</a></li>
+                                    <li><a href="/admin/#/users/profile" class="ng-binding"><i class="fa fa-user"></i>个人资料</a></li>
+                                    <li><a href="/Account/change-password.aspx" class="ng-binding"><i class="fa fa-key"></i>更改密码</a></li>
+                                    <li role="presentation" class="divider"></li>
+                                    <li><a class="text-danger logoff ng-binding" href="/Account/login.aspx?logoff"><i class="fa fa-power-off"></i>注销</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div ng-view>
+                13131
+            </div>
+        </div>
+        <footer id="footer">
+            <div class="container ng-scope">
+                <div class="BlogEngine-app pull-left">
+                    <a href="http://dotnetblogengine.net" target="_blank" class="ng-binding">BlogEngine.NET 3.1.0.1</a> |
+                    <a href="http://dotnetblogengine.net/Donate.aspx" target="_new" id="donate" class="ng-binding">捐赠</a>
+                </div>
+                <a class="logo-brand pull-right" target="_blank" href="http://dotnetblogengine.net/"><img src="../Content/images/logo-footer.png" alt="BlogEngine.NET"></a>
+            </div>
+        </footer>
     </div>
-
-
 </body>
 </html>
