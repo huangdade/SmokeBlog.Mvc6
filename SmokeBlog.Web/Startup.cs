@@ -8,6 +8,9 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Data.Entity;
 using SmokeBlog.Core;
+using Microsoft.AspNet.Mvc;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace SmokeBlog.Web
 {
@@ -25,12 +28,23 @@ namespace SmokeBlog.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc().ConfigureMvc(option=> 
+            {
+                var formatter = option.OutputFormatters.SingleOrDefault(t => t.Instance is JsonOutputFormatter);
+
+                if (formatter != null)
+                {
+                    var jsonFormatter = (JsonOutputFormatter)formatter.Instance;
+                    jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    jsonFormatter.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                    jsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                }
+            });
             services.AddEntityFramework().AddDbContext<Core.Data.SmokeBlogContext>(builder=> 
             {
                 builder.UseSqlServer(Configuration.Get("ConnectionStrings:SqlServer"));
             }).AddSqlServer();
-            services.AddCoreServices();
+            services.AddCoreServices();            
         }
 
         public void Configure(IApplicationBuilder app)
