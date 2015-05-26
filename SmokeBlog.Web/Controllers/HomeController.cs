@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using SmokeBlog.Core.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,15 +9,32 @@ namespace SmokeBlog.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController(Core.Data.SmokeBlogContext db)
+        private UserService UserService { get; set; }
+
+        private AuthService AuthService { get; set; }
+
+        public HomeController(UserService userService, AuthService authService)
         {
-            var user = db.Users.FirstOrDefault();
+            this.UserService = userService;
+            this.AuthService = authService;
         }
 
         [Route("")]
-        public IActionResult Index()
+        public object Index()
         {
-            return this.Content("Hello world");
+            var result = this.AuthService.Login("admin", "111111");
+
+            var request = new Core.Models.User.AddUserRequest
+            {
+                UserName = "admin",
+                Password = "111111",
+                Nickname = "管理员",
+                Email = "5373827@qq.com"
+            };
+
+            //var result = this.UserService.Add(request);
+
+            return result;
         }
     }
 }

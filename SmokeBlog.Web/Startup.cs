@@ -7,6 +7,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Data.Entity;
+using SmokeBlog.Core;
 
 namespace SmokeBlog.Web
 {
@@ -29,6 +30,7 @@ namespace SmokeBlog.Web
             {
                 builder.UseSqlServer(Configuration.Get("ConnectionStrings:SqlServer"));
             }).AddSqlServer();
+            services.AddCoreServices();
         }
 
         public void Configure(IApplicationBuilder app)

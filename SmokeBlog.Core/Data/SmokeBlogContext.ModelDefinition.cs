@@ -13,6 +13,8 @@ namespace SmokeBlog.Core.Data
 
             public string UserName { get; set; }
 
+            public string Salt { get; set; }
+
             public string Password { get; set; }
 
             public string Email { get; set; }
@@ -24,6 +26,13 @@ namespace SmokeBlog.Core.Data
             public DateTime CreateDate { get; set; }
 
             public string Token { get; set; }
+        }
+
+        public class Category
+        {
+            public int ID { get; set; }
+
+            public string Name { get; set; }
         }
     }
 }
