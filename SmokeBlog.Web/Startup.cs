@@ -50,7 +50,15 @@ namespace SmokeBlog.Web
         public void Configure(IApplicationBuilder app)
         {
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvc(route=>
+            {
+                route.MapRoute("Admin", "admin/{*path}", new
+                {
+                    controller = "Home",
+                    area = "Admin",
+                    action = "Index"
+                });
+            });
         }
     }
 }

@@ -1,0 +1,8 @@
+{
+  "name": "SmokeBlog.Web",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "*",
+    "angular": "*"
+  }
+}
