@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Framework.Internal;
+using SmokeBlog.Web.Controllers.Base;
+using SmokeBlog.Core.Models;
+using Microsoft.AspNet.WebUtilities;
 
 namespace SmokeBlog.Web.Filters
 {
@@ -11,9 +14,18 @@ namespace SmokeBlog.Web.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var controller = context.Controller as SmokeBlog.Web.Controllers.Base.ApiControllerBase;
+            if (!context.ModelState.IsValid)
+            {
+                var model = OperationResult.ErrorResult("错误的请求");
+                var result = new ObjectResult(model);
+                result.StatusCode = StatusCodes.Status400BadRequest;
 
-            base.OnActionExecuting(context);
+                context.Result = result;
+            }
+            else
+            {
+                base.OnActionExecuting(context);
+            }
         }
     }
 }

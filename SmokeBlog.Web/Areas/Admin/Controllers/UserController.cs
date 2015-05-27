@@ -31,7 +31,14 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
         [HttpPost("add")]
         public IActionResult Add(AddUserRequest model)
         {
-            return this.FatalError();
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.UserService.Add(model);
+
+            return this.ApiResponse(result);
         }
     }
 }
