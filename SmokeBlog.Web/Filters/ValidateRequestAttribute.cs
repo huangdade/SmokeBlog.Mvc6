@@ -11,7 +11,7 @@ namespace SmokeBlog.Web.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var controller = context.Controller as 
+            var controller = context.Controller as SmokeBlog.Web.Controllers.Base.ApiControllerBase;
 
             base.OnActionExecuting(context);
         }
