@@ -13,6 +13,8 @@ namespace SmokeBlog.Core
         {
             services.AddScoped<UserService>()
                 .AddScoped<AuthService>();
+
+            MapperConfig.Configure();
         }
     }
 }

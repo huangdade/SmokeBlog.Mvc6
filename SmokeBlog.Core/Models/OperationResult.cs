@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace SmokeBlog.Core.Models
 {
-    public sealed class OperationResult
+    public class OperationResult
     {
-        public bool Success { get; private set; }
+        public bool Success { get; protected set; }
 
-        public string ErrorMessage { get; private set; }
+        public string ErrorMessage { get; protected set; }
 
-        private OperationResult()
+        protected OperationResult()
         {
 
         }
@@ -39,15 +39,12 @@ namespace SmokeBlog.Core.Models
         }
     }
 
-    public sealed class OperationResult<T>
+    public class OperationResult<T> : OperationResult
     {
-        public bool Success { get; private set; }
+        public T Data { get; protected set; }
 
-        public string ErrorMessage { get; private set; }
-
-        public T Data { get; private set; }
-
-        private OperationResult()
+        protected OperationResult()
+            : base()
         {
 
         }

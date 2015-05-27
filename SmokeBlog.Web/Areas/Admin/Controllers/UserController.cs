@@ -1,0 +1,37 @@
+﻿using Microsoft.AspNet.Mvc;
+using SmokeBlog.Core.Models;
+using SmokeBlog.Core.Models.User;
+using SmokeBlog.Core.Service;
+using SmokeBlog.Web.Controllers.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SmokeBlog.Web.Areas.Admin.Controllers
+{
+    [Route("api/user")]
+    public class UserController : ApiControllerBase
+    {
+        private UserService UserService { get; set; }
+
+        public UserController(UserService userService)
+        {
+            this.UserService = userService;
+        }
+
+        [HttpGet("all")]
+        public IActionResult All()
+        {
+            var result = this.UserService.All();
+
+            return this.ApiResponse(result);
+        }
+
+        [HttpPost("add")]
+        public IActionResult Add(AddUserRequest model)
+        {
+            return this.FatalError();
+        }
+    }
+}

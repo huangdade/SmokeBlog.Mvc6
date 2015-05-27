@@ -5,7 +5,8 @@
     "": [
       "EntityFramework.SqlServer >= 7.0.0-beta4",
       "Microsoft.AspNet.Cryptography.KeyDerivation >= 1.0.0-beta4",
-      "Microsoft.AspNet.Mvc >= 6.0.0-beta4"
+      "Microsoft.AspNet.Mvc >= 6.0.0-beta4",
+      "AutoMapper >= 4.0.0-ci1046"
     ],
     "DNX,Version=v4.5.1": [],
     "DNXCore,Version=v5.0": [
@@ -16,6 +17,64 @@
     ]
   },
   "libraries": {
+    "AutoMapper/4.0.0-ci1046": {
+      "serviceable": false,
+      "sha": "/HA70MdTw77e65h7QGgi84iXmloCVZDCrTdMX0fxYDYNlEwhD8Rw36ebT5WJu/ONTlIn2PyIZfk/Ai7O0p3c2g==",
+      "frameworks": {
+        "DNX,Version=v4.5.1": {
+          "dependencies": {},
+          "frameworkAssemblies": [
+            "mscorlib",
+            "System",
+            "System.Core",
+            "Microsoft.CSharp"
+          ],
+          "runtimeAssemblies": [
+            "lib/dnx451/AutoMapper.dll"
+          ],
+          "compileAssemblies": [
+            "lib/dnx451/AutoMapper.dll"
+          ]
+        },
+        "DNXCore,Version=v5.0": {
+          "dependencies": {},
+          "frameworkAssemblies": [],
+          "runtimeAssemblies": [
+            "lib/dnxcore50/AutoMapper.dll"
+          ],
+          "compileAssemblies": [
+            "lib/dnxcore50/AutoMapper.dll"
+          ]
+        }
+      },
+      "files": [
+        "AutoMapper.4.0.0-ci1046.nupkg",
+        "AutoMapper.4.0.0-ci1046.nupkg.sha512",
+        "AutoMapper.nuspec",
+        "lib/dnx451/AutoMapper.dll",
+        "lib/dnx451/AutoMapper.xml",
+        "lib/dnxcore50/AutoMapper.dll",
+        "lib/dnxcore50/AutoMapper.xml",
+        "lib/MonoAndroid/AutoMapper.dll",
+        "lib/MonoAndroid/AutoMapper.XML",
+        "lib/MonoTouch/AutoMapper.dll",
+        "lib/MonoTouch/AutoMapper.XML",
+        "lib/net45/AutoMapper.dll",
+        "lib/net45/AutoMapper.xml",
+        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.dll",
+        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+Xamarin.iOS10+MonoTouch10/AutoMapper.xml",
+        "lib/sl5/AutoMapper.dll",
+        "lib/sl5/AutoMapper.xml",
+        "lib/win/AutoMapper.dll",
+        "lib/win/AutoMapper.xml",
+        "lib/wp8/AutoMapper.dll",
+        "lib/wp8/AutoMapper.xml",
+        "lib/wpa81/AutoMapper.dll",
+        "lib/wpa81/AutoMapper.xml",
+        "lib/Xamarin.iOS10/AutoMapper.dll",
+        "lib/Xamarin.iOS10/AutoMapper.XML"
+      ]
+    },
     "EntityFramework.Core/7.0.0-beta4": {
       "serviceable": true,
       "sha": "M47rhCpfFjVa4WDdoI8pIZ+ygltQiQiBgKnS1REUu6fuZHbDw5K8ew9E04p2E+iCw10rOmESneJcEmoAz1u4QA==",

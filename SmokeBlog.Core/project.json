@@ -9,7 +9,8 @@
   "dependencies": {
     "EntityFramework.SqlServer": "7.0.0-beta4",
     "Microsoft.AspNet.Cryptography.KeyDerivation": "1.0.0-beta4",
-    "Microsoft.AspNet.Mvc": "6.0.0-beta4"
+    "Microsoft.AspNet.Mvc": "6.0.0-beta4",
+    "AutoMapper": "4.0.0-ci1046"
   },
 
   "frameworks" : {
