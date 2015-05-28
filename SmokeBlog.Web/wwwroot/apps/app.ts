@@ -1,4 +1,4 @@
-﻿angular.module('blogAdmin', ['ngRoute', 'blogAdmin.controllers', 'ui.bootstrap']);
+﻿angular.module('blogAdmin', ['ngRoute', 'ngMessages', 'ui.bootstrap', 'blogAdmin.controllers', 'blogAdmin.directives']);
 
 angular.module('blogAdmin').config(['$routeProvider', '$locationProvider', ($routeProvider: ng.route.IRouteProvider, $locationProvider: ng.ILocationProvider) => {
     $routeProvider.when('/', { templateUrl: '/apps/templates/dashboard.html', controller: 'mainCtrl' })
@@ -9,4 +9,5 @@ angular.module('blogAdmin').config(['$routeProvider', '$locationProvider', ($rou
 }]);
 
 angular.module('blogAdmin.services', []);
+angular.module('blogAdmin.directives', []);
 angular.module('blogAdmin.controllers', ['blogAdmin.services', 'ui.bootstrap']);

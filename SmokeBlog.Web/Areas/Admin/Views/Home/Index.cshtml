@@ -10,50 +10,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link href="~/styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/styles/font-awesome.min.css" rel="stylesheet" />
     <link href="~/styles/app.css" rel="stylesheet" />
 
     <script src="~/scripts/jquery.min.js"></script>
     <script src="~/scripts/bootstrap.min.js"></script>
     <script src="~/scripts/angular.min.js"></script>
     <script src="~/scripts/angular-route.min.js"></script>
+    <script src="~/scripts/angular-messages.min.js"></script>
     <script src="~/scripts/ui.bootstrap.js"></script>
     <script src="~/scripts/ui.bootstrap.tpls.js"></script>
+    <script src="~/scripts/lodash.min.js"></script>
 
     <script src="~/apps/app.js"></script>
     <script src="~/apps/services/api.js"></script>
+    <script src="~/apps/directives/spinner.js"></script>
     <script src="~/apps/controllers/main.js"></script>
     <script src="~/apps/controllers/user.js"></script>
 </head>
-<body ng-app="blogAdmin">
+<body ng-app="blogAdmin" ng-controller="mainCtrl">
     <div id="Container" class="app-wrapper">
         <div id="wrap">
-            <nav class="navbar navbar-inverse admin-views-nav ng-scope" role="navigation">
+            <nav class="navbar navbar-inverse admin-views-nav" role="navigation">
                 <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <span class="navbar-brand hide">
-                            <a class="btn btn-xs btn-default" href="/Account/login.aspx?logoff"><i class="fa fa-power-off fa-lg"></i></a>
-                            <a class="btn btn-xs btn-default" href="/" target="_blank"><i class="fa fa-home fa-lg"></i></a>
-                        </span>
-                    </div>
-                    <div class="collapse navbar-collapse navbar-ex1-collapse ng-scope">
+                    <div class="collapse navbar-collapse navbar-ex1-collapse">
+                        <span class="navbar-brand">Smoke Blog</span>
                         <ul class="nav navbar-nav">
-                            <li data-ng-class="{ active: isActive('/')}" class="ng-scope active"><a href="#/dashboard" class="ng-binding">控制台</a></li><!-- end ngIf: security.showTabDashboard -->
-                            <!-- ngIf: security.showTabBlogs -->
-                            <li data-ng-class="{ active: isActive('/blogs')}" class="ng-scope"><a href="#/blogs" class="ng-binding">博客</a></li><!-- end ngIf: security.showTabBlogs -->
-                            <!-- ngIf: security.showTabContent -->
-                            <li data-ng-class="{ active: isActive('/content')}" class="ng-scope"><a href="#/content" class="ng-binding">内容</a></li><!-- end ngIf: security.showTabContent -->
-                            <!-- ngIf: security.showTabCustom -->
-                            <li data-ng-class="{ active: isActive('/custom')}" class="ng-scope"><a href="#/custom" class="ng-binding">自定义</a></li><!-- end ngIf: security.showTabCustom -->
-                            <!-- ngIf: security.showTabUsers -->
-                            <li data-ng-class="{ active: isActive('/users')}" class="ng-scope"><a href="#/users" class="ng-binding">管理用户</a></li><!-- end ngIf: security.showTabUsers -->
-                            <!-- ngIf: security.showTabSettings -->
-                            <li data-ng-class="{ active: isActive('/settings')}" class="ng-scope"><a href="#/settings" class="ng-binding">设置</a></li><!-- end ngIf: security.showTabSettings -->
+                            <li ng-repeat="menu in vm.menus" ng-class="{'active': vm.currentMenu.key == menu.key}">
+                                <a ng-href="{{menu.url}}">{{menu.name}}</a>
+                            </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li class="dropdown">
@@ -70,7 +55,16 @@
                     </div>
                 </div>
             </nav>
-
+            <nav class="admin-views-subnav" ng-if="vm.submenus && vm.submenus.length">
+                <div class="container">
+                    <ul class="nav nav-pills">
+                        <li ng-repeat="menu in vm.submenus" ng-class="{'active': vm.currentSubmenu.key == menu.key}">
+                            <a ng-href="{{menu.url}}">{{menu.name}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>            
+            
             <div ng-view>
                 13131
             </div>

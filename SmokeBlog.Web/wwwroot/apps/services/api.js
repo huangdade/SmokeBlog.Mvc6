@@ -14,14 +14,28 @@ var BlogAdmin;
             Api.prototype.getDefaultConfig = function (url, method) {
                 var config = {
                     url: url,
-                    method: method
+                    method: method,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    transformRequest: function (obj) {
+                        var str = [];
+                        for (var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    }
                 };
                 return config;
             };
             Api.prototype.request = function (url, method, opt, callback) {
                 var config = {
                     url: url,
-                    method: Method[method]
+                    method: Method[method],
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    transformRequest: function (obj) {
+                        var str = [];
+                        for (var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    }
                 };
                 angular.extend(config, opt);
                 this.$http(config).success(callback).error(function (data, code) {
@@ -50,6 +64,15 @@ var BlogAdmin;
             };
             Api.prototype.getUserList = function (callback) {
                 this.get('/api/user/all', null, callback);
+            };
+            Api.prototype.addUser = function (userName, password, nickname, email, callback) {
+                var data = {
+                    userName: userName,
+                    password: password,
+                    nickname: nickname,
+                    email: email
+                };
+                this.post('/api/user/add', data, callback);
             };
             return Api;
         })();

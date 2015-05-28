@@ -5,6 +5,13 @@
     "bootstrap": "*",
     "angularjs": "*",
     "angular-route": "*",
-    "ui-bootstrap": "*"
+    "angular-messages": "*",
+    "ui-bootstrap": "*",
+    "fontawesome": "*",
+    "flat-ui": "*",
+    "lodash": "*"
+  },
+  "resolutions": {
+    "angular": "1.4.0"
   }
 }

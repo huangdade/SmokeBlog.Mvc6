@@ -21,14 +21,28 @@
         private getDefaultConfig(url: string, method: string): ng.IRequestShortcutConfig {
             var config: ng.IRequestConfig = {
                 url: url,
-                method: method
+                method: method,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                transformRequest: function (obj) {
+                    var str = [];
+                    for (var p in obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                }
             };
             return config;
         }
         private request(url: string, method: Method, opt: any, callback: IRequestCallback): void {
             var config: ng.IRequestConfig = {
                 url: url,
-                method: Method[method]
+                method: Method[method],
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                transformRequest: function (obj) {
+                    var str = [];
+                    for (var p in obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                }
             };
             angular.extend(config, opt);
 
@@ -59,6 +73,15 @@
         }
         getUserList(callback: IRequestCallback) {
             this.get('/api/user/all', null, callback);
+        }
+        addUser(userName, password, nickname, email, callback: IRequestCallback) {
+            var data = {
+                userName: userName,
+                password: password,
+                nickname: nickname,
+                email: email
+            };
+            this.post('/api/user/add', data, callback);
         }
     }
 }

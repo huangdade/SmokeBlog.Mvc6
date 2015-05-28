@@ -30,11 +30,11 @@ namespace SmokeBlog.Web
         {
             services.AddMvc().ConfigureMvc(option=> 
             {
-                var formatter = option.OutputFormatters.SingleOrDefault(t => t.Instance is JsonOutputFormatter);
+                var outputFormatter = option.OutputFormatters.SingleOrDefault(t => t.Instance is JsonOutputFormatter);
 
-                if (formatter != null)
+                if (outputFormatter != null)
                 {
-                    var jsonFormatter = (JsonOutputFormatter)formatter.Instance;
+                    var jsonFormatter = (JsonOutputFormatter)outputFormatter.Instance;
                     jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     jsonFormatter.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
                     jsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;

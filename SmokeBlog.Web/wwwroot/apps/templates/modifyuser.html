@@ -1,0 +1,64 @@
+﻿<div class="modal-header">
+    {{vm.title}}
+    <spinner loading="vm.loading"></spinner>
+</div>
+<div class="modal-body">
+    <form class="form-horizontal" name="frmUser" novalidate>
+        <div class="form-group">
+            <label class="control-label col-md-2">用户名</label>
+            <div class="col-md-6">
+                <input type="text" name="userName" ng-model="vm.data.userName" class="form-control" required maxlength="20" />
+            </div>
+            <div class="col-md-4">
+                <span class="help-block" ng-if="!frmUser.submitted">(必填)</span>
+                <span class="help-block" ng-messages="frmUser.userName.$error" ng-if="frmUser.submitted">
+                    <span class="text-danger" ng-message="required">用户名不能为空</span>
+                </span>
+            </div>
+        </div>
+        <div class="form-group" ng-if="!vm.id">
+            <label class="control-label col-md-2">密码</label>
+            <div class="col-md-6">
+                <input type="password" name="password" ng-model="vm.data.password" class="form-control" required maxlength="20" ng-minlength="6" />
+            </div>
+            <div class="col-md-4">
+                <span class="help-block" ng-if="!frmUser.submitted">(必填)</span>
+                <span class="help-block" ng-messages="frmUser.password.$error" ng-if="frmUser.submitted">
+                    <span class="text-danger" ng-message="required">密码不能为空</span>
+                    <span class="text-danger" ng-message="minlength">请输入6-20位的密码</span>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">昵称</label>
+            <div class="col-md-6">
+                <input type="text" name="nickname" ng-model="vm.data.nickname" class="form-control" required maxlength="20" />
+            </div>
+            <div class="col-md-4">
+                <span class="help-block" ng-if="!frmUser.submitted">(必填)</span>
+                <span class="help-block" ng-messages="frmUser.nickname.$error" ng-if="frmUser.submitted">
+                    <span class="text-danger" ng-message="required">昵称不能为空</span>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">邮箱</label>
+            <div class="col-md-6">
+                <input type="email" name="email" ng-model="vm.data.email" class="form-control" required maxlength="100" />
+            </div>
+            <div class="col-md-4">
+                <span class="help-block" ng-if="!frmUser.submitted">(必填)</span>
+                <span class="help-block" ng-messages="frmUser.email.$error" ng-if="frmUser.submitted">
+                    <span class="text-danger" ng-message="required">邮箱不能为空</span>
+                    <span class="text-danger" ng-message="email">请输入正确的邮箱</span>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <span class="pull-right">
+        <button class="btn btn-default" ng-click="vm.close()">取消</button>
+        <button class="btn btn-primary" ng-click="vm.submit()">提交</button>
+    </span>
+</div>

@@ -49,5 +49,10 @@ namespace SmokeBlog.Core.Service
 
             return OperationResult<int?>.SuccessResult(user.ID);
         }
+
+        public OperationResult Edit(EditUserRequest model)
+        {
+            return null;
+        }
     }
 }
