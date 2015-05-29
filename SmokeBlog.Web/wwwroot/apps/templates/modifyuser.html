@@ -7,7 +7,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">用户名</label>
             <div class="col-md-6">
-                <input type="text" name="userName" ng-model="vm.data.userName" class="form-control" required maxlength="20" />
+                <input type="text" name="userName" ng-model="vm.data.userName" class="form-control" required maxlength="20" ng-disabled="vm.id" />
             </div>
             <div class="col-md-4">
                 <span class="help-block" ng-if="!frmUser.submitted">(必填)</span>
@@ -58,7 +58,7 @@
 </div>
 <div class="modal-footer">
     <span class="pull-right">
-        <button class="btn btn-default" ng-click="vm.close()">取消</button>
-        <button class="btn btn-primary" ng-click="vm.submit()">提交</button>
+        <button type="button" class="btn btn-default" ng-click="vm.close()">取消</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.submit()">提交</button>
     </span>
 </div>

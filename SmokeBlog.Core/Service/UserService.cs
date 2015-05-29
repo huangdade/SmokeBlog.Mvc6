@@ -52,7 +52,42 @@ namespace SmokeBlog.Core.Service
 
         public OperationResult Edit(EditUserRequest model)
         {
-            return null;
+            var user = DbContext.Users.SingleOrDefault(t => t.ID == model.ID);
+            if (user == null)
+            {
+                return OperationResult.ErrorResult("不存在的用户");
+            }
+
+            user.Email = model.Email;
+            user.Nickname = model.Nickname;
+
+            DbContext.SaveChanges();
+
+            return OperationResult.SuccessResult();
+        }
+
+        public OperationResult<UserModel> Get(int id)
+        {
+            var user = DbContext.Users.Where(t => t.ID == id).ProjectTo<UserModel>().SingleOrDefault();
+
+            if (user == null)
+            {
+                return OperationResult<UserModel>.ErrorResult("该用户不存在");
+            }
+
+            return OperationResult<UserModel>.SuccessResult(user);
+        }
+
+        public OperationResult<UserModel> Get(string token)
+        {
+            var user = DbContext.Users.Where(t => t.Token == token).ProjectTo<UserModel>().SingleOrDefault();
+
+            if (user == null)
+            {
+                return OperationResult<UserModel>.ErrorResult("错误的token");
+            }
+
+            return OperationResult<UserModel>.SuccessResult(user);
         }
     }
 }

@@ -61,6 +61,19 @@
             else {
                 this.title = "新增用户";
             }
+
+            if (this.id) {
+                this.loading = true;
+                this.$api.getUser(this.id, response=> {
+                    this.loading = false;
+                    if (response.success) {
+                        this.data = response.data;
+                    }
+                    else {
+                        this.close();
+                    }
+                })
+            }
         }
         close() {
             this.$modalInstance.dismiss();
@@ -82,7 +95,9 @@
             }
             this.loading = true;
             if (this.id) {
-                
+                this.$api.editUser(this.id, this.data.nickname, this.data.email, response=> {
+                    this.requestCallback(response);
+                })
             }
             else {
                 this.$api.addUser(this.data.userName, this.data.password, this.data.nickname, this.data.email, response=> {

@@ -12,7 +12,8 @@ namespace SmokeBlog.Core
         public static void AddCoreServices(this IServiceCollection services)
         {
             services.AddScoped<UserService>()
-                .AddScoped<AuthService>();
+                .AddScoped<AuthService>()
+                .AddScoped<Security.ISecurityManager, Security.DefaultSecurityManager>();
 
             MapperConfig.Configure();
         }

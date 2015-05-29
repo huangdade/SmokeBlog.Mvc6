@@ -65,6 +65,10 @@ var BlogAdmin;
             Api.prototype.getUserList = function (callback) {
                 this.get('/api/user/all', null, callback);
             };
+            Api.prototype.getUser = function (id, callback) {
+                var url = "/api/user/" + id;
+                this.get(url, null, callback);
+            };
             Api.prototype.addUser = function (userName, password, nickname, email, callback) {
                 var data = {
                     userName: userName,
@@ -73,6 +77,14 @@ var BlogAdmin;
                     email: email
                 };
                 this.post('/api/user/add', data, callback);
+            };
+            Api.prototype.editUser = function (id, nickname, email, callback) {
+                var data = {
+                    id: id,
+                    nickname: nickname,
+                    email: email
+                };
+                this.post('/api/user/edit', data, callback);
             };
             return Api;
         })();

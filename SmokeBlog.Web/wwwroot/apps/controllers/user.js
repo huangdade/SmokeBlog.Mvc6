@@ -64,11 +64,24 @@ var BlogAdmin;
                 this.init();
             }
             ModifyUser.prototype.init = function () {
+                var _this = this;
                 if (this.id) {
                     this.title = "编辑用户";
                 }
                 else {
                     this.title = "新增用户";
+                }
+                if (this.id) {
+                    this.loading = true;
+                    this.$api.getUser(this.id, function (response) {
+                        _this.loading = false;
+                        if (response.success) {
+                            _this.data = response.data;
+                        }
+                        else {
+                            _this.close();
+                        }
+                    });
                 }
             };
             ModifyUser.prototype.close = function () {
@@ -91,6 +104,9 @@ var BlogAdmin;
                 }
                 this.loading = true;
                 if (this.id) {
+                    this.$api.editUser(this.id, this.data.nickname, this.data.email, function (response) {
+                        _this.requestCallback(response);
+                    });
                 }
                 else {
                     this.$api.addUser(this.data.userName, this.data.password, this.data.nickname, this.data.email, function (response) {

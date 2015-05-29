@@ -40,5 +40,26 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
 
             return this.ApiResponse(result);
         }
+
+        [HttpPost("edit")]
+        public IActionResult Edit(EditUserRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.UserService.Edit(model);
+
+            return this.ApiResponse(result);
+        }
+
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
+        {
+            var result = this.UserService.Get(id);
+
+            return this.ApiResponse(result);
+        }
     }
 }

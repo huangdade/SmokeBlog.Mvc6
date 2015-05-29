@@ -74,6 +74,11 @@
         getUserList(callback: IRequestCallback) {
             this.get('/api/user/all', null, callback);
         }
+        getUser(id, callback: IRequestCallback) {
+            var url = "/api/user/" + id;
+
+            this.get(url, null, callback);
+        }
         addUser(userName, password, nickname, email, callback: IRequestCallback) {
             var data = {
                 userName: userName,
@@ -82,6 +87,14 @@
                 email: email
             };
             this.post('/api/user/add', data, callback);
+        }
+        editUser(id, nickname, email, callback: IRequestCallback) {
+            var data = {
+                id: id,
+                nickname: nickname,
+                email: email
+            };
+            this.post('/api/user/edit', data, callback);
         }
     }
 }

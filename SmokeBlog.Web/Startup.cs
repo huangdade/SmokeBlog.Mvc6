@@ -11,6 +11,8 @@ using SmokeBlog.Core;
 using Microsoft.AspNet.Mvc;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Microsoft.AspNet.Authorization;
+using System.Security.Claims;
 
 namespace SmokeBlog.Web
 {
@@ -28,6 +30,7 @@ namespace SmokeBlog.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<Microsoft.AspNet.Authorization.IAuthorizationService, A>();
             services.AddMvc().ConfigureMvc(option=> 
             {
                 var outputFormatter = option.OutputFormatters.SingleOrDefault(t => t.Instance is JsonOutputFormatter);
@@ -44,7 +47,9 @@ namespace SmokeBlog.Web
             {
                 builder.UseSqlServer(Configuration.Get("ConnectionStrings:SqlServer"));
             }).AddSqlServer();
-            services.AddCoreServices();            
+            services.AddCoreServices();
+
+            //services.AddTransient<Filters.RequireLoginAttribute>();
         }
 
         public void Configure(IApplicationBuilder app)
@@ -59,6 +64,29 @@ namespace SmokeBlog.Web
                     action = "Index"
                 });
             });
+        }
+    }
+
+    public class A : Microsoft.AspNet.Authorization.IAuthorizationService
+    {
+        public bool Authorize(ClaimsPrincipal user, object resource, string policyName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Authorize(ClaimsPrincipal user, object resource, params IAuthorizationRequirement[] requirements)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AuthorizeAsync(ClaimsPrincipal user, object resource, string policyName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> AuthorizeAsync(ClaimsPrincipal user, object resource, params IAuthorizationRequirement[] requirements)
+        {
+            throw new NotImplementedException();
         }
     }
 }
