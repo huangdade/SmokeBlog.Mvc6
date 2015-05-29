@@ -95,18 +95,37 @@
             }
             this.loading = true;
             if (this.id) {
-                this.$api.editUser(this.id, this.data.nickname, this.data.email, response=> {
+                this.$api.editUser(this.data, response=> {
                     this.requestCallback(response);
-                })
+                });
             }
             else {
-                this.$api.addUser(this.data.userName, this.data.password, this.data.nickname, this.data.email, response=> {
+                this.$api.addUser(this.data, response=> {
                     this.requestCallback(response);
                 });
             }
         }
     }
+    export class My {
+        user: any;
+        loading: boolean;
+        constructor(private $scope, private $api: BlogAdmin.Services.Api) {
+            $scope.vm = this;
+
+            $scope.$emit('changeMenu', 'user', 'profile');
+
+            this.init();
+        }
+        private init() {
+            this.loading = true;
+            this.$api.getMyInfo(response=> {
+                this.loading = false;
+                this.user = response.data;
+            });
+        }
+    }
 }
 angular.module('blogAdmin.controllers')
     .controller('userListCtrl', BlogAdmin.Controllers.UserList)
-    .controller('modifyUserCtrl', BlogAdmin.Controllers.ModifyUser);
+    .controller('modifyUserCtrl', BlogAdmin.Controllers.ModifyUser)
+    .controller('myCtrl', BlogAdmin.Controllers.My);

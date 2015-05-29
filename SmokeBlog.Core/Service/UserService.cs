@@ -89,5 +89,26 @@ namespace SmokeBlog.Core.Service
 
             return OperationResult<UserModel>.SuccessResult(user);
         }
+
+        public OperationResult ChangePassword(int id, string oldPassword, string newPassword)
+        {
+            var user = DbContext.Users.SingleOrDefault(t => t.ID == id);
+            if (user == null)
+            {
+                return OperationResult.ErrorResult("该用户不存在");
+            }
+
+            oldPassword = Encrypt.HMACSHA1Encryptor.Encrypt(oldPassword, user.Salt);
+            if (user.Password != oldPassword)
+            {
+                return OperationResult.ErrorResult("密码错误");
+            }
+
+            newPassword = Encrypt.HMACSHA1Encryptor.Encrypt(newPassword, user.Salt);
+            user.Password = newPassword;
+            DbContext.SaveChanges();
+
+            return OperationResult.SuccessResult();
+        }
     }
 }

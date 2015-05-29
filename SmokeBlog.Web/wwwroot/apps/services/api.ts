@@ -79,22 +79,20 @@
 
             this.get(url, null, callback);
         }
-        addUser(userName, password, nickname, email, callback: IRequestCallback) {
-            var data = {
-                userName: userName,
-                password: password,
-                nickname: nickname,
-                email: email
-            };
-            this.post('/api/user/add', data, callback);
+        addUser(request: BlogAdmin.Api.IAddUserRequest, callback: IRequestCallback) {
+            this.post('/api/user/add', request, callback);
         }
-        editUser(id, nickname, email, callback: IRequestCallback) {
-            var data = {
-                id: id,
-                nickname: nickname,
-                email: email
-            };
-            this.post('/api/user/edit', data, callback);
+        editUser(request: BlogAdmin.Api.IEditUserRequest, callback: IRequestCallback) {
+            this.post('/api/user/edit', request, callback);
+        }
+        getMyInfo(callback: IRequestCallback) {
+            this.get('/api/my', null, callback);
+        }
+        updateMyInfo(request: BlogAdmin.Api.IUpdateInfoRequest, callback: IRequestCallback) {
+            this.post('/api/my/update', request, callback);
+        }
+        changePassword(request: BlogAdmin.Api.IChangePasswordRequest, callback: IRequestCallback) {
+            this.post('/api/my/changepassword', request, callback);
         }
     }
 }

@@ -69,22 +69,20 @@ var BlogAdmin;
                 var url = "/api/user/" + id;
                 this.get(url, null, callback);
             };
-            Api.prototype.addUser = function (userName, password, nickname, email, callback) {
-                var data = {
-                    userName: userName,
-                    password: password,
-                    nickname: nickname,
-                    email: email
-                };
-                this.post('/api/user/add', data, callback);
+            Api.prototype.addUser = function (request, callback) {
+                this.post('/api/user/add', request, callback);
             };
-            Api.prototype.editUser = function (id, nickname, email, callback) {
-                var data = {
-                    id: id,
-                    nickname: nickname,
-                    email: email
-                };
-                this.post('/api/user/edit', data, callback);
+            Api.prototype.editUser = function (request, callback) {
+                this.post('/api/user/edit', request, callback);
+            };
+            Api.prototype.getMyInfo = function (callback) {
+                this.get('/api/my', null, callback);
+            };
+            Api.prototype.updateMyInfo = function (request, callback) {
+                this.post('/api/my/update', request, callback);
+            };
+            Api.prototype.changePassword = function (request, callback) {
+                this.post('/api/my/changepassword', request, callback);
             };
             return Api;
         })();

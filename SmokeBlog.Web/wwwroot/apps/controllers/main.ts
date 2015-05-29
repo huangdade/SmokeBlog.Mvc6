@@ -5,7 +5,7 @@
         submenus: any[];
         currentMenu: any;
         currentSubmenu: any;
-        constructor(private $scope) {
+        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modal: ng.ui.bootstrap.IModalService) {
             $scope.vm = this;
 
             $scope.$on('changeMenu',(e, key, subKey) => {
@@ -20,8 +20,7 @@
                 { key: "content", name: "内容", url: "articlelist", submenus: [] },
                 {
                     key: "user", name: "用户", url: "userlist", submenus: [
-                        { key: "userlist", name: "管理用户", url: "userlist" },
-                        { key: "profile", name: "个人资料", url: "profile" }
+                        { key: "userlist", name: "管理用户", url: "userlist" }
                     ]
                 },
                 {
@@ -44,6 +43,16 @@
                 var submenu = _.find(menu.submenus, { key: subKey });
                 this.currentSubmenu = submenu;
             }
+        }
+        updateInfo() {
+            this.$modal.open({
+                //backdrop: 'static',
+                controller: 'myCtrl',
+                templateUrl: '/apps/templates/my.html'
+            });
+        }
+        changePassword() {
+
         }
     }
 }

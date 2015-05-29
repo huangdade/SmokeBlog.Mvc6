@@ -3,9 +3,11 @@ var BlogAdmin;
     var Controllers;
     (function (Controllers) {
         var Main = (function () {
-            function Main($scope) {
+            function Main($scope, $api, $modal) {
                 var _this = this;
                 this.$scope = $scope;
+                this.$api = $api;
+                this.$modal = $modal;
                 $scope.vm = this;
                 $scope.$on('changeMenu', function (e, key, subKey) {
                     _this.changeMenu(key, subKey);
@@ -21,8 +23,7 @@ var BlogAdmin;
                         name: "用户",
                         url: "userlist",
                         submenus: [
-                            { key: "userlist", name: "管理用户", url: "userlist" },
-                            { key: "profile", name: "个人资料", url: "profile" }
+                            { key: "userlist", name: "管理用户", url: "userlist" }
                         ]
                     },
                     {
@@ -48,6 +49,15 @@ var BlogAdmin;
                     var submenu = _.find(menu.submenus, { key: subKey });
                     this.currentSubmenu = submenu;
                 }
+            };
+            Main.prototype.updateInfo = function () {
+                this.$modal.open({
+                    //backdrop: 'static',
+                    controller: 'myCtrl',
+                    templateUrl: '/apps/templates/my.html'
+                });
+            };
+            Main.prototype.changePassword = function () {
             };
             return Main;
         })();
