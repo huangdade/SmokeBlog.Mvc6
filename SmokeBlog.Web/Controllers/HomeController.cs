@@ -10,29 +10,23 @@ namespace SmokeBlog.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
-        {
+        private UserService UserService { get; set; }
 
+        public HomeController(UserService userService)
+        {
+            this.UserService = userService;
         }
 
         [Route("")]
-        [TypeFilter(typeof(RequireLoginAttribute), Arguments = new object[] { RequireLoginAttribute.OutputTypes.Json })]
         public IActionResult Index()
         {
-            //Response.Cookies.Append("token", "w0tno2lr23c7g23haxmg5kewamyv4as1");
+            //Response.Cookies.Delete("test");
 
-            //if (this.SecurityManager.IsAuthorized)
-            //{
-            //    return new ObjectResult(this.SecurityManager.LoginUser);
-            //}
-            //else
-            //{
-                return this.Content("No login");
-            //}
+            //this.UserService.Add(new Core.Models.User.AddUserRequest { UserName = "admin", Nickname = "管理员", Password = "111111", Email = "5373827@qq.com" });
 
-            //var result = Core.Models.OperationResult.SuccessResult();
+            return this.Content("hehe");
 
-            //return result;
+            return this.HttpBadRequest();
         }
     }
 }

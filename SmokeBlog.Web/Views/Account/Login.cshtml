@@ -1,0 +1,71 @@
+﻿@model SmokeBlog.Web.ViewModels.Account.LoginViewModel
+
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<form method="post" id="frmLogin" asp-action="Login" asp-controller="Account" novalidate>
+    <div class="container">
+        <div class="account-header clearfix">
+            <a href="http://dotnetblogengine.net/" class="pull-left logo" target="_blank">
+                <img alt="BlogEngine.NET" src="../Content/images/logo.png" />
+            </a>
+            <a asp-action="Index" asp-controller="Home" class="pull-right returnblog text-muted">返回博客</a>
+        </div>
+        @if (Model.Result != null && !Model.Result.Success)
+        {
+            <div class="alert alert-danger">@Model.Result.ErrorMessage</div>
+        }
+        <div class="account well">
+            <div class="page-header clearfix">
+                <h3>登录</h3>
+            </div>
+            <div class="account-content">
+                <div class="form-group">
+                    <input asp-for="Model.UserName" name="UserName" type="text" id="txtUserName" class="form-control input-lg textEntry ltr-dir required" placeholder="请输入用户名" />
+                </div>
+                <div class="form-group">
+                    <input asp-for="Model.Password" name="Password" type="password" id="txtPassword" class="form-control input-lg passwordEntry  ltr-dir required" placeholder="请输入密码" />
+                </div>
+                <div class="form-group">
+
+                    <div class="checkbox">
+                        <label>
+                            <input id="RememberMe" type="checkbox" name="RememberMe" value="true" />
+                            保持我的登录状态
+                        </label>
+                    </div>
+                </div>
+                <div class="btn-wrapper text-center">
+                    <input type="submit" value="登录" id="LoginButton" class="btn btn-primary btn-block btn-lg" />
+                    <hr />
+                    <a class="text-muted" asp-action="FindPassword" asp-controller="Account">忘记密码了?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(".account-header").animate({
+            top: 0,
+            opacity: 1,
+        }, 1000);
+        $(".account").animate({
+            top: 0,
+            opacity: 1,
+        }, 1000);
+
+        $("#frmLogin").validate({
+            messages: {
+                UserName: "请输入用户名",
+                Password: "请输入密码"
+            },
+            errorElement: "span",
+            errorClass: "help-block error text-danger",
+            //errorPlacement: function (error, element) {
+            //    error.addClass()
+                //alert(error);
+                //alert(element);
+            //}
+        })
+    </script>
+</form>

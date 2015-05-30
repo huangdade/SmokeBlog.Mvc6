@@ -30,7 +30,6 @@ namespace SmokeBlog.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<Microsoft.AspNet.Authorization.IAuthorizationService, A>();
             services.AddMvc().ConfigureMvc(option=> 
             {
                 var outputFormatter = option.OutputFormatters.SingleOrDefault(t => t.Instance is JsonOutputFormatter);
@@ -64,29 +63,6 @@ namespace SmokeBlog.Web
                     action = "Index"
                 });
             });
-        }
-    }
-
-    public class A : Microsoft.AspNet.Authorization.IAuthorizationService
-    {
-        public bool Authorize(ClaimsPrincipal user, object resource, string policyName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Authorize(ClaimsPrincipal user, object resource, params IAuthorizationRequirement[] requirements)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> AuthorizeAsync(ClaimsPrincipal user, object resource, string policyName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> AuthorizeAsync(ClaimsPrincipal user, object resource, params IAuthorizationRequirement[] requirements)
-        {
-            throw new NotImplementedException();
         }
     }
 }
