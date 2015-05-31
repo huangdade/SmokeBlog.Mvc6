@@ -13,6 +13,7 @@ var BlogAdmin;
                     _this.changeMenu(key, subKey);
                 });
                 this.init();
+                this.loadUser();
             }
             Main.prototype.init = function () {
                 this.menus = [
@@ -39,6 +40,12 @@ var BlogAdmin;
                         ]
                     }
                 ];
+            };
+            Main.prototype.loadUser = function () {
+                var _this = this;
+                this.$api.getMyInfo(function (response) {
+                    _this.user = response.data;
+                });
             };
             Main.prototype.changeMenu = function (key, subKey) {
                 var menu = _.find(this.menus, { key: key });

@@ -54,9 +54,13 @@ namespace SmokeBlog.Web.Controllers
                 }
 
                 this.Response.Cookies.Append("token", result.Data, option);
+                return RedirectToAction("Index", "Home");
             }
-
-            return RedirectToAction("Index", "Home");
+            else
+            {
+                vm.Result = result;
+                return this.View(vm);
+            }            
         }
     }
 }

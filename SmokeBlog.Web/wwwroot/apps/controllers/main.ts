@@ -1,6 +1,7 @@
 ﻿module BlogAdmin.Controllers {
     export class Main {
         private title: string;
+        user: any;
         menus: any[];
         submenus: any[];
         currentMenu: any;
@@ -13,6 +14,7 @@
             });
 
             this.init();
+            this.loadUser();
         }
         private init() {
             this.menus = [
@@ -33,6 +35,11 @@
                     ]
                 }
             ];
+        }
+        private loadUser() {
+            this.$api.getMyInfo(response=> {
+                this.user = response.data;
+            });
         }
         changeMenu(key, subKey) {
             var menu = _.find(this.menus, { key: key });

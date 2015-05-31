@@ -60,11 +60,17 @@
                 Password: "请输入密码"
             },
             errorElement: "span",
-            errorClass: "help-block error text-danger",
+            errorClass: "help-block has-danger",
+            highlight: function (element) {
+                $(element).parent().addClass('has-error');
+            },
+            unhighlight: function (element) {
+                $(element).parent().removeClass('has-error');
+            }
             //errorPlacement: function (error, element) {
             //    error.addClass()
-                //alert(error);
-                //alert(element);
+            //    alert(error);
+            //    alert(element);
             //}
         })
     </script>

@@ -118,11 +118,12 @@ var BlogAdmin;
         })();
         Controllers.ModifyUser = ModifyUser;
         var My = (function () {
-            function My($scope, $api) {
+            function My($scope, $api, $modalInstance) {
                 this.$scope = $scope;
                 this.$api = $api;
+                this.$modalInstance = $modalInstance;
                 $scope.vm = this;
-                $scope.$emit('changeMenu', 'user', 'profile');
+                //$scope.$emit('changeMenu', 'user', 'profile');
                 this.init();
             }
             My.prototype.init = function () {
@@ -131,6 +132,28 @@ var BlogAdmin;
                 this.$api.getMyInfo(function (response) {
                     _this.loading = false;
                     _this.user = response.data;
+                });
+            };
+            My.prototype.close = function () {
+                this.$modalInstance.dismiss();
+            };
+            My.prototype.submit = function (form) {
+                var _this = this;
+                form.submitted = true;
+                if (this.loading || form.$invalid) {
+                    return false;
+                }
+                var data = {
+                    email: this.user.email,
+                    nickname: this.user.nickname
+                };
+                this.loading = true;
+                this.$api.updateMyInfo(data, function (response) {
+                    if (response.success) {
+                        _this.$modalInstance.close(true);
+                    }
+                    else {
+                    }
                 });
             };
             return My;

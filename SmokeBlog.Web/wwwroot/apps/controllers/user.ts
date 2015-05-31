@@ -109,10 +109,10 @@
     export class My {
         user: any;
         loading: boolean;
-        constructor(private $scope, private $api: BlogAdmin.Services.Api) {
+        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modalInstance: ng.ui.bootstrap.IModalServiceInstance) {
             $scope.vm = this;
 
-            $scope.$emit('changeMenu', 'user', 'profile');
+            //$scope.$emit('changeMenu', 'user', 'profile');
 
             this.init();
         }
@@ -121,6 +121,31 @@
             this.$api.getMyInfo(response=> {
                 this.loading = false;
                 this.user = response.data;
+            });
+        }
+        close() {
+            this.$modalInstance.dismiss();
+        }
+        submit(form) {
+            form.submitted = true;
+
+            if (this.loading || form.$invalid) {
+                return false;
+            }
+
+            var data: BlogAdmin.Api.IUpdateInfoRequest = {
+                email: this.user.email,
+                nickname: this.user.nickname
+            };
+
+            this.loading = true;
+            this.$api.updateMyInfo(data, response=> {
+                if (response.success) {
+                    this.$modalInstance.close(true);
+                }
+                else {
+
+                }
             });
         }
     }
