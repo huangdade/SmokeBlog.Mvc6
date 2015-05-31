@@ -39,5 +39,10 @@ gulp.task('admin', function () {
     gulp.src([
         'apps/templates/*'
     ])
-    .pipe(gulp.dest('wwwroot/templates'))
+    .pipe(gulp.dest('wwwroot/templates'));
+
+    gulp.src([
+        'bower_components/fontawesome/fonts/*'
+    ])
+    .pipe(gulp.dest('wwwroot/fonts'));
 });
