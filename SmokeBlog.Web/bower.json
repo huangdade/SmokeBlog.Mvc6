@@ -6,10 +6,11 @@
     "angularjs": "*",
     "angular-route": "*",
     "angular-messages": "*",
-    "ui-bootstrap": "*",
+    "angular-bootstrap": "*",
     "fontawesome": "*",
     "flat-ui": "*",
     "lodash": "*",
-    "jquery.validate": "*"
+    "jquery.validate": "*",
+    "messenger": "*"
   }
 }

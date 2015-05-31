@@ -118,12 +118,12 @@ var BlogAdmin;
         })();
         Controllers.ModifyUser = ModifyUser;
         var My = (function () {
-            function My($scope, $api, $modalInstance) {
+            function My($scope, $api, $modalInstance, $dialog) {
                 this.$scope = $scope;
                 this.$api = $api;
                 this.$modalInstance = $modalInstance;
+                this.$dialog = $dialog;
                 $scope.vm = this;
-                //$scope.$emit('changeMenu', 'user', 'profile');
                 this.init();
             }
             My.prototype.init = function () {
@@ -150,15 +150,23 @@ var BlogAdmin;
                 this.loading = true;
                 this.$api.updateMyInfo(data, function (response) {
                     if (response.success) {
+                        _this.$dialog.success('操作成功');
                         _this.$modalInstance.close(true);
                     }
                     else {
+                        _this.$dialog.error(response.message);
                     }
                 });
             };
             return My;
         })();
         Controllers.My = My;
+        var ChangePassword = (function () {
+            function ChangePassword() {
+            }
+            return ChangePassword;
+        })();
+        Controllers.ChangePassword = ChangePassword;
     })(Controllers = BlogAdmin.Controllers || (BlogAdmin.Controllers = {}));
 })(BlogAdmin || (BlogAdmin = {}));
 angular.module('blogAdmin.controllers').controller('userListCtrl', BlogAdmin.Controllers.UserList).controller('modifyUserCtrl', BlogAdmin.Controllers.ModifyUser).controller('myCtrl', BlogAdmin.Controllers.My);

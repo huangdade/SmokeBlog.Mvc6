@@ -56,6 +56,8 @@
                 //backdrop: 'static',
                 controller: 'myCtrl',
                 templateUrl: '/apps/templates/my.html'
+            }).result.then(r=> {
+                this.loadUser();
             });
         }
         changePassword() {

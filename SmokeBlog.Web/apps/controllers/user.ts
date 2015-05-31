@@ -109,10 +109,8 @@
     export class My {
         user: any;
         loading: boolean;
-        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modalInstance: ng.ui.bootstrap.IModalServiceInstance) {
+        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modalInstance: ng.ui.bootstrap.IModalServiceInstance, private $dialog: BlogAdmin.Services.Dialog) {
             $scope.vm = this;
-
-            //$scope.$emit('changeMenu', 'user', 'profile');
 
             this.init();
         }
@@ -141,13 +139,17 @@
             this.loading = true;
             this.$api.updateMyInfo(data, response=> {
                 if (response.success) {
+                    this.$dialog.success('操作成功');
                     this.$modalInstance.close(true);
                 }
                 else {
-
+                    this.$dialog.error(response.message);
                 }
             });
         }
+    }
+    export class ChangePassword {
+
     }
 }
 angular.module('blogAdmin.controllers')

@@ -11,24 +11,8 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link href="~/styles/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/styles/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/styles/app.css" rel="stylesheet" />
-
-    <script src="~/scripts/jquery.min.js"></script>
-    <script src="~/scripts/bootstrap.min.js"></script>
-    <script src="~/scripts/angular.min.js"></script>
-    <script src="~/scripts/angular-route.min.js"></script>
-    <script src="~/scripts/angular-messages.min.js"></script>
-    <script src="~/scripts/ui.bootstrap.js"></script>
-    <script src="~/scripts/ui.bootstrap.tpls.js"></script>
-    <script src="~/scripts/lodash.min.js"></script>
-
-    <script src="~/apps/app.js"></script>
-    <script src="~/apps/services/api.js"></script>
-    <script src="~/apps/directives/spinner.js"></script>
-    <script src="~/apps/controllers/main.js"></script>
-    <script src="~/apps/controllers/user.js"></script>
+    <link href="~/styles/app_all.css" rel="stylesheet" />
+    <script src="~/scripts/app_all.js"></script>
 </head>
 <body ng-app="blogAdmin" ng-controller="mainCtrl">
     <div id="Container" class="app-wrapper">
@@ -76,9 +60,7 @@
                 </div>
             </nav>            
             
-            <div ng-view>
-                13131
-            </div>
+            <div ng-view></div>
         </div>
         <footer id="footer">
             <div class="container ng-scope">

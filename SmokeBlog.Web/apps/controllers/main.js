@@ -58,10 +58,13 @@ var BlogAdmin;
                 }
             };
             Main.prototype.updateInfo = function () {
+                var _this = this;
                 this.$modal.open({
                     //backdrop: 'static',
                     controller: 'myCtrl',
                     templateUrl: '/apps/templates/my.html'
+                }).result.then(function (r) {
+                    _this.loadUser();
                 });
             };
             Main.prototype.changePassword = function () {
