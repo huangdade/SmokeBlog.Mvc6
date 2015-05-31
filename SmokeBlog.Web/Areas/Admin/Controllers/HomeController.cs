@@ -13,7 +13,13 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
     {
         public IActionResult Index()
         {
-            return this.View();
+            var vm = new ViewModels.Home.IndexViewModel();
+
+#if RELEASE
+            vm.IsRelease = true;
+#endif
+
+            return this.View(vm);
         }
     }
 }

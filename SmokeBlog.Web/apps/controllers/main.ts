@@ -12,7 +12,7 @@
             $scope.$on('changeMenu',(e, key, subKey) => {
                 this.changeMenu(key, subKey);
             });
-
+            
             this.init();
             this.loadUser();
         }
@@ -55,7 +55,7 @@
             this.$modal.open({
                 //backdrop: 'static',
                 controller: 'myCtrl',
-                templateUrl: '/apps/templates/my.html'
+                templateUrl: '/templates/my.html'
             }).result.then(r=> {
                 this.loadUser();
             });

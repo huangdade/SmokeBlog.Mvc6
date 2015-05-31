@@ -19,7 +19,7 @@
             this.$modal.open({
                 backdrop: 'static',
                 controller: 'modifyUserCtrl',
-                templateUrl: '/apps/templates/modifyuser.html',
+                templateUrl: '/templates/modifyuser.html',
                 resolve: {
                     id: null
                 }
@@ -31,7 +31,7 @@
             this.$modal.open({
                 backdrop: 'static',
                 controller: 'modifyUserCtrl',
-                templateUrl: '/apps/templates/modifyuser.html',
+                templateUrl: '/templates/modifyuser.html',
                 resolve: {
                     id: () => {
                         return user.id;
@@ -135,7 +135,7 @@
                 email: this.user.email,
                 nickname: this.user.nickname
             };
-
+            
             this.loading = true;
             this.$api.updateMyInfo(data, response=> {
                 if (response.success) {

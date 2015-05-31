@@ -8,17 +8,18 @@ var copy = require('gulp-copy');
 var concat = require('gulp-concat');
 
 gulp.task('admin', function () {
-    gulp.src([
+    var styleFiles = [
         'bower_components/bootstrap/dist/css/bootstrap.min.css',
-        "bower_components/fontawesome/css/font-awesome.min.css",
-        "bower_components/messenger/build/css/messenger.css",
-        "bower_components/messenger/build/css/messenger-theme-future.css",
-        "styles/app.css"
-    ])
-    .pipe(concat('app_all.css'))
-    .pipe(gulp.dest('wwwroot/styles'));
+        'bower_components/fontawesome/css/font-awesome.min.css',
+        'bower_components/messenger/build/css/messenger.css',
+        'bower_components/messenger/build/css/messenger-theme-future.css',
+        'styles/app.css'
+    ];
 
-    gulp.src([
+    gulp.src(styleFiles).pipe(gulp.dest('wwwroot/styles'));
+    gulp.src(styleFiles).pipe(concat('app_all.css')).pipe(gulp.dest('wwwroot/styles'));
+
+    var scriptFiles = [
         'bower_components/jquery/dist/jquery.min.js',
         'bower_components/bootstrap/dist/js/bootstrap.min.js',
         'bower_components/angularjs/angular.min.js',
@@ -32,9 +33,10 @@ gulp.task('admin', function () {
         'apps/directives/*.js',
         'apps/services/*.js',
         'apps/controllers/*.js'
-    ])
-    .pipe(concat('app_all.js'))
-    .pipe(gulp.dest('wwwroot/scripts'));
+    ]
+
+    gulp.src(scriptFiles).pipe(gulp.dest('wwwroot/scripts'));
+    gulp.src(scriptFiles).pipe(concat('app_all.js')).pipe(gulp.dest('wwwroot/scripts'));
 
     gulp.src([
         'apps/templates/*'

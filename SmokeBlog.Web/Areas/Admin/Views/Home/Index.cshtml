@@ -1,5 +1,5 @@
 ﻿@inject SmokeBlog.Core.Security.ISecurityManager securityManager
-
+@model SmokeBlog.Web.Areas.Admin.ViewModels.Home.IndexViewModel
 <html>
 <head>
     <title>管理平台</title>
@@ -11,8 +11,33 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link href="~/styles/app_all.css" rel="stylesheet" />
-    <script src="~/scripts/app_all.js"></script>
+    @if (Model.IsRelease)
+    {
+        <link href="~/styles/app_all.css" rel="stylesheet" />
+        <script src="~/scripts/app_all.js"></script>
+    }
+    else
+    {
+    <link href="~/styles/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/styles/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/styles/app.css" rel="stylesheet" />
+
+    <script src="~/scripts/jquery.min.js"></script>
+    <script src="~/scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/angular.min.js"></script>
+    <script src="~/scripts/angular-route.min.js"></script>
+    <script src="~/scripts/angular-messages.min.js"></script>
+    <script src="~/scripts/ui.bootstrap.js"></script>
+    <script src="~/scripts/ui.bootstrap.tpls.js"></script>
+    <script src="~/scripts/lodash.min.js"></script>
+
+    <script src="~/app.js"></script>
+    <script src="~/services/api.js"></script>
+    <script src="~/directives/spinner.js"></script>
+    <script src="~/controllers/main.js"></script>
+    <script src="~/controllers/user.js"></script>
+    }
+
 </head>
 <body ng-app="blogAdmin" ng-controller="mainCtrl">
     <div id="Container" class="app-wrapper">
