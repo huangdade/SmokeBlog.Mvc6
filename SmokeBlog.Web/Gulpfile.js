@@ -30,7 +30,13 @@ gulp.task('libs', function () {
 
     gulp.src([
         'bower_components/fontawesome/fonts/*'
-    ]).pipe(gulp.dest('wwwroot/fonts'));
+    ]).pipe(gulp.dest('wwwroot/fonts/'));
+});
+
+gulp.task('image', function () {
+    gulp.src([
+        'Content/images/*'
+    ]).pipe(gulp.dest('wwwroot/images/'));
 });
 
 gulp.task('admin', function () {
@@ -40,7 +46,7 @@ gulp.task('admin', function () {
         'bower_components/fontawesome/css/font-awesome.min.css',
         'bower_components/messenger/build/css/messenger.css',
         'bower_components/messenger/build/css/messenger-theme-future.css',
-        'styles/app.css'
+        'Content/styles/app.css'
     ]).pipe(concat('admin.css')).pipe(gulp.dest('wwwroot/styles'));
 
     //concat javascript files
@@ -81,6 +87,6 @@ gulp.task('account', function () {
     gulp.src('styles/account.css').pipe(gulp.dest('wwwroot/styles/'));
 });
 
-gulp.task('all', ['libs', 'admin', 'account'], function () {
+gulp.task('all', ['libs', 'admin', 'account', 'image'], function () {
 
 });

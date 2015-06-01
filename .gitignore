@@ -1,5 +1,6 @@
 #ignore gulp auto generated files
 SmokeBlog.Web/wwwroot/libs/
+SmokeBlog.Web/wwwroot/images/
 SmokeBlog.Web/wwwroot/fonts/
 SmokeBlog.Web/wwwroot/templates/
 SmokeBlog.Web/wwwroot/styles/
