@@ -1,4 +1,5 @@
 ﻿@inject SmokeBlog.Core.Security.ISecurityManager securityManager
+@inject Microsoft.Framework.ConfigurationModel.IConfiguration configuration
 @model SmokeBlog.Web.Areas.Admin.ViewModels.Home.IndexViewModel
 <html>
 <head>
@@ -11,10 +12,10 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    @if (Model.IsRelease)
+    @if (configuration.Get("Debug") != "True")
     {
         <link href="~/styles/admin.css" rel="stylesheet" />
-        <script src="~/scripts/admin.js"></script>
+        <script src="~/js/admin.js"></script>
     }
     else
     {
@@ -34,13 +35,13 @@
         <script src="~/libs/lodash.min.js"></script>
         <script src="~/libs/messenger.min.js"></script>
 
-        <script src="~/scripts/admin/app.js"></script>
-        <script src="~/scripts/admin/services/api.js"></script>
-        <script src="~/scripts/admin/services/dialog.js"></script>
-        <script src="~/scripts/admin/directives/spinner.js"></script>
-        <script src="~/scripts/admin/controllers/main.js"></script>
-        <script src="~/scripts/admin/controllers/user.js"></script>
-        <script src="~/scripts/admin/controllers/category.js"></script>
+        <script src="~/apps/app.js"></script>
+        <script src="~/apps/services/api.js"></script>
+        <script src="~/apps/services/dialog.js"></script>
+        <script src="~/apps/directives/spinner.js"></script>
+        <script src="~/apps/controllers/main.js"></script>
+        <script src="~/apps/controllers/user.js"></script>
+        <script src="~/apps/controllers/category.js"></script>
     }
 
 </head>

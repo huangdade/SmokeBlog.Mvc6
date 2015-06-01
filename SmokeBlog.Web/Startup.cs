@@ -30,6 +30,8 @@ namespace SmokeBlog.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddInstance<IConfiguration>(this.Configuration);
+
             services.AddMvc().ConfigureMvc(option=> 
             {
                 var outputFormatter = option.OutputFormatters.SingleOrDefault(t => t.Instance is JsonOutputFormatter);
