@@ -24,5 +24,15 @@ namespace SmokeBlog.Core.Data
             builder.Property(t => t.Avatar).MaxLength(100);
             builder.Property(t => t.Token).MaxLength(32);
         }
+
+        private static void MappingCategory(EntityTypeBuilder<Category> builder)
+        {
+            builder.ForSqlServer().Table("Category");
+
+            builder.Key(t => t.ID);
+            builder.Property(t => t.ID).ForSqlServer().UseIdentity();
+
+            builder.Property(t => t.Name).Required().MaxLength(50);
+        }
     }
 }

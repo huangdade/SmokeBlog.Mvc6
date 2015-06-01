@@ -10,10 +10,14 @@ var concat = require('gulp-concat');
 gulp.task('libs', function () {
     gulp.src([
         'bower_components/jquery/dist/jquery.min.js',
+        'bower_components/jquery/dist/jquery.min.map',
         'bower_components/bootstrap/dist/js/bootstrap.min.js',
         'bower_components/angularjs/angular.min.js',
+        'bower_components/angularjs/angular.min.js.map',
         'bower_components/angular-route/angular-route.min.js',
+        'bower_components/angular-route/angular-route.min.js.map',
         'bower_components/angular-messages/angular-messages.min.js',
+        'bower_components/angular-messages/angular-messages.min.js.map',
         'bower_components/angular-bootstrap/ui-bootstrap.min.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'bower_components/lodash/lodash.min.js',
@@ -60,31 +64,31 @@ gulp.task('admin', function () {
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'bower_components/lodash/lodash.min.js',
         'bower_components/messenger/build/js/messenger.min.js',
-        'apps/*.js',
-        'apps/directives/*.js',
-        'apps/services/*.js',
-        'apps/controllers/*.js'
+        'Content/apps/*.js',
+        'Content/apps/directives/*.js',
+        'Content/apps/services/*.js',
+        'Content/apps/controllers/*.js'
     ]).pipe(concat('admin.js')).pipe(gulp.dest('wwwroot/scripts'));
 
     //move template files
     gulp.src([
-        'apps/templates/*'
+        'Content/apps/templates/*'
     ]).pipe(gulp.dest('wwwroot/templates'));
 
     //move css files for debug
     gulp.src([
-        'styles/app.css'
+        'Content/styles/app.css'
     ]).pipe(gulp.dest('wwwroot/styles/admin/'));
 
     //move javascript files for debug
-    gulp.src('apps/*.js').pipe(gulp.dest('wwwroot/scripts/admin'));
-    gulp.src('apps/directives/*.js').pipe(gulp.dest('wwwroot/scripts/admin/directives'));
-    gulp.src('apps/services/*.js').pipe(gulp.dest('wwwroot/scripts/admin/services'));
-    gulp.src('apps/controllers/*.js').pipe(gulp.dest('wwwroot/scripts/admin/controllers'));
+    gulp.src('Content/apps/*.js').pipe(gulp.dest('wwwroot/scripts/admin'));
+    gulp.src('Content/apps/directives/*.js').pipe(gulp.dest('wwwroot/scripts/admin/directives'));
+    gulp.src('Content/apps/services/*.js').pipe(gulp.dest('wwwroot/scripts/admin/services'));
+    gulp.src('Content/apps/controllers/*.js').pipe(gulp.dest('wwwroot/scripts/admin/controllers'));
 });
 
 gulp.task('account', function () {
-    gulp.src('styles/account.css').pipe(gulp.dest('wwwroot/styles/'));
+    gulp.src('Content/styles/account.css').pipe(gulp.dest('wwwroot/styles/'));
 });
 
 gulp.task('all', ['libs', 'admin', 'account', 'image'], function () {
