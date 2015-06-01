@@ -1,4 +1,5 @@
 #ignore gulp auto generated files
+SmokeBlog.Web/wwwroot/libs/
 SmokeBlog.Web/wwwroot/fonts/
 SmokeBlog.Web/wwwroot/templates/
 SmokeBlog.Web/wwwroot/styles/
@@ -6,3 +7,6 @@ SmokeBlog.Web/wwwroot/scripts/
 
 #ignore bower files
 SmokeBlog.Web/bower_components/
+
+#ignore npm files
+SmokeBlog.Web/node_modules/
