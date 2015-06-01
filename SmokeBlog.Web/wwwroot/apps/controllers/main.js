@@ -18,14 +18,27 @@ var BlogAdmin;
             Main.prototype.init = function () {
                 this.menus = [
                     { key: "dashboard", name: "控制台", url: "dashboard" },
-                    { key: "content", name: "内容", url: "articlelist", submenus: [] },
                     {
-                        key: "user", name: "用户", url: "userlist", submenus: [
+                        key: "article",
+                        name: "文章",
+                        url: "categorylist",
+                        submenus: [
+                            { key: "categorylist", name: "分类管理", url: "categorylist" }
+                        ]
+                    },
+                    {
+                        key: "user",
+                        name: "用户",
+                        url: "userlist",
+                        submenus: [
                             { key: "userlist", name: "管理用户", url: "userlist" }
                         ]
                     },
                     {
-                        key: "config", name: "设置", url: "config/basic", submenus: [
+                        key: "config",
+                        name: "设置",
+                        url: "config/basic",
+                        submenus: [
                             { key: "basicconfig", name: "基础设置", url: "config/basic" },
                             { key: "advanceconfig", name: "高级设置", url: "config/advance" },
                             { key: "emailconfig", name: "邮件设置", url: "config/email" },

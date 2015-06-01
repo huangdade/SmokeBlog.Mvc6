@@ -94,6 +94,12 @@
         changePassword(request: BlogAdmin.Api.IChangePasswordRequest, callback: IRequestCallback) {
             this.post('/api/my/changepassword', request, callback);
         }
+        getCategoryList(callback: IRequestCallback) {
+            this.get('/api/category/all', null, callback);
+        }
+        addCategory(request: BlogAdmin.Api.IAddCategoryRequest, callback: IRequestCallback) {
+            this.post('/api/category/add', request, callback);
+        }
     }
 }
 

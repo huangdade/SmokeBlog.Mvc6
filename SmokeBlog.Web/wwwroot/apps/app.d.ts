@@ -18,4 +18,12 @@
         oldPassword: string;
         newPassword: string;
     }
+    export interface IAddCategoryRequest {
+        parentID: number;
+        name: string;
+    }
+}
+
+interface JQuery {
+    selectpicker(options?: any);
 }

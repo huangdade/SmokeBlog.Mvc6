@@ -22,14 +22,17 @@ gulp.task('libs', function () {
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'bower_components/lodash/lodash.min.js',
         'bower_components/messenger/build/js/messenger.min.js',
-        'bower_components/jquery.validate/dist/jquery.validate.min.js'
+        'bower_components/jquery.validate/dist/jquery.validate.min.js',
+        'bower_components/bootstrap-select/dist/js/bootstrap-select.min.js',
+        'bower_components/bootstrap-select/dist/js/bootstrap-select.js.map'
     ]).pipe(gulp.dest('wwwroot/libs/'));
 
     gulp.src([
         'bower_components/bootstrap/dist/css/bootstrap.min.css',
         'bower_components/fontawesome/css/font-awesome.min.css',
         'bower_components/messenger/build/css/messenger.css',
-        'bower_components/messenger/build/css/messenger-theme-future.css'
+        'bower_components/messenger/build/css/messenger-theme-future.css',
+        'bower_components/bootstrap-select/dist/css/bootstrap-select.min.css'
     ]).pipe(gulp.dest('wwwroot/css/'));
 
     gulp.src([
@@ -43,7 +46,8 @@ gulp.task('admin', function () {
         'bower_components/bootstrap/dist/css/bootstrap.min.css',
         'bower_components/fontawesome/css/font-awesome.min.css',
         'bower_components/messenger/build/css/messenger.css',
-        'bower_components/messenger/build/css/messenger-theme-future.css',
+        'bower_components/messenger/build/css/messenger-theme-future.css',        
+        'bower_components/bootstrap-select/dist/css/bootstrap-select.min.css',
         'wwwroot/styles/app.css'
     ]).pipe(concat('admin.css')).pipe(gulp.dest('wwwroot/css'));
 
@@ -57,7 +61,8 @@ gulp.task('admin', function () {
         'bower_components/angular-bootstrap/ui-bootstrap.min.js',
         'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'bower_components/lodash/lodash.min.js',
-        'bower_components/messenger/build/js/messenger.min.js',
+        'bower_components/messenger/build/js/messenger.min.js',        
+        'bower_components/bootstrap-select/dist/js/bootstrap-select.min.js',
         'wwwroot/apps/*.js',
         'wwwroot/apps/directives/*.js',
         'wwwroot/apps/services/*.js',

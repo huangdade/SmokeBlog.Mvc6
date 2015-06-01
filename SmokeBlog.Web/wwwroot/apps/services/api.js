@@ -84,6 +84,12 @@ var BlogAdmin;
             Api.prototype.changePassword = function (request, callback) {
                 this.post('/api/my/changepassword', request, callback);
             };
+            Api.prototype.getCategoryList = function (callback) {
+                this.get('/api/category/all', null, callback);
+            };
+            Api.prototype.addCategory = function (request, callback) {
+                this.post('/api/category/add', request, callback);
+            };
             return Api;
         })();
         Services.Api = Api;

@@ -11,6 +11,7 @@
     "flat-ui": "*",
     "lodash": "*",
     "jquery.validate": "*",
-    "messenger": "*"
+    "messenger": "*",
+    "bootstrap-select": "*"
   }
 }
