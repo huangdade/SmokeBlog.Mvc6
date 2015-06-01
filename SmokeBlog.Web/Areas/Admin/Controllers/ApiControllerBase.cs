@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmokeBlog.Web.Controllers.Base
+namespace SmokeBlog.Web.Areas.Admin.Controllers
 {
     [ValidateRequest]
     [TypeFilter(typeof(RequireLoginAttribute), Arguments = new object[] { RequireLoginAttribute.OutputTypes.Json })]

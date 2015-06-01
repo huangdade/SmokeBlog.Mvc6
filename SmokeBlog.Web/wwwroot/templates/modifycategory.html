@@ -19,7 +19,7 @@
         <div class="form-group">
             <label class="control-label col-md-2">上级</label>
             <div class="col-md-6" id="parent-container">
-                <select select title="选择父级分类 (非必选) " container="#parent-container" data-width="100%">
+                <select select title="选择父级分类 (非必选) " ng-model="vm.data.parentID" container="#parent-container" data-width="100%">
 
                 </select>
             </div>
@@ -29,6 +29,6 @@
 <div class="modal-footer">
     <span class="pull-right">
         <button type="button" class="btn btn-default" ng-click="vm.close()">取消</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.submit()">提交</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.submit(frmCategory)">提交</button>
     </span>
 </div>

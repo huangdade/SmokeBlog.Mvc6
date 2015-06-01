@@ -4,7 +4,6 @@ using SmokeBlog.Core.Models.My;
 using SmokeBlog.Core.Models.User;
 using SmokeBlog.Core.Security;
 using SmokeBlog.Core.Service;
-using SmokeBlog.Web.Controllers.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;

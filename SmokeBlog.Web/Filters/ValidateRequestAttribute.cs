@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Framework.Internal;
-using SmokeBlog.Web.Controllers.Base;
 using SmokeBlog.Core.Models;
 using Microsoft.AspNet.WebUtilities;
 

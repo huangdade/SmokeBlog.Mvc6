@@ -16,7 +16,8 @@ namespace SmokeBlog.Core.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(MappingUser);
+            modelBuilder.Entity<User>(MappingUser)
+                .Entity<Category>(MappingCategory);
         }
     }
 }

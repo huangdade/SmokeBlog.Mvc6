@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.Framework.ConfigurationModel.IConfiguration configuration
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>
@@ -12,11 +14,20 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <link href="~/styles/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/styles/account.css" rel="stylesheet" />
+    @if (configuration.Get("Debug") == "False")
+    {
+        <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/styles/account.css" rel="stylesheet" />
 
-    <script src="~/libs/jquery.min.js"></script>
-    <script src="~/libs/jquery.validate.min.js"></script>
+        <script src="~/libs/jquery.min.js"></script>
+        <script src="~/libs/jquery.validate.min.js"></script>
+    }
+    else
+    {
+        <link href="~/css/account.css" rel="stylesheet" />
+
+        <script src="~/js/account.js"></script>
+    }
 </head>
 <body>
     @RenderBody()

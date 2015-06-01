@@ -16,10 +16,10 @@
         </thead>
         <tbody>
             <tr ng-repeat="category in vm.categoryList">
-                <td class="table-item-title">{{user.userName}}</td>
-                <td>{{user.nickname}}</td>
+                <td class="table-item-title">{{category.name}}</td>
+                <td>{{category.articles}}</td>
                 <td>
-                    <a href="javascript:void(0)" ng-click="vm.editUser(user)">编辑</a>
+                    <a href="javascript:void(0)" ng-click="vm.editCategory(category)">编辑</a>
                 </td>
             </tr>
         </tbody>

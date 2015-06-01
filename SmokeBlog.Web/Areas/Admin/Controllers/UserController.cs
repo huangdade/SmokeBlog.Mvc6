@@ -2,7 +2,6 @@
 using SmokeBlog.Core.Models;
 using SmokeBlog.Core.Models.User;
 using SmokeBlog.Core.Service;
-using SmokeBlog.Web.Controllers.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;

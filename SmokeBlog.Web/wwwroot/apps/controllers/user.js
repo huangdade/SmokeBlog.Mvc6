@@ -154,7 +154,7 @@ var BlogAdmin;
                         _this.$modalInstance.close(true);
                     }
                     else {
-                        _this.$dialog.error(response.message);
+                        _this.$dialog.error(response.errorMessage);
                     }
                 });
             };
@@ -169,7 +169,4 @@ var BlogAdmin;
         Controllers.ChangePassword = ChangePassword;
     })(Controllers = BlogAdmin.Controllers || (BlogAdmin.Controllers = {}));
 })(BlogAdmin || (BlogAdmin = {}));
-angular.module('blogAdmin.controllers')
-    .controller('userListCtrl', BlogAdmin.Controllers.UserList)
-    .controller('modifyUserCtrl', BlogAdmin.Controllers.ModifyUser)
-    .controller('myCtrl', BlogAdmin.Controllers.My);
+angular.module('blogAdmin.controllers').controller('userListCtrl', BlogAdmin.Controllers.UserList).controller('modifyUserCtrl', BlogAdmin.Controllers.ModifyUser).controller('myCtrl', BlogAdmin.Controllers.My);

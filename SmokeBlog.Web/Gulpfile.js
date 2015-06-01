@@ -71,7 +71,15 @@ gulp.task('admin', function () {
 });
 
 gulp.task('account', function () {
-    gulp.src('wwwroot/styles/account.css').pipe(gulp.dest('wwwroot/css/'));
+    gulp.src([
+        'bower_components/jquery/dist/jquery.min.js',
+        'bower_components/jquery.validate/dist/jquery.validate.min.js'
+    ]).pipe(concat('account.js')).pipe(gulp.dest('wwwroot/js'));
+
+    gulp.src([
+        'bower_components/bootstrap/dist/css/bootstrap.min.css',
+        'wwwroot/styles/account.css'
+    ]).pipe(concat('account.css')).pipe(gulp.dest('wwwroot/css'));
 });
 
 gulp.task('all', ['libs', 'admin', 'account'], function () {

@@ -11,20 +11,6 @@ var BlogAdmin;
             function Api($http) {
                 this.$http = $http;
             }
-            Api.prototype.getDefaultConfig = function (url, method) {
-                var config = {
-                    url: url,
-                    method: method,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    transformRequest: function (obj) {
-                        var str = [];
-                        for (var p in obj)
-                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                        return str.join("&");
-                    }
-                };
-                return config;
-            };
             Api.prototype.request = function (url, method, opt, callback) {
                 var config = {
                     url: url,
@@ -32,19 +18,23 @@ var BlogAdmin;
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     transformRequest: function (obj) {
                         var str = [];
-                        for (var p in obj)
+                        for (var p in obj) {
+                            if (typeof (obj[p]) == "undefined" || obj[p] == null) {
+                                continue;
+                            }
                             str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        }
                         return str.join("&");
                     }
                 };
                 angular.extend(config, opt);
                 this.$http(config).success(callback).error(function (data, code) {
-                    if (angular.isObject(data) && data.error) {
+                    if (angular.isObject(data) && data.errorMessage) {
                     }
                     else {
                         data = {
                             success: false,
-                            message: "未知错误"
+                            errorMessage: "未知错误"
                         };
                     }
                     callback && callback(data);

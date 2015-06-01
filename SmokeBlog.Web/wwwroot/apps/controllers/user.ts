@@ -143,7 +143,7 @@
                     this.$modalInstance.close(true);
                 }
                 else {
-                    this.$dialog.error(response.message);
+                    this.$dialog.error(response.errorMessage);
                 }
             });
         }

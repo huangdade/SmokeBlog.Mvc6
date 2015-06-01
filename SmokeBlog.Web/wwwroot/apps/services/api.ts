@@ -1,12 +1,12 @@
 ﻿module BlogAdmin.Services {
-    export interface ApiResponse {
+    export interface IApiResponse {
         success: boolean;
-        message: string;
+        errorMessage: string;
         data?: any;
     }
 
     export interface IRequestCallback {
-        (response: ApiResponse): void;
+        (response: IApiResponse): void;
     }
 
     enum Method {
@@ -17,21 +17,7 @@
     export class Api {
         constructor(private $http: ng.IHttpService) {
 
-        }
-        private getDefaultConfig(url: string, method: string): ng.IRequestShortcutConfig {
-            var config: ng.IRequestConfig = {
-                url: url,
-                method: method,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                transformRequest: function (obj) {
-                    var str = [];
-                    for (var p in obj)
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    return str.join("&");
-                }
-            };
-            return config;
-        }
+        }        
         private request(url: string, method: Method, opt: any, callback: IRequestCallback): void {
             var config: ng.IRequestConfig = {
                 url: url,
@@ -39,21 +25,25 @@
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 transformRequest: function (obj) {
                     var str = [];
-                    for (var p in obj)
+                    for (var p in obj) {
+                        if (typeof (obj[p]) == "undefined" || obj[p] == null) {
+                            continue;
+                        }
                         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    }
                     return str.join("&");
                 }
             };
             angular.extend(config, opt);
 
             this.$http(config).success(callback).error((data, code) => {
-                if (angular.isObject(data) && data.error) {
+                if (angular.isObject(data) && data.errorMessage) {
 
                 }
                 else {
                     data = {
                         success: false,
-                        message: "未知错误"
+                        errorMessage: "未知错误"
                     };
                 }
                 callback && callback(data);
