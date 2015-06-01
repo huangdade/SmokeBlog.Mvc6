@@ -3,3 +3,6 @@ SmokeBlog.Web/wwwroot/fonts/
 SmokeBlog.Web/wwwroot/templates/
 SmokeBlog.Web/wwwroot/styles/
 SmokeBlog.Web/wwwroot/scripts/
+
+#ignore bower files
+SmokeBlog.Web/bower_components/
