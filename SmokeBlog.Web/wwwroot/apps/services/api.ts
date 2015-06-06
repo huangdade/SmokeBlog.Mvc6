@@ -90,6 +90,10 @@
         addCategory(request: BlogAdmin.Api.IAddCategoryRequest, callback: IRequestCallback) {
             this.post('/api/category/add', request, callback);
         }
+        getCategory(id: number, callback: IRequestCallback) {
+            var url = "/api/category/" + id;
+            this.get(url, null, callback);
+        }
     }
 }
 

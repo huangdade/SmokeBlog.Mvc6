@@ -8,10 +8,14 @@
     "angular-messages": "*",
     "angular-bootstrap": "*",
     "fontawesome": "*",
-    "flat-ui": "*",
     "lodash": "*",
     "jquery.validate": "*",
     "messenger": "*",
-    "bootstrap-select": "*"
+    "bootstrap-select": "*",
+    "angular-bootstrap-select": "*",
+    "async": "1.1.0"
+  },
+  "resolutions": {
+    "angular": ">=1.3.0"
   }
 }

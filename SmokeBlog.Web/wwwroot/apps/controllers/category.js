@@ -10,6 +10,9 @@ var BlogAdmin;
                 $scope.vm = this;
                 $scope.$emit('changeMenu', 'article', 'categorylist');
                 this.init();
+                this.data = {
+                    parentID: 3
+                };
             }
             CategoryList.prototype.init = function () {
                 var _this = this;
@@ -20,6 +23,7 @@ var BlogAdmin;
                 });
             };
             CategoryList.prototype.addCategory = function () {
+                var _this = this;
                 this.$modal.open({
                     backdrop: "static",
                     templateUrl: "/templates/modifycategory.html",
@@ -27,6 +31,23 @@ var BlogAdmin;
                     resolve: {
                         id: null
                     }
+                }).result.then(function (v) {
+                    _this.init();
+                });
+            };
+            CategoryList.prototype.editCategory = function (category) {
+                var _this = this;
+                this.$modal.open({
+                    backdrop: "static",
+                    templateUrl: "/templates/modifycategory.html",
+                    controller: 'modifyCategoryCtrl',
+                    resolve: {
+                        id: function () {
+                            return category.id;
+                        }
+                    }
+                }).result.then(function (v) {
+                    _this.init();
                 });
             };
             return CategoryList;
@@ -38,17 +59,60 @@ var BlogAdmin;
                 this.$api = $api;
                 this.$modalInstance = $modalInstance;
                 this.$dialog = $dialog;
+                this.parentList = [];
                 $scope.vm = this;
                 this.id = id;
-                this.init();
-            }
-            ModifyCategory.prototype.init = function () {
+                this.data = {
+                    parentID: null
+                };
                 if (this.id) {
                     this.title = "修改分类";
                 }
                 else {
                     this.title = "新增分类";
                 }
+                this.loadData();
+            }
+            ModifyCategory.prototype.loadData = function () {
+                var self = this;
+                self.loading = true;
+                var arr = [function (callback) {
+                        self.$api.getCategoryList(function (response) {
+                            if (response.success) {
+                                self.parentList = response.data;
+                                callback(null, response.data);
+                            }
+                            else {
+                                callback(new Error(response.errorMessage), null);
+                            }
+                        });
+                    }];
+                if (self.id) {
+                    arr.push(function (callback) {
+                        var _this = this;
+                        self.$api.getCategory(self.id, function (response) {
+                            if (response.success) {
+                                self.data = {
+                                    id: response.data.id,
+                                    name: response.data.name,
+                                    parentID: response.data.parentID
+                                };
+                                callback(null, _this.data);
+                            }
+                            else {
+                                callback(new Error(response.errorMessage), null);
+                            }
+                        });
+                    });
+                }
+                async.parallel(arr, function (err, results) {
+                    if (err) {
+                        self.$dialog.error(err.message);
+                    }
+                    else {
+                        self.loading = false;
+                    }
+                });
             };
             ModifyCategory.prototype.close = function () {
                 this.$modalInstance.dismiss();
@@ -87,4 +151,6 @@ var BlogAdmin;
         Controllers.ModifyCategory = ModifyCategory;
     })(Controllers = BlogAdmin.Controllers || (BlogAdmin.Controllers = {}));
 })(BlogAdmin || (BlogAdmin = {}));
-angular.module('blogAdmin.controllers').controller('categoryListCtrl', BlogAdmin.Controllers.CategoryList).controller('modifyCategoryCtrl', BlogAdmin.Controllers.ModifyCategory);
+angular.module('blogAdmin.controllers')
+    .controller('categoryListCtrl', BlogAdmin.Controllers.CategoryList)
+    .controller('modifyCategoryCtrl', BlogAdmin.Controllers.ModifyCategory);

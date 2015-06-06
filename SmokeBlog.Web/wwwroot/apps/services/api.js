@@ -44,13 +44,13 @@ var BlogAdmin;
                 var opt = {
                     data: data
                 };
-                this.request(url, 1 /* Post */, opt, callback);
+                this.request(url, Method.Post, opt, callback);
             };
             Api.prototype.get = function (url, params, callback) {
                 var opt = {
                     params: params
                 };
-                this.request(url, 0 /* Get */, opt, callback);
+                this.request(url, Method.Get, opt, callback);
             };
             Api.prototype.getUserList = function (callback) {
                 this.get('/api/user/all', null, callback);
@@ -79,6 +79,10 @@ var BlogAdmin;
             };
             Api.prototype.addCategory = function (request, callback) {
                 this.post('/api/category/add', request, callback);
+            };
+            Api.prototype.getCategory = function (id, callback) {
+                var url = "/api/category/" + id;
+                this.get(url, null, callback);
             };
             return Api;
         })();

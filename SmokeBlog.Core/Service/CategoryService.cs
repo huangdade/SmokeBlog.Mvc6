@@ -121,5 +121,26 @@ namespace SmokeBlog.Core.Service
 
             return result;
         }
+
+        public CategoryDetailModel Get(int id)
+        {
+            var list = this.DbContext.Categories.OrderBy(t => t.Name).ToList();
+
+            var entity = list.SingleOrDefault(t => t.ID == id);
+
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var model = new CategoryDetailModel
+            {
+                ID = entity.ID,
+                Name = entity.Name,
+                ParentID = entity.ParentID
+            };
+
+            return model;
+        }
     }
 }

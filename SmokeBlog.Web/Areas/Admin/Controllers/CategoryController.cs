@@ -53,5 +53,13 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
 
             return this.ApiResponse(result);
         }
+
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
+        {
+            var model = this.CategoryService.Get(id);
+            var result = OperationResult<CategoryDetailModel>.SuccessResult(model);
+            return this.ApiResponse(result);
+        }
     }
 }
