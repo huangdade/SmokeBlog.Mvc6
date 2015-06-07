@@ -9,10 +9,10 @@
         constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modal: ng.ui.bootstrap.IModalService) {
             $scope.vm = this;
 
-            $scope.$on('changeMenu',(e, key, subKey) => {
+            $scope.$on('changeMenu', (e, key, subKey) => {
                 this.changeMenu(key, subKey);
             });
-            
+
             this.init();
             this.loadUser();
         }
@@ -21,7 +21,8 @@
                 { key: "dashboard", name: "控制台", url: "dashboard" },
                 {
                     key: "article", name: "文章", url: "categorylist", submenus: [
-                        {key:"categorylist", name:"分类管理", url:"categorylist"}
+                        { key: "modifyarticle", name: "文章管理", url: "modifyarticle" },
+                        { key: "categorylist", name: "分类管理", url: "categorylist" }
                     ]
                 },
                 {

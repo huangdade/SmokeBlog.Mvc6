@@ -135,13 +135,21 @@ var BlogAdmin;
                 }
                 this.loading = true;
                 if (this.id) {
-                }
-                else {
-                    var request = {
+                    var editRequest = {
+                        id: this.data.id,
                         name: this.data.name,
                         parentID: this.data.parentID || null
                     };
-                    this.$api.addCategory(request, function (response) {
+                    this.$api.editCategory(editRequest, function (response) {
+                        _this.modifyCallback(response);
+                    });
+                }
+                else {
+                    var addRequest = {
+                        name: this.data.name,
+                        parentID: this.data.parentID || null
+                    };
+                    this.$api.addCategory(addRequest, function (response) {
                         _this.modifyCallback(response);
                     });
                 }

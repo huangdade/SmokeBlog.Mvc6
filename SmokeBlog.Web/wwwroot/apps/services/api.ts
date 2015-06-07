@@ -94,6 +94,9 @@
             var url = "/api/category/" + id;
             this.get(url, null, callback);
         }
+        editCategory(request: BlogAdmin.Api.IEditCategoryRequest, callback: IRequestCallback) {
+            this.post('/api/category/edit', request, callback);
+        }
     }
 }
 

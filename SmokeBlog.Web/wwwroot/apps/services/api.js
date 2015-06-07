@@ -84,6 +84,9 @@ var BlogAdmin;
                 var url = "/api/category/" + id;
                 this.get(url, null, callback);
             };
+            Api.prototype.editCategory = function (request, callback) {
+                this.post('/api/category/edit', request, callback);
+            };
             return Api;
         })();
         Services.Api = Api;

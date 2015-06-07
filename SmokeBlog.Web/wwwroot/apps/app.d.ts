@@ -22,6 +22,11 @@
         parentID: number;
         name: string;
     }
+    export interface IEditCategoryRequest {
+        id: number;
+        parentID: number;
+        name: string;
+    }
 }
 
 interface JQuery {

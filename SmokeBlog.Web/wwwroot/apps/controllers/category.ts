@@ -139,15 +139,23 @@
             this.loading = true;
 
             if (this.id) {
-
-            }
-            else {
-                var request: BlogAdmin.Api.IAddCategoryRequest = {
+                var editRequest: BlogAdmin.Api.IEditCategoryRequest = {
+                    id: this.data.id,
                     name: this.data.name,
                     parentID: this.data.parentID || null
                 };
 
-                this.$api.addCategory(request, response=> {
+                this.$api.editCategory(editRequest, response=> {
+                    this.modifyCallback(response);
+                })
+            }
+            else {
+                var addRequest: BlogAdmin.Api.IAddCategoryRequest = {
+                    name: this.data.name,
+                    parentID: this.data.parentID || null
+                };
+
+                this.$api.addCategory(addRequest, response=> {
                     this.modifyCallback(response);
                 });
             }
