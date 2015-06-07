@@ -17,3 +17,23 @@ CREATE TABLE [Category]
 	ParentID INT,
 	Name NVARCHAR(50) NOT NULL
 )
+
+CREATE TABLE [Article]
+(
+	ID INT PRIMARY KEY IDENTITY,
+	Title NVARCHAR(100) NOT NULL,
+	Content NVARCHAR(MAX),
+	Summary NVARCHAR(MAX),
+	UserID INT NOT NULL,
+	[From] NVARCHAR(50),
+	PostDate DATETIME NOT NULL,
+	Status TINYINT NOT NULL,
+	AllowComment BIT NOT NULL
+)
+
+CREATE TABLE [CategoryArticle]
+(
+	CategoryID INT NOT NULL,
+	ArticleID INT NOT NULL,
+	PRIMARY KEY(CategoryID, ArticleID)
+)

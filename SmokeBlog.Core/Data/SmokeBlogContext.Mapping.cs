@@ -34,5 +34,16 @@ namespace SmokeBlog.Core.Data
 
             builder.Property(t => t.Name).Required().MaxLength(50);
         }
+
+        private static void MappingArticle(EntityTypeBuilder<Article> builder)
+        {
+            builder.ForSqlServer().Table("Article");
+
+            builder.Key(t => t.ID);
+            builder.Property(t => t.ID).ForSqlServer().UseIdentity();
+            builder.Property(t => t.Title).MaxLength(100).Required();
+            builder.Property(t => t.From).MaxLength(50);
+            builder.Reference(t => t.User);
+        }
     }
 }

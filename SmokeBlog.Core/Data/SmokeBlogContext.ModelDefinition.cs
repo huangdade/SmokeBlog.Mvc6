@@ -36,5 +36,30 @@ namespace SmokeBlog.Core.Data
 
             public string Name { get; set; }
         }
+
+        public class Article
+        {
+            public int ID { get; set; }
+
+            public string Title { get; set; }
+
+            public string Content { get; set; }
+
+            public string Summary { get; set; }
+
+            public int UserID { get; set; }
+
+            public string From { get; set; }
+
+            public DateTime PostDate { get; set; }
+
+            public byte Status { get; set; }
+
+            public bool AllowComment { get; set; }
+
+            public User User { get; set; }
+
+            public ICollection<Category> Categories { get; set; }
+        }
     }
 }
