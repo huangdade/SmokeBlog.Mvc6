@@ -8,7 +8,10 @@
       "Microsoft.AspNet.Mvc >= 6.0.0-beta4",
       "AutoMapper >= 4.0.0-ci1046"
     ],
-    "DNX,Version=v4.5.1": []
+    "DNX,Version=v4.5.1": [
+      "Dapper >= 1.42.0",
+      "framework/System.Data >= 4.0.0.0"
+    ]
   },
   "libraries": {
     "AutoMapper/4.0.0-ci1046": {
@@ -57,6 +60,38 @@
         "lib/wpa81/AutoMapper.xml",
         "lib/Xamarin.iOS10/AutoMapper.dll",
         "lib/Xamarin.iOS10/AutoMapper.XML"
+      ]
+    },
+    "Dapper/1.42": {
+      "serviceable": false,
+      "sha": "HBNIulHq5DWD1K60iVABe4oW4HoWmraR20yy9jLrw9tgTbMY2eolYk2UgXFI43lSUMTdhUjPvlHci0TnsfoiXw==",
+      "frameworks": {
+        "DNX,Version=v4.5.1": {
+          "dependencies": {},
+          "frameworkAssemblies": [
+            "Microsoft.CSharp"
+          ],
+          "runtimeAssemblies": [
+            "lib/net45/Dapper.dll"
+          ],
+          "compileAssemblies": [
+            "lib/net45/Dapper.dll"
+          ]
+        }
+      },
+      "files": [
+        "Dapper.1.42.nupkg",
+        "Dapper.1.42.nupkg.sha512",
+        "Dapper.nuspec",
+        "lib/net35/Dapper.dll",
+        "lib/net35/Dapper.pdb",
+        "lib/net35/Dapper.xml",
+        "lib/net40/Dapper.dll",
+        "lib/net40/Dapper.pdb",
+        "lib/net40/Dapper.xml",
+        "lib/net45/Dapper.dll",
+        "lib/net45/Dapper.pdb",
+        "lib/net45/Dapper.xml"
       ]
     },
     "EntityFramework.Core/7.0.0-beta4": {

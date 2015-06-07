@@ -1,41 +1,58 @@
-﻿using SmokeBlog.Core.Models;
+﻿using Microsoft.Framework.ConfigurationModel;
+using SmokeBlog.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 
 namespace SmokeBlog.Core.Service
 {
-    public class AuthService
+    public class AuthService : ServiceBase
     {
-        private Data.SmokeBlogContext DbContext { get; set; }
-
-        public AuthService(Data.SmokeBlogContext db)
+        public AuthService(IConfiguration configuration)
+            : base(configuration)
         {
-            this.DbContext = db;
+
         }
 
         public OperationResult<string> Login(string userName, string password)
-        {            
-            var user = this.DbContext.Users.SingleOrDefault(t => t.UserName == userName);
-
-            if (user == null)
+        {
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult<string>.ErrorResult("用户不存在");
+                string sql = @"SELECT TOP 1 ID, Password, Salt FROM [User] WHERE UserName=@UserName";
+
+                var para = new
+                {
+                    UserName = userName,
+                    Password = password
+                };
+
+                var user = conn.Query(sql, para).FirstOrDefault();
+
+                if (user == null)
+                {
+                    return OperationResult<string>.ErrorResult("用户不存在");
+                }
+
+                password = Encrypt.HMACSHA1Encryptor.Encrypt(password, user.Salt);
+
+                if (password != user.Password)
+                {
+                    return OperationResult<string>.ErrorResult("密码错误");
+                }
+
+                string token = Utility.GetRandomString(32);
+
+                sql = @"UPDATE TOP(1) [User] SET Token=@Token WHERE ID =@ID";
+                conn.Execute(sql, new
+                {
+                    ID = user.ID,
+                    Token = token
+                });
+
+                return OperationResult<string>.SuccessResult(token);
             }
-
-            password = Encrypt.HMACSHA1Encryptor.Encrypt(password, user.Salt);
-            if (password != user.Password)
-            {
-                return OperationResult<string>.ErrorResult("密码错误");
-            }
-
-            string token = Utility.GetRandomString(32);
-
-            user.Token = token;
-            DbContext.SaveChanges();
-
-            return OperationResult<string>.SuccessResult(token);
         }
     }
 }

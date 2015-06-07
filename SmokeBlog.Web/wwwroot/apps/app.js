@@ -1,4 +1,4 @@
-angular.module('blogAdmin', ['ngRoute', 'ngMessages', 'ui.bootstrap', 'blogAdmin.controllers', 'blogAdmin.directives', 'angular-bootstrap-select', 'angular-bootstrap-select.extra']);
+angular.module('blogAdmin', ['ngRoute', 'ngMessages', 'ui.bootstrap', 'blogAdmin.controllers', 'blogAdmin.directives']);
 angular.module('blogAdmin').config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
         $routeProvider.when('/', { templateUrl: '/templates/dashboard.html', controller: 'mainCtrl' })
             .when('/userlist', { templateUrl: '/templates/userlist.html', controller: 'userListCtrl' })
