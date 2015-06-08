@@ -49,7 +49,7 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
         public IActionResult All()
         {
             var list = this.CategoryService.All();
-            var result = OperationResult<List<CategoryModel>>.SuccessResult(list);
+            var result = OperationResult<List<NestedCategoryModel>>.SuccessResult(list);
 
             return this.ApiResponse(result);
         }
@@ -58,7 +58,7 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
         public IActionResult Get(int id)
         {
             var model = this.CategoryService.Get(id);
-            var result = OperationResult<CategoryDetailModel>.SuccessResult(model);
+            var result = OperationResult<CategoryData>.SuccessResult(model);
             return this.ApiResponse(result);
         }
     }

@@ -22,7 +22,9 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
         [HttpGet("all")]
         public IActionResult All()
         {
-            var result = this.UserService.All();
+            var list = this.UserService.All();
+
+            var result = OperationResult<List<UserModel>>.SuccessResult(list);
 
             return this.ApiResponse(result);
         }
@@ -56,7 +58,18 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
         [HttpGet("{id:int}")]
         public IActionResult Get(int id)
         {
-            var result = this.UserService.Get(id);
+            var user = this.UserService.Get(id);
+
+            OperationResult<UserModel> result;
+
+            if (user == null)
+            {
+                result = OperationResult<UserModel>.ErrorResult("不存在的用户");
+            }
+            else
+            {
+                result = OperationResult<UserModel>.SuccessResult(user);
+            }            
 
             return this.ApiResponse(result);
         }

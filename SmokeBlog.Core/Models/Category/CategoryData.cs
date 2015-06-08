@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SmokeBlog.Core.Models.Category
 {
-    public class CategoryDetailModel
+    public class CategoryData
     {
         public int ID { get; set; }
 

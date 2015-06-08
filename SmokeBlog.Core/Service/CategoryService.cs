@@ -1,115 +1,152 @@
-﻿using SmokeBlog.Core.Data;
+﻿using Microsoft.Framework.ConfigurationModel;
+using SmokeBlog.Core.Data;
 using SmokeBlog.Core.Models;
 using SmokeBlog.Core.Models.Category;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 
 namespace SmokeBlog.Core.Service
 {
-    public class CategoryService
+    public class CategoryService : ServiceBase
     {
-        private SmokeBlogContext DbContext { get; set; }
-
-        public CategoryService(SmokeBlogContext dbContext)
+        public CategoryService(IConfiguration configuration)
+            : base(configuration)
         {
-            this.DbContext = dbContext;
+
+        }
+
+        private List<CategoryData> GetCategoryList()
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"SELECT ID,ParentID,Name FROM [Category] WITH(NOLOCK)";
+
+                return conn.Query<CategoryData>(sql).ToList();
+            }
+        }
+
+        private bool CheckCategoryName(string name, int? id)
+        {
+            var list = this.GetCategoryList();
+
+            var query = list.Where(t => t.Name == name);
+
+            if (id.HasValue)
+            {
+                query = query.Where(t => t.ID == id.Value);
+            }
+
+            return query.Any() == false;
+        }
+
+        private bool CheckParentID(int parentID)
+        {
+            var list = this.GetCategoryList();
+
+            return list.Any(t => t.ID == parentID && t.ParentID == null);
         }
 
         public OperationResult<int?> Add(AddCategoryRequest model)
         {
-            if (this.DbContext.Categories.Any(t => t.Name == model.Name))
+            if (!this.CheckCategoryName(model.Name, null))
             {
                 return OperationResult<int?>.ErrorResult("分类名称重复");
             }
-
-            if (model.ParentID.HasValue)
+            if (model.ParentID.HasValue && !this.CheckParentID(model.ParentID.Value))
             {
-                var parent = this.DbContext.Categories.SingleOrDefault(t => t.ID == model.ParentID.Value);
-
-                if (parent == null)
-                {
-                    return OperationResult<int?>.ErrorResult("不存在的父级分类");
-                }
-                if (parent.ParentID.HasValue)
-                {
-                    return OperationResult<int?>.ErrorResult("只允许二级分类");
-                }
+                return OperationResult<int?>.ErrorResult("错误的上级分类");
             }
 
-            var entity = new SmokeBlogContext.Category
+            using (var conn = this.OpenConnection())
             {
-                ParentID = model.ParentID,
-                Name = model.Name
-            };
-            DbContext.Add(entity);
-            DbContext.SaveChanges();
+                string sql = @"
+INSERT INTO [Category] ( Name, ParentID )
+VALUES ( @Name, @ParentID );
 
-            return OperationResult<int?>.SuccessResult(entity.ID);
+SELECT @@IDENTITY;
+";
+
+                var para = new
+                {
+                    Name = model.Name,
+                    ParentID = model.ParentID
+                };
+
+                var id = conn.ExecuteScalar<int>(sql, para);
+
+                return OperationResult<int?>.SuccessResult(id);
+            }
         }
 
         public OperationResult Edit(EditCategoryRequest model)
         {
-            if (this.DbContext.Categories.Any(t => t.ID != model.ID.Value && t.Name == model.Name))
+            if (!this.CheckCategoryName(model.Name, model.ID))
             {
-                return OperationResult.ErrorResult("分类名称重复");
+                return OperationResult<int?>.ErrorResult("分类名称重复");
             }
-            if (model.ParentID.HasValue)
+            if (model.ParentID.Value == model.ID.Value)
             {
-                if (model.ParentID.Value == model.ID.Value)
-                {
-                    return OperationResult.ErrorResult("错误的父级分类");
-                }
-
-                var parent = this.DbContext.Categories.SingleOrDefault(t => t.ID == model.ParentID.Value);
-
-                if (parent == null)
-                {
-                    return OperationResult.ErrorResult("不存在的父级分类");
-                }
-                if (parent.ParentID.HasValue)
-                {
-                    return OperationResult.ErrorResult("只允许二级分类");
-                }
+                return OperationResult.ErrorResult("错误的上级分类");
+            }
+            if (model.ParentID.HasValue && !this.CheckParentID(model.ParentID.Value))
+            {
+                return OperationResult<int?>.ErrorResult("错误的上级分类");
             }
 
-            var entity = DbContext.Categories.SingleOrDefault(t => t.ID == model.ID);
-            if (entity == null)
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult.ErrorResult("分类不存在或已被删除");
+                string sql = @"
+UPDATE TOP(1) [Category]
+SET Name=@Name, ParentID=@ParentID
+WHERE ID=@ID;
+";
+
+                var para = new
+                {
+                    model.ID,
+                    model.Name,
+                    model.ParentID
+                };
+
+                var rows = conn.Execute(sql, para);
+
+                if (rows == 0)
+                {
+                    return OperationResult.ErrorResult("不存在的分类");
+                }
+                else
+                {
+                    return OperationResult.SuccessResult();
+                }
             }
-
-            entity.Name = model.Name;
-            entity.ParentID = model.ParentID;
-            this.DbContext.SaveChanges();
-
-            return OperationResult.SuccessResult();
         }
 
-        public List<CategoryModel> All()
+        public List<NestedCategoryModel> All()
         {
-            var list = this.DbContext.Categories.OrderBy(t => t.Name).ToList();
+            var list = this.GetCategoryList();
 
-            var result = new List<CategoryModel>();
+            var result = new List<NestedCategoryModel>();
 
             var parentList = list.Where(t => t.ParentID == null).ToList();
 
             foreach (var item in parentList)
             {
-                var parent = new CategoryModel
+                var parent = new NestedCategoryModel
                 {
                     ID = item.ID,
                     Name = item.Name,
                     Articles = 0,
-                    Children = new List<CategoryModel>()
+                    Children = new List<NestedCategoryModel>()
                 };
 
                 var childrenList = list.Where(t => t.ParentID == item.ID).ToList();
 
                 foreach (var item2 in childrenList)
                 {
-                    parent.Children.Add(new CategoryModel
+                    parent.Children.Add(new NestedCategoryModel
                     {
                         ID = item2.ID,
                         Name = item2.Name
@@ -122,25 +159,11 @@ namespace SmokeBlog.Core.Service
             return result;
         }
 
-        public CategoryDetailModel Get(int id)
+        public CategoryData Get(int id)
         {
-            var list = this.DbContext.Categories.OrderBy(t => t.Name).ToList();
+            var list = this.GetCategoryList();
 
-            var entity = list.SingleOrDefault(t => t.ID == id);
-
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var model = new CategoryDetailModel
-            {
-                ID = entity.ID,
-                Name = entity.Name,
-                ParentID = entity.ParentID
-            };
-
-            return model;
+            return list.SingleOrDefault(t => t.ID == id);
         }
     }
 }

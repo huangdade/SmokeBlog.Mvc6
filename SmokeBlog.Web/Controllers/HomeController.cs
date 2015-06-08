@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using SmokeBlog.Core.Models.Article;
 using SmokeBlog.Core.Service;
 using SmokeBlog.Web.Filters;
 using System;
@@ -12,9 +13,12 @@ namespace SmokeBlog.Web.Controllers
     {
         private UserService UserService { get; set; }
 
-        public HomeController(UserService userService)
+        private ArticleService ArticleService { get; set; }
+
+        public HomeController(UserService userService, ArticleService articleService)
         {
             this.UserService = userService;
+            this.ArticleService = articleService;
         }
 
         [Route("")]
@@ -22,11 +26,28 @@ namespace SmokeBlog.Web.Controllers
         {
             //Response.Cookies.Delete("test");
 
+            var model = new AddArticleRequest
+            {
+                AllowComment = true,
+                Category = "1,2",
+                Content = "人类的一小步,地球的一大步",
+                From = null,
+                PostDate = DateTime.Now,
+                Status = Core.Enums.ArticleStatus.Publish,
+                Summary = null,
+                Title = "Hello World!",
+                UserID = 1
+            };
+
+            var result = this.ArticleService.Query();
+
+            return new ObjectResult(result);
+
             //this.UserService.Add(new Core.Models.User.AddUserRequest { UserName = "admin", Nickname = "管理员", Password = "111111", Email = "5373827@qq.com" });
 
-            return this.Content("hehe");
+            //return this.Content("hehe");
 
-            return this.HttpBadRequest();
+            //return this.HttpBadRequest();
         }
     }
 }

@@ -52,11 +52,11 @@ namespace SmokeBlog.Core.Security
         {
             if (this.Token != null)
             {
-                var result = this.UserService.Get(this.Token);
+                var user = this.UserService.Get(this.Token);
 
-                if (result.Success)
+                if (user != null)
                 {
-                    this.LoginUser = result.Data;
+                    this.LoginUser = user;
                 }
             }
         }

@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 
 namespace SmokeBlog.Core.Models.Category
 {
-    public class CategoryModel
+    public class NestedCategoryModel
     {
         public int ID { get; set; }
 
         public string Name { get; set; }
+
+        public int Articles { get; set; }
+
+        public List<NestedCategoryModel> Children { get; set; }
     }
 }

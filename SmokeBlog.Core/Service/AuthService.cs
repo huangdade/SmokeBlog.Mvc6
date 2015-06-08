@@ -20,7 +20,9 @@ namespace SmokeBlog.Core.Service
         {
             using (var conn = this.OpenConnection())
             {
-                string sql = @"SELECT TOP 1 ID, Password, Salt FROM [User] WHERE UserName=@UserName";
+                password = Utility.MD5(password);
+
+                string sql = @"SELECT TOP 1 ID FROM [User] WHERE UserName=@UserName AND Password=@Password";
 
                 var para = new
                 {
@@ -32,17 +34,10 @@ namespace SmokeBlog.Core.Service
 
                 if (user == null)
                 {
-                    return OperationResult<string>.ErrorResult("用户不存在");
+                    return OperationResult<string>.ErrorResult("用户名或密码错误");
                 }
 
-                password = Encrypt.HMACSHA1Encryptor.Encrypt(password, user.Salt);
-
-                if (password != user.Password)
-                {
-                    return OperationResult<string>.ErrorResult("密码错误");
-                }
-
-                string token = Utility.GetRandomString(32);
+                string token = Utility.MD5(Guid.NewGuid().ToString());
 
                 sql = @"UPDATE TOP(1) [User] SET Token=@Token WHERE ID =@ID";
                 conn.Execute(sql, new

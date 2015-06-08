@@ -4,111 +4,170 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Dapper;
 
 namespace SmokeBlog.Core.Service
 {
-    public class UserService
+    public class UserService : ServiceBase
     {
-        private Data.SmokeBlogContext DbContext { get; set; }
-
-        public UserService(Data.SmokeBlogContext db)
+        public UserService(Microsoft.Framework.ConfigurationModel.IConfiguration configuration)
+            : base(configuration)
         {
-            this.DbContext = db;
+
         }
 
-        public OperationResult<List<UserModel>> All()
+        public List<UserModel> All()
         {
-            var list = DbContext.Users.Project().To<UserModel>().ToList();
-            return OperationResult<List<UserModel>>.SuccessResult(list);
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"SELECT * FROM [User]";
+
+                var list = conn.Query<UserModel>(sql).ToList();
+
+                return list;
+            }
         }
 
         public OperationResult<int?> Add(AddUserRequest model)
         {
-            if (DbContext.Users.Any(t => t.UserName == model.UserName))
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult<int?>.ErrorResult("用户名已存在");
+                string sql = @"
+IF EXISTS(SELECT 1 FROM [User] WHERE UserName=@UserName)
+BEGIN
+    SELECT CONVERT(BIT, 1)
+END
+ELSE
+BEGIN
+    SELECT CONVERT(BIT, 0)
+END
+";
+                var b = conn.ExecuteScalar<bool>(sql, new
+                {
+                    UserName = model.UserName
+                });
+
+                if (b)
+                {
+                    return OperationResult<int?>.ErrorResult("用户名已存在");
+                }
+
+                string password = Utility.MD5(model.Password);
+
+                sql = @"
+INSERT INTO [User] ( UserName, Password, Nickname, Email, CreateDate )
+VALUES ( @UserName, @Password, @Nickname, @Email, GETDATE() );
+
+SELECT @@IDENTITY;
+";
+                var para = new
+                {
+                    Email = model.Email,
+                    UserName = model.UserName,
+                    Password = password,
+                    Nickname = model.Nickname
+                };
+
+
+                var id = conn.ExecuteScalar<int>(sql, para);
+
+                return OperationResult<int?>.SuccessResult(id);
             }
-
-            string salt = Utility.GetRandomString(32);
-            string password = Encrypt.HMACSHA1Encryptor.Encrypt(model.Password, salt);
-
-            var user = new Data.SmokeBlogContext.User
-            {
-                CreateDate = DateTime.Now,
-                Email = model.Email,
-                Nickname = model.Nickname,
-                Salt = salt,
-                Password = password,
-                UserName = model.UserName
-            };
-
-            DbContext.Users.Add(user);
-            DbContext.SaveChanges();
-
-            return OperationResult<int?>.SuccessResult(user.ID);
         }
 
         public OperationResult Edit(EditUserRequest model)
         {
-            var user = DbContext.Users.SingleOrDefault(t => t.ID == model.ID);
-            if (user == null)
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult.ErrorResult("不存在的用户");
+                string sql = @"
+UPDATE TOP(1) [User]
+SET Email=@Email, Nickname=@Nickname
+WHERE ID=@ID
+";
+
+                var para = new
+                {
+                    ID = model.ID
+                };
+
+                var rows = conn.Execute(sql, para);
+
+                if (rows > 0)
+                {
+                    return OperationResult.SuccessResult();
+                }
+                else
+                {
+                    return OperationResult.ErrorResult("不存在的用户");
+                }
             }
-
-            user.Email = model.Email;
-            user.Nickname = model.Nickname;
-
-            DbContext.SaveChanges();
-
-            return OperationResult.SuccessResult();
         }
 
-        public OperationResult<UserModel> Get(int id)
+        public UserModel Get(int id)
         {
-            var user = DbContext.Users.Where(t => t.ID == id).ProjectTo<UserModel>().SingleOrDefault();
-
-            if (user == null)
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult<UserModel>.ErrorResult("该用户不存在");
-            }
+                string sql = @"
+SELECT TOP 1 * FROM [User]
+WHERE ID=@ID;
+";
+                var para = new
+                {
+                    ID = id
+                };
 
-            return OperationResult<UserModel>.SuccessResult(user);
+                return conn.Query<UserModel>(sql, para).FirstOrDefault();
+            }
         }
 
-        public OperationResult<UserModel> Get(string token)
+        public UserModel Get(string token)
         {
-            var user = DbContext.Users.Where(t => t.Token == token).ProjectTo<UserModel>().SingleOrDefault();
-
-            if (user == null)
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult<UserModel>.ErrorResult("错误的token");
-            }
+                string sql = @"
+SELECT TOP 1 * FROM [User]
+WHERE Token=@Token
+";
+                var para = new
+                {
+                    Token = token
+                };
 
-            return OperationResult<UserModel>.SuccessResult(user);
+                return conn.Query<UserModel>(sql, para).FirstOrDefault();
+            }
         }
 
         public OperationResult ChangePassword(int id, string oldPassword, string newPassword)
         {
-            var user = DbContext.Users.SingleOrDefault(t => t.ID == id);
-            if (user == null)
+            using (var conn = this.OpenConnection())
             {
-                return OperationResult.ErrorResult("该用户不存在");
+                string sql = @"
+UPDATE TOP(1) [User]
+SET Password=@NewPassword
+WHERE ID=@ID AND Password=@OldPassword;
+";
+
+                oldPassword = Utility.MD5(oldPassword);
+                newPassword = Utility.MD5(newPassword);
+
+                var para = new
+                {
+                    ID = id,
+                    OldPassword = oldPassword,
+                    NewPassword = newPassword
+                };
+
+                var rows = conn.Execute(sql, para);
+
+                if (rows > 0)
+                {
+                    return OperationResult.SuccessResult();
+                }
+                else
+                {
+                    return OperationResult.ErrorResult("密码错误");
+                }
             }
-
-            oldPassword = Encrypt.HMACSHA1Encryptor.Encrypt(oldPassword, user.Salt);
-            if (user.Password != oldPassword)
-            {
-                return OperationResult.ErrorResult("密码错误");
-            }
-
-            newPassword = Encrypt.HMACSHA1Encryptor.Encrypt(newPassword, user.Salt);
-            user.Password = newPassword;
-            DbContext.SaveChanges();
-
-            return OperationResult.SuccessResult();
         }
     }
 }
