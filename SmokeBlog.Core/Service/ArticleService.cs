@@ -9,6 +9,7 @@ using Dapper;
 using System.Transactions;
 using System.Text;
 using SmokeBlog.Core.Models.User;
+using SmokeBlog.Core.Enums;
 
 namespace SmokeBlog.Core.Service
 {
@@ -69,11 +70,23 @@ VALUES ( @ArticleID, @CategoryID );
             }
         }
 
-        public List<ArticleModel> Query()
+        public List<ArticleModel> Query(int pageIndex, int pageSize, out int total, ArticleStatus? status, string keywords)
         {
-            int total;
+            StringBuilder sb = new StringBuilder("WHERE 1=1");
+            DynamicParameters para = new DynamicParameters();
 
-            var list = this.QueryByCondition(1, 10, out total, null, null, null);
+            if (status.HasValue)
+            {
+                sb.Append(" AND Status=@Status");
+                para.Add("@Status", (byte)status.Value);
+            }
+            if (keywords != null)
+            {
+                sb.Append(" AND Title LIKE @Keywords");
+                para.Add("@Keywords", "%" + keywords + "%");
+            }
+
+            var list = this.QueryByCondition(pageIndex, pageSize, out total, sb.ToString(), null, para);
 
             return list;
         }

@@ -39,7 +39,9 @@ namespace SmokeBlog.Web.Controllers
                 UserID = 1
             };
 
-            var result = this.ArticleService.Query();
+            int total;
+
+            var result = this.ArticleService.Query(1, 10, out total, Core.Enums.ArticleStatus.Publish, "H");
 
             return new ObjectResult(result);
 
