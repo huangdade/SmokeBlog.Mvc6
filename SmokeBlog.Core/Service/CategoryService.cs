@@ -18,7 +18,7 @@ namespace SmokeBlog.Core.Service
 
         }
 
-        private List<CategoryData> GetCategoryList()
+        public List<CategoryData> GetCategoryList()
         {
             using (var conn = this.OpenConnection())
             {

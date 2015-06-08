@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc;
+using SmokeBlog.Core.Models;
 using SmokeBlog.Core.Models.Article;
 using SmokeBlog.Core.Service;
 using SmokeBlog.Web.Filters;
@@ -41,7 +42,9 @@ namespace SmokeBlog.Web.Controllers
 
             int total;
 
-            var result = this.ArticleService.Query(1, 10, out total, Core.Enums.ArticleStatus.Publish, "H");
+            var list = this.ArticleService.Query(1, 10, out total, Core.Enums.ArticleStatus.Publish, "H");
+
+            var result = PagedOperationResult<ArticleModel>.SuccessResult(list, total);
 
             return new ObjectResult(result);
 

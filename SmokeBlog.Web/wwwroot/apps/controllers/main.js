@@ -19,18 +19,27 @@ var BlogAdmin;
                 this.menus = [
                     { key: "dashboard", name: "控制台", url: "dashboard" },
                     {
-                        key: "article", name: "文章", url: "categorylist", submenus: [
-                            { key: "modifyarticle", name: "文章管理", url: "modifyarticle" },
+                        key: "article",
+                        name: "文章",
+                        url: "categorylist",
+                        submenus: [
+                            { key: "articlelist", name: "文章管理", url: "articlelist" },
                             { key: "categorylist", name: "分类管理", url: "categorylist" }
                         ]
                     },
                     {
-                        key: "user", name: "用户", url: "userlist", submenus: [
+                        key: "user",
+                        name: "用户",
+                        url: "userlist",
+                        submenus: [
                             { key: "userlist", name: "管理用户", url: "userlist" }
                         ]
                     },
                     {
-                        key: "config", name: "设置", url: "config/basic", submenus: [
+                        key: "config",
+                        name: "设置",
+                        url: "config/basic",
+                        submenus: [
                             { key: "basicconfig", name: "基础设置", url: "config/basic" },
                             { key: "advanceconfig", name: "高级设置", url: "config/advance" },
                             { key: "emailconfig", name: "邮件设置", url: "config/email" },

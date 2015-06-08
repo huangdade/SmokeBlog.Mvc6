@@ -1,0 +1,39 @@
+﻿<div class="container">
+    <div class="page-header clearfix">
+        <h2 class="page-title pull-left">
+            文章管理
+            <spinner loading="vm.loading"></spinner>
+        </h2>
+        <button data-ng-click="vm.addArticle()" class="btn btn-success btn-header pull-right" type="button"><i class="fa fa-plus"></i>撰写文章</button>
+    </div>
+
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr>
+                <th class="table-item-title">名称</th>
+                <th>文章</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody ng-repeat="category in vm.categoryList">
+            <tr>
+                <td class="table-item-title">{{category.name}}</td>
+                <td>{{category.articles}}</td>
+                <td>
+                    <a href="javascript:void(0)" ng-click="vm.editCategory(category)">编辑</a>
+                </td>
+            </tr>
+            <tr ng-repeat="subCategory in category.children">
+                <td class="table-item-title"><span style="padding-left:40px;">{{subCategory.name}}</span></td>
+                <td>{{subCategory.articles}}</td>
+                <td>
+                    <a href="javascript:void(0)" ng-click="vm.editCategory(subCategory)">编辑</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <pagination total-items="vm.total" items-per-page="vm.pageSize" ng-model="vm.page" ng-change="vm.pageChanged()" max-size="8"></pagination>
+    </div>
+</div>

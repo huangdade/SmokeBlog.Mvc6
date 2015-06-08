@@ -27,6 +27,12 @@
         parentID: number;
         name: string;
     }
+    export interface IGetArticleListRequest {
+        pageIndex: number;
+        pageSize: number;
+        keywords: string;
+        status: number;
+    }
 }
 
 interface JQuery {

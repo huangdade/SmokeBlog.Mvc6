@@ -63,7 +63,7 @@ namespace SmokeBlog.Core.Models
             };
         }
 
-        public static OperationResult<T> ErrorResult(string errorMessage)
+        public static new OperationResult<T> ErrorResult(string errorMessage)
         {
             if (errorMessage == null)
             {
@@ -71,6 +71,41 @@ namespace SmokeBlog.Core.Models
             }
 
             return new OperationResult<T>
+            {
+                ErrorMessage = errorMessage
+            };
+        }
+    }
+
+    public class PagedOperationResult<T> : OperationResult
+    {
+        public List<T> Data { get; protected set; }
+
+        public int? Total { get; protected set; }
+
+        public static PagedOperationResult<T> SuccessResult(List<T> data, int total)
+        {
+            if (data == null)
+            {
+                throw new ArgumentNullException("data");
+            }
+
+            return new PagedOperationResult<T>
+            {
+                Data = data,
+                Success = true,
+                Total = total
+            };
+        }
+
+        public static new PagedOperationResult<T> ErrorResult(string errorMessage)
+        {
+            if (errorMessage == null)
+            {
+                throw new ArgumentNullException("errorMessage");
+            }
+
+            return new PagedOperationResult<T>
             {
                 ErrorMessage = errorMessage
             };

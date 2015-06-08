@@ -21,7 +21,7 @@
                 { key: "dashboard", name: "控制台", url: "dashboard" },
                 {
                     key: "article", name: "文章", url: "categorylist", submenus: [
-                        { key: "modifyarticle", name: "文章管理", url: "modifyarticle" },
+                        { key: "articlelist", name: "文章管理", url: "articlelist" },
                         { key: "categorylist", name: "分类管理", url: "categorylist" }
                     ]
                 },

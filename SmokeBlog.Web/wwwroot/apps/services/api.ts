@@ -4,9 +4,15 @@
         errorMessage: string;
         data?: any;
     }
+    export interface IPagedApiResponse extends IApiResponse {
+        total: number;
+    }
 
     export interface IRequestCallback {
         (response: IApiResponse): void;
+    }
+    export interface IPagedRequestCallback {
+        (response: IPagedApiResponse): void;
     }
 
     enum Method {
@@ -96,6 +102,9 @@
         }
         editCategory(request: BlogAdmin.Api.IEditCategoryRequest, callback: IRequestCallback) {
             this.post('/api/category/edit', request, callback);
+        }
+        getArticleList(request: BlogAdmin.Api.IGetArticleListRequest, callback: IPagedRequestCallback) {
+            this.get('/api/article/query', request, callback);
         }
     }
 }

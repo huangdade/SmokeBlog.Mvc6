@@ -10,15 +10,18 @@ using System.Transactions;
 using System.Text;
 using SmokeBlog.Core.Models.User;
 using SmokeBlog.Core.Enums;
+using SmokeBlog.Core.Models.CategoryArticle;
 
 namespace SmokeBlog.Core.Service
 {
     public class ArticleService : ServiceBase
     {
-        public ArticleService(IConfiguration configuration)
+        private CategoryService CategoryService { get; set; }
+
+        public ArticleService(IConfiguration configuration, CategoryService categoryService)
             : base(configuration)
         {
-
+            this.CategoryService = categoryService;
         }
 
         public OperationResult<int?> Add(AddArticleRequest model)
@@ -141,9 +144,24 @@ WHERE ArticleID IN (SELECT ID FROM @tb);
                 {
                     article.User = user;
                     return article;
-                });
+                }).ToList();
 
-                var categoryIDs = reader.Read();
+                var categoryArticleList = reader.Read<CategoryArticleData>().ToList();
+
+                var categoryDataList = this.CategoryService.GetCategoryList();
+
+                articleList.ForEach(article =>
+                {
+                    var query = from ca in categoryArticleList
+                                       join c in categoryDataList on ca.CategoryID equals c.ID
+                                       where ca.ArticleID == article.ID
+                                       select new Models.Category.CategoryModel
+                                       {
+                                           ID = c.ID,
+                                           Name = c.Name
+                                       };
+                    article.CategoryList = query.ToList();
+                });
 
                 total = para.Get<int>("@Total");
 
