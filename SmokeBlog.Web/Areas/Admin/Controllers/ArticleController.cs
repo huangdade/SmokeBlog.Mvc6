@@ -29,5 +29,18 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
 
             return this.ApiResponse(result);
         }
+
+        [HttpPost("add")]
+        public IActionResult Add(AddArticleRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.ArticleService.Add(model);
+
+            return this.ApiResponse(result);
+        }
     }
 }

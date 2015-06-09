@@ -33,8 +33,21 @@
         keywords: string;
         status: number;
     }
+    export interface IAddArticleRequest {
+        title: string;
+        content: string;
+        summary: string;
+        userID: number;
+        from?: string;
+        postDate?: string;
+        allowComment: boolean;
+        category?: string;
+        status: number;
+    }
 }
 
 interface JQuery {
     selectpicker(options?: any);
+
+    tagsinput();
 }

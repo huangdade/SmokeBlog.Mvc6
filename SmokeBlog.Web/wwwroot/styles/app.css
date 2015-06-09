@@ -8,7 +8,7 @@
 html, body { height: 100%; }
 body { cursor: default; overflow-y: scroll; font-size: 14px; }
 #Container, #ng-view { height: 100%; }
-#wrap { min-height: 100%; height: auto; margin: 0 auto -70px; padding: 0 0 70px; }
+#wrap { min-height: 100%; height: auto; margin: 0 auto -70px; padding: 0 0 90px; }
 .ltr-dir { direction: ltr; }
 .rtl-dir { direction: rtl; }
 img { max-width: 100%; }
@@ -296,3 +296,65 @@ label { font-size: 13px; font-weight: normal; }
     .active-flt-r { right: 4px; }
 }
 
+.categories-list { height: 231px; overflow-y: hidden; opacity: 0.5; }
+.categories-list:hover { overflow-y: auto; opacity: 1; }
+.categories-list li { height: 30px; padding: 0; cursor: pointer; }
+.categories-list li:hover { background-color: #EEE; cursor: pointer; }
+.categories-list li input[type=checkbox] { position: relative; top: 2px; }
+.categories-list li label { display: block; padding: 0px 7px; cursor: pointer; height: 29px; line-height: 27px; overflow: hidden; white-space: nowrap; max-width: 300px; text-overflow: ellipsis; }
+
+.bootstrap-tagsinput {
+  background-color: #fff;
+  
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  display: inline-block;
+  padding: 4px 6px;
+  color: #555;
+  vertical-align: middle;
+  border-radius: 4px;
+  max-width: 100%;
+  line-height: 22px;
+  cursor: text;
+}
+.bootstrap-tagsinput input {
+  border: none;
+  box-shadow: none;
+  outline: none;
+  background-color: transparent;
+  padding: 0 6px;
+  margin: 0;
+  width: auto;
+  max-width: inherit;
+}
+.bootstrap-tagsinput.form-control input::-moz-placeholder {
+  color: #777;
+  opacity: 1;
+}
+.bootstrap-tagsinput.form-control input:-ms-input-placeholder {
+  color: #777;
+}
+.bootstrap-tagsinput.form-control input::-webkit-input-placeholder {
+  color: #777;
+}
+.bootstrap-tagsinput input:focus {
+  border: none;
+  box-shadow: none;
+}
+.bootstrap-tagsinput .tag {
+  margin-right: 2px;
+  color: white;
+}
+.bootstrap-tagsinput .tag [data-role="remove"] {
+  margin-left: 8px;
+  cursor: pointer;
+}
+.bootstrap-tagsinput .tag [data-role="remove"]:after {
+  content: "x";
+  padding: 0px 2px;
+}
+.bootstrap-tagsinput .tag [data-role="remove"]:hover {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.bootstrap-tagsinput .tag [data-role="remove"]:hover:active {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}

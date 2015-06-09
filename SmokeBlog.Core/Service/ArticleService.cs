@@ -109,15 +109,16 @@ DECLARE @tb TABLE
 
 ;WITH ids AS
 (
-    SELECT ID, Row_Number() OVER(#strOrder#) AS RowID FROM [Article] WITH(NOLOCK) #strWhere#
+    SELECT ID, Row_Number() OVER(#strOrder#) AS RowID FROM [Article] Article WITH(NOLOCK) #strWhere#
 )
 INSERT INTO @tb
 SELECT ID FROM ids WHERE RowID > @Start AND RowID <= @End;
 
-SELECT B.ID, B.Title, B.Content, B.Summary, B.[From], B.PostDate, B.Status, B.AllowComment, C.ID, C.UserName, C.Nickname
+SELECT Article.ID, Article.Title, Article.Content, Article.Summary, Article.[From], Article.PostDate, Article.Status, Article.AllowComment, [User].ID, [User].UserName, [User].Nickname
 FROM @tb A
-JOIN Article B WITH(NOLOCK) ON A.ID = B.ID
-JOIN [User] C WITH(NOLOCK) ON B.UserID=C.ID;
+JOIN Article WITH(NOLOCK) ON A.ID = Article.ID
+JOIN [User] WITH(NOLOCK) ON Article.UserID=[User].ID
+#strOrder#;
 
 SELECT CategoryID, ArticleID FROM CategoryArticle WITH(NOLOCK)
 WHERE ArticleID IN (SELECT ID FROM @tb);
@@ -129,7 +130,7 @@ WHERE ArticleID IN (SELECT ID FROM @tb);
                 }
                 if (string.IsNullOrEmpty(orderBy))
                 {
-                    orderBy = "ORDER BY ID ASC";
+                    orderBy = "ORDER BY Article.ID DESC";
                 }
                 sql = sql.Replace("#strWhere#", where).Replace("#strOrder#", orderBy);
 

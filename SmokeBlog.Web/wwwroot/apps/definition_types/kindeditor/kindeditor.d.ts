@@ -11,7 +11,11 @@
         resizeType?: number;
     }
     export interface KindEditor {
-
+        html(): string;
+        html(val: string): void;
+        fullHtml(): string;
+        text(): string;
+        text(val: string): void;
     }
 }
 

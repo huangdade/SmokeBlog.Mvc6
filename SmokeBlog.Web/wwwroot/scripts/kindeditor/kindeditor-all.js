@@ -3579,6 +3579,11 @@ function _getInitHtml(themesPath, bodyClass, cssPath, cssData) {
 		'	font-size:0;',
 		'	height:2px;',
 		'}',
+        '.ke-content pre {',
+        '   background:#f8f8f8;',
+        '   border:1px solid #ddd;',
+        '   padding:5px;',
+        '}',
 		'</style>'
 	];
 	if (!_isArray(cssPath)) {

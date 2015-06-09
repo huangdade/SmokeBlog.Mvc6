@@ -26,6 +26,7 @@ gulp.task('libs', function () {
         'bower_components/bootstrap-select/bootstrap-select.min.js',
         'bower_components/bootstrap-select/bootstrap-select.js.map',
         'bower_components/async/lib/async.js',
+        'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js'
     ]).pipe(gulp.dest('wwwroot/libs/'));
 
     gulp.src([
@@ -49,6 +50,7 @@ gulp.task('admin', function () {
         'bower_components/messenger/build/css/messenger.css',
         'bower_components/messenger/build/css/messenger-theme-future.css',        
         'bower_components/bootstrap-select/bootstrap-select.min.css',
+        'bower_components/ng-tags-input/ng-tags-input.css',
         'wwwroot/styles/app.css'
     ]).pipe(concat('admin.css')).pipe(gulp.dest('wwwroot/css'));
 
@@ -65,6 +67,7 @@ gulp.task('admin', function () {
         'bower_components/messenger/build/js/messenger.min.js',        
         'bower_components/bootstrap-select/bootstrap-select.min.js',
         'bower_components/async/lib/async.js',
+        'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js',
         'wwwroot/apps/*.js',
         'wwwroot/apps/directives/*.js',
         'wwwroot/apps/services/*.js',

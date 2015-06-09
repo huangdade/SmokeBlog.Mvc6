@@ -106,6 +106,9 @@
         getArticleList(request: BlogAdmin.Api.IGetArticleListRequest, callback: IPagedRequestCallback) {
             this.get('/api/article/query', request, callback);
         }
+        addArticle(request: BlogAdmin.Api.IAddArticleRequest, callback: IRequestCallback) {
+            this.post('/api/article/add', request, callback);
+        }
     }
 }
 

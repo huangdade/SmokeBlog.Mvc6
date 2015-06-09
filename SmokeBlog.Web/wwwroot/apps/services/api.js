@@ -90,6 +90,9 @@ var BlogAdmin;
             Api.prototype.getArticleList = function (request, callback) {
                 this.get('/api/article/query', request, callback);
             };
+            Api.prototype.addArticle = function (request, callback) {
+                this.post('/api/article/add', request, callback);
+            };
             return Api;
         })();
         Services.Api = Api;
