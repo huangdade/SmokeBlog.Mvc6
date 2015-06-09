@@ -34,6 +34,6 @@
     </table>
 
     <div class="text-center">
-        <pagination total-items="vm.total" items-per-page="vm.pageSize" ng-model="vm.page" ng-change="vm.pageChanged()" max-size="8"></pagination>
+        <blog-pager page-changed="vm.changePage(page)" page="vm.page" page-size="vm.pageSize" total="vm.total"></blog-pager>
     </div>
 </div>

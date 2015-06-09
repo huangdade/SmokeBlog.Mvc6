@@ -40,17 +40,17 @@ namespace SmokeBlog.Web.Controllers
                 UserID = 1
             };
 
-            int total;
+            //int total;
 
-            var list = this.ArticleService.Query(1, 10, out total, Core.Enums.ArticleStatus.Publish, "H");
+            //var list = this.ArticleService.Query(1, 10, out total, Core.Enums.ArticleStatus.Publish, "H");
 
-            var result = PagedOperationResult<ArticleModel>.SuccessResult(list, total);
+            //var result = PagedOperationResult<ArticleModel>.SuccessResult(list, total);
 
-            return new ObjectResult(result);
+            //return new ObjectResult(result);
 
             //this.UserService.Add(new Core.Models.User.AddUserRequest { UserName = "admin", Nickname = "管理员", Password = "111111", Email = "5373827@qq.com" });
 
-            //return this.Content("hehe");
+            return this.Content("hehe");
 
             //return this.HttpBadRequest();
         }

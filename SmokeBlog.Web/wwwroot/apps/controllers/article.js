@@ -11,7 +11,10 @@ var BlogAdmin;
                 $scope.vm = this;
                 $scope.$emit('changeMenu', 'article', 'articlelist');
                 this.pageSize = 20;
-                this.page = 1;
+                this.page = $location.search().page || 1;
+                this.page = parseInt(this.page.toString());
+                this.status = $location.search().status;
+                this.keywords = $location.search().keywords;
                 this.loadData();
             }
             ArticleList.prototype.loadData = function () {
@@ -33,10 +36,20 @@ var BlogAdmin;
                     _this.articleList = response.data;
                 });
             };
-            ArticleList.prototype.pageChanged = function () {
+            ArticleList.prototype.changePage = function (page) {
+                var data = {
+                    page: page,
+                    status: this.status,
+                    keywords: this.keywords
+                };
+                this.$location.search(data);
+                this.page = page;
                 this.loadData();
             };
+            ArticleList.prototype.saveCondition = function () {
+            };
             ArticleList.prototype.addArticle = function () {
+                var condition = {};
                 this.$location.path('modifyarticle');
             };
             return ArticleList;
@@ -149,4 +162,6 @@ var BlogAdmin;
         Controllers.ModifyArticle = ModifyArticle;
     })(Controllers = BlogAdmin.Controllers || (BlogAdmin.Controllers = {}));
 })(BlogAdmin || (BlogAdmin = {}));
-angular.module('blogAdmin.controllers').controller('articleListCtrl', BlogAdmin.Controllers.ArticleList).controller('modifyArticleCtrl', BlogAdmin.Controllers.ModifyArticle);
+angular.module('blogAdmin.controllers')
+    .controller('articleListCtrl', BlogAdmin.Controllers.ArticleList)
+    .controller('modifyArticleCtrl', BlogAdmin.Controllers.ModifyArticle);

@@ -13,7 +13,10 @@
             $scope.$emit('changeMenu', 'article', 'articlelist');
 
             this.pageSize = 20;
-            this.page = 1;
+            this.page = $location.search().page || 1;
+            this.page = parseInt(this.page.toString());
+            this.status = $location.search().status;
+            this.keywords = $location.search().keywords;
 
             this.loadData();
         }
@@ -39,10 +42,26 @@
                 this.articleList = response.data;
             });
         }
-        pageChanged() {
+        changePage(page) {
+            var data = {
+                page: page,
+                status: this.status,
+                keywords: this.keywords
+            };
+            
+            this.$location.search(data);
+
+            this.page = page;
             this.loadData();
         }
+        private saveCondition() {
+
+        }
         addArticle() {
+            var condition = {
+
+            }
+
             this.$location.path('modifyarticle');
         }
     }
