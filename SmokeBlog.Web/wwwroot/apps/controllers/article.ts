@@ -42,13 +42,21 @@
         pageChanged() {
             this.loadData();
         }
+        addArticle() {
+            this.$location.path('modifyarticle');
+        }
     }
 
     export class ModifyArticle {
+        editor: KindEditor.KindEditor;
         constructor(private $scope, private $location: ng.ILocationService) {
             $scope.vm = this;
 
-            $scope.$emit('changeMenu', 'article', 'articlelist')
+            $scope.$emit('changeMenu', 'article', 'articlelist');
+
+            this.editor = KindEditor.create('#txtContent', {
+                resizeType: 0
+            });
         }
     }
 }

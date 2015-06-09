@@ -135,7 +135,7 @@ WHERE ArticleID IN (SELECT ID FROM @tb);
 
                 var para = new DynamicParameters(parameter);
                 para.Add("@Total", null, System.Data.DbType.Int32, System.Data.ParameterDirection.InputOutput);
-                para.Add("@Start", (pageIndex - 1 * pageSize));
+                para.Add("@Start", (pageIndex - 1) * pageSize);
                 para.Add("@End", pageIndex * pageSize);
 
                 var reader = conn.QueryMultiple(sql, para);

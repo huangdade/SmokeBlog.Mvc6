@@ -36,6 +36,9 @@ var BlogAdmin;
             ArticleList.prototype.pageChanged = function () {
                 this.loadData();
             };
+            ArticleList.prototype.addArticle = function () {
+                this.$location.path('modifyarticle');
+            };
             return ArticleList;
         })();
         Controllers.ArticleList = ArticleList;
@@ -45,6 +48,9 @@ var BlogAdmin;
                 this.$location = $location;
                 $scope.vm = this;
                 $scope.$emit('changeMenu', 'article', 'articlelist');
+                this.editor = KindEditor.create('#txtContent', {
+                    resizeType: 0
+                });
             }
             return ModifyArticle;
         })();
