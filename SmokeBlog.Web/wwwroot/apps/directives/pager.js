@@ -8,7 +8,6 @@ var BlogAdmin;
                     scope.pageChanged({ page: page });
                 };
                 scope.$watch('page', function () {
-                    console.log(typeof scope.page);
                     render();
                 });
                 scope.$watch('total', function () {

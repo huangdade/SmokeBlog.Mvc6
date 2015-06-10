@@ -6,8 +6,6 @@
             }
 
             scope.$watch('page', () => {
-                console.log(typeof scope.page)
-
                 render();
             })
             scope.$watch('total', ()=> {

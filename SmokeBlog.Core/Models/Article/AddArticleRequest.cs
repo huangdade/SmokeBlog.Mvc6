@@ -25,6 +25,6 @@ namespace SmokeBlog.Core.Models.Article
 
         public string Category { get; set; }
 
-        public Enums.ArticleStatus Status { get; set; }
+        public Enums.ArticleStatus? Status { get; set; }
     }
 }

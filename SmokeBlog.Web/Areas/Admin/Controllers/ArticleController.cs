@@ -42,5 +42,37 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
 
             return this.ApiResponse(result);
         }
+
+        [HttpPost("edit")]
+        public IActionResult Edit(EditArticleRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.ArticleService.Edit(model);
+
+            return this.ApiResponse(result);
+        }
+
+        [HttpGet("{id:int}")]
+        public IActionResult Get(int id)
+        {
+            var article = this.ArticleService.Get(id);
+
+            OperationResult<ArticleModel> result;
+
+            if (article == null)
+            {
+                result = OperationResult<ArticleModel>.ErrorResult("不存在的文章");
+            }
+            else
+            {
+                result = OperationResult<ArticleModel>.SuccessResult(article);
+            }
+
+            return this.ApiResponse(result);
+        }
     }
 }

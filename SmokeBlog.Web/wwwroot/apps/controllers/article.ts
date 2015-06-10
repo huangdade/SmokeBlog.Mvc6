@@ -1,25 +1,37 @@
 ﻿module BlogAdmin.Controllers {
     export class ArticleList {
-        page: number;
-        pageSize: number;
-        keywords: string;
-        status: number;
+        request: BlogAdmin.Api.IGetArticleListRequest;
         loading: boolean;
         articleList: any[];
         total: number;
+        checkAll: boolean;
         constructor(private $scope, private $location: ng.ILocationService, private $api: BlogAdmin.Services.Api, private $dialog: BlogAdmin.Services.Dialog) {
             $scope.vm = this;
 
             $scope.$emit('changeMenu', 'article', 'articlelist');
 
-            this.pageSize = 20;
-            this.page = $location.search().page || 1;
-            this.page = parseInt(this.page.toString());
-            this.status = $location.search().status;
-            this.keywords = $location.search().keywords;
+            $scope.$watch('vm.checkAll',() => {
+                this.toggleCheckStatus();
+            })
+            $scope.$watch('vm.request.status',() => {
+                this.changePage(1);
+            })
+
+            var s = $location.search();
+            this.request = {
+                keywords: s.keywords,
+                pageIndex: parseInt(s.page || 1),
+                pageSize: 20,
+                status: s.status ? parseInt(s.status) : null
+            }
 
             this.loadData();
         }
+        private toggleCheckStatus() {
+            _.each(this.articleList, item=> {
+                item.checked = this.checkAll;
+            })
+        }        
         private loadData() {
             if (this.loading) {
                 return false;
@@ -27,41 +39,37 @@
 
             this.loading = true;
 
-            var request: BlogAdmin.Api.IGetArticleListRequest = {
-                pageIndex: this.page,
-                pageSize: this.pageSize,
-                keywords: this.keywords,
-                status: this.status
-            };
-
-            this.$api.getArticleList(request, response=> {
+            this.$api.getArticleList(this.request, response=> {
                 this.loading = false;
 
                 this.total = response.total;
-                this.total = 500;
                 this.articleList = response.data;
             });
+        }
+        hasItemChecked() {
+            return _.any(this.articleList, { checked: true });
         }
         changePage(page) {
             var data = {
                 page: page,
-                status: this.status,
-                keywords: this.keywords
+                status: this.request.status,
+                keywords: this.request.keywords
             };
             
             this.$location.search(data);
 
-            this.page = page;
+            this.request.pageIndex = page;
             this.loadData();
         }
-        private saveCondition() {
-
+        search(e) {
+            if (e.keyCode == 13) {
+                this.changePage(1);
+            }
+        }
+        editArticle(article) {
+            this.$location.path('modifyarticle/' + article.id);
         }
         addArticle() {
-            var condition = {
-
-            }
-
             this.$location.path('modifyarticle');
         }
     }
@@ -74,7 +82,7 @@
         data: any;
         tags: any[];
         userList: any[];
-        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $dialog: BlogAdmin.Services.Dialog) {
+        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $dialog: BlogAdmin.Services.Dialog, $routeParams) {
             $scope.vm = this;
 
             $scope.$emit('changeMenu', 'article', 'articlelist');
@@ -83,6 +91,7 @@
                 resizeType: 0
             });
 
+            this.id = $routeParams.id ? parseInt($routeParams.id) : null;
             this.data = {
                 title: "",
                 status: 1
@@ -137,11 +146,27 @@
                     }
                 })
             }
+            function loadArticle(callback: AsyncResultCallback<any>) {
+                self.$api.getArticle(self.id, response=> {
+                    if (response.success) {
+                        self.data = response.data;
+
+                        callback(null, response.data);
+                    }
+                    else {
+                        callback(new Error(response.errorMessage), null);
+                    }
+                });
+            }
 
             var arr = [
                 loadCategory,
                 loadUser
             ];
+
+            if (self.id) {
+                arr.push(loadArticle);
+            }
 
             async.parallel(arr,(err) => {
                 self.loading = false;
@@ -150,12 +175,21 @@
                     self.$dialog.error(err.message);
                 }
                 else {
+                    if (self.id) {
+                        self.data.userID = self.data.user.id;
+                        self.editor.html(self.data.content);
 
+                        _.each(self.categoryList, cat=> {
+                            if (_.any(self.data.categoryList, { id: cat.id })) {
+                                cat.checked = true;
+                            }
+                        });
+                    }
                 }
             });
         }
-        getArticleData(): BlogAdmin.Api.IAddArticleRequest {
-            var request: BlogAdmin.Api.IAddArticleRequest = {
+        getArticleData(): any {
+            var request: any = {
                 title: this.data.title,
                 content: this.editor.html(),
                 summary: this.data.summary,
@@ -182,17 +216,44 @@
 
             var data = this.getArticleData();
             data.status = status;
+            if (this.id) {
+                data.id = this.id;
+            }
 
-            this.$api.addArticle(data, response=> {
+            var saveCallback = (response: BlogAdmin.Services.IApiResponse) => {
                 this.loading = false;
 
                 if (response.success) {
                     this.$dialog.success('操作成功');
+
+                    if (!this.id) {
+                        this.id = response.data;
+                    }
+
+                    if (!status) {
+                        if (!this.id) {
+                            this.data.status = 1;
+                        }
+                    }
+                    else {
+                        this.data.status = status;
+                    }
                 }
                 else {
                     this.$dialog.error(response.errorMessage);
                 }
-            });
+            }
+
+            if (this.id) {
+                this.$api.editArticle(data, response=> {
+                    saveCallback(response);
+                });
+            }
+            else {
+                this.$api.addArticle(data, response=> {
+                    saveCallback(response);
+                });
+            }
         }
     }
 }

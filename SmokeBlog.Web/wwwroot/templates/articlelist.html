@@ -4,12 +4,41 @@
             文章管理
             <spinner loading="vm.loading"></spinner>
         </h2>
-        <button data-ng-click="vm.addArticle()" class="btn btn-success btn-header pull-right" type="button"><i class="fa fa-plus"></i>撰写文章</button>
+        <a href="modifyarticle" class="btn btn-success btn-header pull-right">
+            <i class="fa fa-plus"></i>
+            撰写文章
+        </a>
+    </div>
+
+    <div class="toolbar-grid clearfix">
+        <div class="pull-left">
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="processChecked('delete')" class="btn btn-danger btn-sm ng-binding"><i class="fa fa-times"></i>删除</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="processChecked('publish')" class="btn btn-success btn-sm ng-binding"><i class="fa fa-check"></i>发布</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="processChecked('unpublish')" class="btn btn-warning btn-sm ng-binding"><i class="fa fa-minus"></i>取消发布</button>
+        </div>
+        <div class="pull-right btn-flt-r hmin767"><button class="btn btn-default btn-sm"><i class="fa fa-cog fa-lg"></i><span>过滤器</span></button></div>
+        <div class="pull-right filterbar flt-r clearfix">
+            <div class="active-flt-r"></div>
+            <div class="navbar-left search-grid pull-right">
+                <input type="text" ng-model="vm.request.keywords" ng-keypress="vm.search($event)" class="input-sm form-control pull-right" placeholder="搜索">
+            </div>
+            <div class="btn-toolbar pull-right">
+                <div class="btn-group">
+                    <button ng-class="{active: vm.request.status == null}" class="btn btn-default btn-sm" ng-click="vm.request.status = null">全部</button>
+                    <button ng-class="{active: vm.request.status == 2}" class="btn btn-default btn-sm" ng-click="vm.request.status = 2">已发布</button>
+                    <button ng-class="{active: vm.request.status == 1}" class="btn btn-default btn-sm" ng-click="vm.request.status = 1">稿件</button>
+                </div>
+            </div>
+            <span class="pull-right lbl-show ng-binding">显示 :</span>
+        </div>
     </div>
 
     <table class="table table-bordered table-hover table-responsive">
         <thead>
             <tr>
+                <th style="width:40px;">
+                    <input type="checkbox" ng-model="vm.checkAll" />
+                </th>
                 <th class="table-item-title">标题</th>
                 <th style="width:200px;">作者</th>
                 <th style="width:60px;">评论</th>
@@ -19,7 +48,16 @@
         </thead>
         <tbody ng-repeat="article in vm.articleList">
             <tr>
-                <td class="table-item-title">{{article.title}}</td>
+                <td>
+                    <input type="checkbox" ng-model="article.checked" />
+                </td>
+                <td class="table-item-title">
+                    <a ng-href="{{'modifyarticle/' + article.id}}">{{article.title}}</a>
+
+                    <a href="{{'/view/' + article.id}}" class="pull-right" target="_blank">
+                        <i class="fa fa-external-link"></i>
+                    </a>
+                </td>
                 <td>{{article.user.nickname}}</td>
                 <td>{{article.comments}}</td>
                 <td style="width:150px;">{{article.postDate}}</td>
@@ -34,6 +72,6 @@
     </table>
 
     <div class="text-center">
-        <blog-pager page-changed="vm.changePage(page)" page="vm.page" page-size="vm.pageSize" total="vm.total"></blog-pager>
+        <blog-pager page-changed="vm.changePage(page)" page="vm.request.pageIndex" page-size="vm.request.pageSize" total="vm.total"></blog-pager>
     </div>
 </div>

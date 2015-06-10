@@ -5,7 +5,7 @@ angular.module('blogAdmin').config(['$routeProvider', '$locationProvider', ($rou
         .when('/userlist', { templateUrl: '/templates/userlist.html', controller: 'userListCtrl' })
         .when('/categorylist', { templateUrl: '/templates/categorylist.html', controller: 'categoryListCtrl' })
         .when('/articlelist', { templateUrl: '/templates/articlelist.html', controller: 'articleListCtrl', reloadOnSearch: false })
-        .when('/modifyarticle', { templateUrl: '/templates/modifyarticle.html', controller: 'modifyArticleCtrl' })
+        .when('/modifyarticle/:id?', { templateUrl: '/templates/modifyarticle.html', controller: 'modifyArticleCtrl' })
         .otherwise({ redirectTo: '/' })
 
     $locationProvider.html5Mode(true);

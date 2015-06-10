@@ -106,8 +106,14 @@
         getArticleList(request: BlogAdmin.Api.IGetArticleListRequest, callback: IPagedRequestCallback) {
             this.get('/api/article/query', request, callback);
         }
+        getArticle(id: number, callback: IPagedRequestCallback) {
+            this.get('/api/article/' + id, null, callback);
+        }
         addArticle(request: BlogAdmin.Api.IAddArticleRequest, callback: IRequestCallback) {
             this.post('/api/article/add', request, callback);
+        }
+        editArticle(request: BlogAdmin.Api.IEditArticleRequest, callback: IRequestCallback) {
+            this.post('/api/article/edit', request, callback);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace SmokeBlog.Core.Service
                 {
                     string sql = @"
 INSERT INTO [Article] ( Title,Content,Summary,UserID,[From],PostDate,Status,AllowComment )
-VALUES (@Title, @Content, @Summary, @UserID, @From, @PostDate, @Status, @AllowComment);
+VALUES (@Title, @Content, @Summary, @UserID, @From, @PostDate, ISNULL(@Status,1), @AllowComment);
 
 SELECT @@IDENTITY;
 ";
@@ -45,7 +45,7 @@ SELECT @@IDENTITY;
                         model.UserID,
                         model.From,
                         PostDate = model.PostDate ?? DateTime.Now,
-                        Status = (byte)model.Status,
+                        Status = model.Status,
                         model.AllowComment
                     });
 
@@ -73,6 +73,66 @@ VALUES ( @ArticleID, @CategoryID );
             }
         }
 
+        public OperationResult Edit(EditArticleRequest model)
+        {
+            using (var scope = new TransactionScope())
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+UPDATE TOP(1) Article
+SET Title=@Title,Content=@Content,Summary=@Summary,UserID=@UserID,[From]=@From,PostDate=ISNULL(@PostDate,PostDate),Status=isnull(@Status,Status),AllowComment=@AllowComment
+WHERE ID=@ID;
+";
+                var rows = conn.Execute(sql, new
+                {
+                    ID = model.ID.Value,
+                    model.Title,
+                    model.Content,
+                    model.Summary,
+                    model.UserID,
+                    model.From,
+                    PostDate = model.PostDate ?? DateTime.Now,
+                    Status = model.Status,
+                    model.AllowComment
+                });
+
+                if (rows == 0)
+                {
+                    return OperationResult.ErrorResult("不存在的文章");
+                }
+
+                sql = @"
+DELETE FROM CategoryArticle WHERE ArticleID=@ID;
+";
+
+                conn.Execute(sql, new
+                {
+                    ID = model.ID.Value
+                });
+
+                if (!string.IsNullOrEmpty(model.Category))
+                {
+                    var paras = model.Category.Split(',')
+                        .Select(t => new
+                        {
+                            ArticleID = model.ID.Value,
+                            CategoryID = Convert.ToInt32(t)
+                        }).ToArray();
+
+                    string insertCategorySql = @"
+INSERT INTO [CategoryArticle] ( ArticleID, CategoryID )
+VALUES ( @ArticleID, @CategoryID );
+";
+
+                    conn.Execute(insertCategorySql, paras);
+                }
+
+                scope.Complete();
+
+                return OperationResult.SuccessResult();
+            }
+        }
+
         public List<ArticleModel> Query(int pageIndex, int pageSize, out int total, ArticleStatus? status, string keywords)
         {
             StringBuilder sb = new StringBuilder("WHERE 1=1");
@@ -92,6 +152,56 @@ VALUES ( @ArticleID, @CategoryID );
             var list = this.QueryByCondition(pageIndex, pageSize, out total, sb.ToString(), null, para);
 
             return list;
+        }
+
+        public ArticleModel Get(int id)
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+SELECT Article.ID, Article.Title, Article.Content, Article.Summary, Article.[From], Article.PostDate, Article.Status, Article.AllowComment, [User].ID, [User].UserName, [User].Nickname
+FROM Article WITH(NOLOCK) 
+JOIN [User] WITH(NOLOCK) ON Article.UserID=[User].ID
+WHERE Article.ID = @ID;
+
+SELECT CategoryID, ArticleID FROM CategoryArticle WITH(NOLOCK)
+WHERE ArticleID = @ID;
+";
+
+                var para = new
+                {
+                    ID = id
+                };
+
+                using (var reader = conn.QueryMultiple(sql, para))
+                {
+                    var article = reader.Read<ArticleModel, UserModel, ArticleModel>((a, u) =>
+                    {
+                        a.User = u;
+                        return a;
+                    }).FirstOrDefault();
+
+                    if (article == null)
+                    {
+                        return null;
+                    }
+
+                    var categoryArticleList = reader.Read<CategoryArticleData>().ToList();
+                    var categoryDataList = this.CategoryService.GetCategoryList();
+
+                    var query = from ca in categoryArticleList
+                                join c in categoryDataList on ca.CategoryID equals c.ID
+                                where ca.ArticleID == article.ID
+                                select new Models.Category.CategoryModel
+                                {
+                                    ID = c.ID,
+                                    Name = c.Name
+                                };
+                    article.CategoryList = query.ToList();
+
+                    return article;
+                }
+            }
         }
 
         private List<ArticleModel> QueryByCondition(int pageIndex, int pageSize, out int total, string where, string orderBy, object parameter)
@@ -139,34 +249,35 @@ WHERE ArticleID IN (SELECT ID FROM @tb);
                 para.Add("@Start", (pageIndex - 1) * pageSize);
                 para.Add("@End", pageIndex * pageSize);
 
-                var reader = conn.QueryMultiple(sql, para);
-
-                var articleList = reader.Read<ArticleModel, UserModel, ArticleModel>((article, user) =>
+                using (var reader = conn.QueryMultiple(sql, para))
                 {
-                    article.User = user;
-                    return article;
-                }).ToList();
+                    var articleList = reader.Read<ArticleModel, UserModel, ArticleModel>((article, user) =>
+                    {
+                        article.User = user;
+                        return article;
+                    }).ToList();
 
-                var categoryArticleList = reader.Read<CategoryArticleData>().ToList();
+                    var categoryArticleList = reader.Read<CategoryArticleData>().ToList();
 
-                var categoryDataList = this.CategoryService.GetCategoryList();
+                    var categoryDataList = this.CategoryService.GetCategoryList();
 
-                articleList.ForEach(article =>
-                {
-                    var query = from ca in categoryArticleList
-                                       join c in categoryDataList on ca.CategoryID equals c.ID
-                                       where ca.ArticleID == article.ID
-                                       select new Models.Category.CategoryModel
-                                       {
-                                           ID = c.ID,
-                                           Name = c.Name
-                                       };
-                    article.CategoryList = query.ToList();
-                });
+                    articleList.ForEach(article =>
+                    {
+                        var query = from ca in categoryArticleList
+                                    join c in categoryDataList on ca.CategoryID equals c.ID
+                                    where ca.ArticleID == article.ID
+                                    select new Models.Category.CategoryModel
+                                    {
+                                        ID = c.ID,
+                                        Name = c.Name
+                                    };
+                        article.CategoryList = query.ToList();
+                    });
 
-                total = para.Get<int>("@Total");
+                    total = para.Get<int>("@Total");
 
-                return articleList.ToList();
+                    return articleList.ToList();
+                }
             }
         }
     }

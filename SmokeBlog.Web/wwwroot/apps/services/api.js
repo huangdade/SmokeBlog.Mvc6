@@ -90,8 +90,14 @@ var BlogAdmin;
             Api.prototype.getArticleList = function (request, callback) {
                 this.get('/api/article/query', request, callback);
             };
+            Api.prototype.getArticle = function (id, callback) {
+                this.get('/api/article/' + id, null, callback);
+            };
             Api.prototype.addArticle = function (request, callback) {
                 this.post('/api/article/add', request, callback);
+            };
+            Api.prototype.editArticle = function (request, callback) {
+                this.post('/api/article/edit', request, callback);
             };
             return Api;
         })();

@@ -42,7 +42,10 @@
         postDate?: string;
         allowComment: boolean;
         category?: string;
-        status: number;
+        status?: number;
+    }
+    export interface IEditArticleRequest extends IAddArticleRequest {
+        id: number;
     }
 }
 

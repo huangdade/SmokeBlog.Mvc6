@@ -51,17 +51,24 @@
             </span>
         </div>
         <div class="pull-right">
+            <span ng-if="vm.loading">
+                <i class="fa fa-spin fa-spinner"></i>
+            </span>
             <button class="btn btn-default" ng-click="vm.cancel()">
                 <i class="fa fa-ban"></i>
                 取消
             </button>
-            <button class="btn btn-default" ng-click="vm.save(1)">
+            <button class="btn btn-warning" ng-click="vm.save(1)" ng-if="vm.id && vm.data.status == 2">
+                <i class="fa fa-undo"></i>
+                保存并取消发布
+            </button>
+            <button class="btn btn-default" ng-click="vm.save()">
                 <i class="fa fa-save"></i>
                 保存
             </button>
-            <button class="btn btn-success" ng-click="vm.save(2)">
+            <button class="btn btn-success" ng-click="vm.save(2)" ng-if="vm.data.status != 2">
                 <i class="fa fa-check"></i>
-                发布
+                保存并发布
             </button>
         </div>
     </div>
