@@ -12,20 +12,53 @@ namespace SmokeBlog.Core.Service
 {
     public class CategoryService : ServiceBase
     {
-        public CategoryService(IConfiguration configuration)
+        private Cache.ICache Cache { get; set; }
+
+        private static readonly string CategoryListCacheKey = "Cache_CategoryList";
+
+        public CategoryService(IConfiguration configuration, Cache.ICache cache)
             : base(configuration)
         {
-
+            this.Cache = cache;
         }
 
         public List<CategoryData> GetCategoryList()
         {
-            using (var conn = this.OpenConnection())
-            {
-                string sql = @"SELECT ID,ParentID,Name FROM [Category] WITH(NOLOCK)";
+            var list = this.Cache.Get<List<CategoryData>>(CategoryListCacheKey);
 
-                return conn.Query<CategoryData>(sql).ToList();
+            if (list == null)
+            {
+                using (var conn = this.OpenConnection())
+                {
+                    string sql = @"
+;WITH tb AS
+(
+	SELECT 
+	CategoryID,
+	SUM(CASE B.Status WHEN 2 THEN 1 ELSE 0 END) AS PublishedArticles,
+	COUNT(1) AS TotalArticles
+	FROM CategoryArticle A WITH(NOLOCK)
+	JOIN Article B WITH(NOLOCK) ON A.ArticleID = B.ID
+	GROUP BY A.CategoryID
+)
+SELECT 
+A.ID, A.Name, A.ParentID, B.PublishedArticles, B.TotalArticles
+FROM Category A WITH(NOLOCK)
+left JOIN tb B ON A.ID = B.CategoryID
+";
+
+                    list = conn.Query<CategoryData>(sql).ToList();
+
+                    this.Cache.Set(CategoryListCacheKey, list);
+                }
             }
+
+            return list;
+        }
+
+        public void ClearCache()
+        {
+            this.Cache.Delete(CategoryListCacheKey);
         }
 
         private bool CheckCategoryName(string name, int? id)
@@ -77,6 +110,8 @@ SELECT @@IDENTITY;
 
                 var id = conn.ExecuteScalar<int>(sql, para);
 
+                this.ClearCache();
+
                 return OperationResult<int?>.SuccessResult(id);
             }
         }
@@ -94,6 +129,10 @@ SELECT @@IDENTITY;
             if (model.ParentID.HasValue && !this.CheckParentID(model.ParentID.Value))
             {
                 return OperationResult<int?>.ErrorResult("错误的上级分类");
+            }
+            if (this.GetCategoryList().Any(t => t.ParentID == model.ID.Value))
+            {
+                return OperationResult<int?>.ErrorResult("只允许二级分类");
             }
 
             using (var conn = this.OpenConnection())
@@ -119,6 +158,8 @@ WHERE ID=@ID;
                 }
                 else
                 {
+                    this.ClearCache();
+
                     return OperationResult.SuccessResult();
                 }
             }
@@ -138,7 +179,8 @@ WHERE ID=@ID;
                 {
                     ID = item.ID,
                     Name = item.Name,
-                    Articles = 0,
+                    TotalArticles = item.TotalArticles,
+                    PublishedArticles = item.PublishedArticles,
                     Children = new List<NestedCategoryModel>()
                 };
 
@@ -149,7 +191,9 @@ WHERE ID=@ID;
                     parent.Children.Add(new NestedCategoryModel
                     {
                         ID = item2.ID,
-                        Name = item2.Name
+                        Name = item2.Name,
+                        PublishedArticles = item2.PublishedArticles,
+                        TotalArticles = item2.TotalArticles
                     });
                 }
 

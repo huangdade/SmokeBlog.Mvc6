@@ -68,6 +68,8 @@ VALUES ( @ArticleID, @CategoryID );
 
                     scope.Complete();
 
+                    this.CategoryService.ClearCache();
+
                     return OperationResult<int?>.SuccessResult(id);
                 }
             }
@@ -128,6 +130,8 @@ VALUES ( @ArticleID, @CategoryID );
                 }
 
                 scope.Complete();
+
+                this.CategoryService.ClearCache();
 
                 return OperationResult.SuccessResult();
             }

@@ -12,5 +12,9 @@ namespace SmokeBlog.Core.Models.Category
         public int? ParentID { get; set; }
 
         public string Name { get; set; }
+
+        public int PublishedArticles { get; set; }
+
+        public int TotalArticles { get; set; }
     }
 }

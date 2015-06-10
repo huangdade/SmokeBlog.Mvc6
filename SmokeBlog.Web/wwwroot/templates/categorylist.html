@@ -18,14 +18,14 @@
         <tbody ng-repeat="category in vm.categoryList">
             <tr>
                 <td class="table-item-title">{{category.name}}</td>
-                <td>{{category.articles}}</td>
+                <td>{{category.totalArticles}}</td>
                 <td>
                     <a href="javascript:void(0)" ng-click="vm.editCategory(category)">编辑</a>
                 </td>
             </tr>
             <tr ng-repeat="subCategory in category.children">
                 <td class="table-item-title"><span style="padding-left:40px;">{{subCategory.name}}</span></td>
-                <td>{{subCategory.articles}}</td>
+                <td>{{subCategory.totalArticles}}</td>
                 <td>
                     <a href="javascript:void(0)" ng-click="vm.editCategory(subCategory)">编辑</a>
                 </td>

@@ -11,7 +11,9 @@ namespace SmokeBlog.Core
     {
         public static void AddCoreServices(this IServiceCollection services)
         {
-            services.AddTransient<UserService>()
+            services
+                .AddTransient<Cache.ICache, Cache.MemoryCache>()
+                .AddTransient<UserService>()
                 .AddTransient<AuthService>()
                 .AddTransient<CategoryService>()
                 .AddTransient<ArticleService>()
