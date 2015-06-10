@@ -209,5 +209,34 @@ WHERE ID=@ID;
 
             return list.SingleOrDefault(t => t.ID == id);
         }
+
+        public OperationResult Delete(DeleteCategoryRequest model)
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+UPDATE [Category] SET ParentID=NULL WHERE ParentID IN @IDs;
+
+DELETE FROM [Category] WHERE ID IN @IDs;
+
+DELETE FROM [CategoryArticle] WHERE CategoryID IN @IDs;
+";
+
+                var para = new
+                {
+                    IDs = model.CategoryIDList
+                };
+
+                var rows = conn.Execute(sql, para);
+
+                if (rows == 0)
+                {
+                    return OperationResult.ErrorResult("不存在的分类");
+                }
+
+                this.ClearCache();
+                return OperationResult.SuccessResult();
+            }
+        }
     }
 }

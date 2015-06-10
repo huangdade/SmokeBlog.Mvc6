@@ -7,27 +7,38 @@
         <button data-ng-click="vm.addCategory()" class="btn btn-success btn-header pull-right" type="button"><i class="fa fa-plus"></i>新增分类</button>
     </div>
 
+    <div class="toolbar-grid clearfix">
+        <div class="pull-left">
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.deleteCategory()" class="btn btn-danger btn-sm">
+                <i class="fa fa-times"></i>
+                删除
+            </button>
+        </div>
+    </div>
+
     <table class="table table-bordered table-hover table-responsive">
         <thead>
             <tr>
+                <th style="width:40px">
+                    <input type="checkbox" ng-model="vm.checkAll"/>
+                </th>
                 <th class="table-item-title">名称</th>
                 <th>文章</th>
                 <th>操作</th>
             </tr>
         </thead>
-        <tbody ng-repeat="category in vm.categoryList">
-            <tr>
-                <td class="table-item-title">{{category.name}}</td>
+        <tbody>
+            <tr ng-repeat="category in vm.categoryList">
+                <td>
+                    <input type="checkbox" ng-model="category.checked" />
+                </td>
+                <td class="table-item-title">
+                    <span style="margin-left:40px;" ng-if="category.isChild"></span>
+                    {{category.name}}
+                </td>
                 <td>{{category.totalArticles}}</td>
                 <td>
                     <a href="javascript:void(0)" ng-click="vm.editCategory(category)">编辑</a>
-                </td>
-            </tr>
-            <tr ng-repeat="subCategory in category.children">
-                <td class="table-item-title"><span style="padding-left:40px;">{{subCategory.name}}</span></td>
-                <td>{{subCategory.totalArticles}}</td>
-                <td>
-                    <a href="javascript:void(0)" ng-click="vm.editCategory(subCategory)">编辑</a>
                 </td>
             </tr>
         </tbody>

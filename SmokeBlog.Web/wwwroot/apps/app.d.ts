@@ -47,6 +47,10 @@
     export interface IEditArticleRequest extends IAddArticleRequest {
         id: number;
     }
+    export interface IChangeArticleStatusRequest {
+        ids: number[];
+        status: number;
+    }
 }
 
 interface JQuery {

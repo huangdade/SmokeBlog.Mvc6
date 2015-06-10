@@ -49,13 +49,13 @@ SELECT @@IDENTITY;
                         model.AllowComment
                     });
 
-                    if (!string.IsNullOrEmpty(model.Category))
+                    if (model.CategoryIDList.Length > 0)
                     {
-                        var paras = model.Category.Split(',')
+                        var paras = model.CategoryIDList
                             .Select(t => new
                             {
                                 ArticleID = id,
-                                CategoryID = Convert.ToInt32(t)
+                                CategoryID = t
                             }).ToArray();
 
                         string insertCategorySql = @"
@@ -112,13 +112,13 @@ DELETE FROM CategoryArticle WHERE ArticleID=@ID;
                     ID = model.ID.Value
                 });
 
-                if (!string.IsNullOrEmpty(model.Category))
+                if (model.CategoryIDList.Length > 0)
                 {
-                    var paras = model.Category.Split(',')
+                    var paras = model.CategoryIDList
                         .Select(t => new
                         {
                             ArticleID = model.ID.Value,
-                            CategoryID = Convert.ToInt32(t)
+                            CategoryID = t
                         }).ToArray();
 
                     string insertCategorySql = @"
@@ -139,7 +139,7 @@ VALUES ( @ArticleID, @CategoryID );
 
         public List<ArticleModel> Query(int pageIndex, int pageSize, out int total, ArticleStatus? status, string keywords)
         {
-            StringBuilder sb = new StringBuilder("WHERE 1=1");
+            StringBuilder sb = new StringBuilder("WHERE Status!=0");
             DynamicParameters para = new DynamicParameters();
 
             if (status.HasValue)
@@ -207,6 +207,32 @@ WHERE ArticleID = @ID;
                 }
             }
         }
+
+        public OperationResult ChangeStatus(ChangeStatusRequest model)
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+UPDATE [Article] SET [Status]=@Status
+WHERE ID IN @IDs;
+";
+                var para = new
+                {
+                    Status = model.Status,
+                    IDs = model.ArticleIDList
+                };
+
+                var rows = conn.Execute(sql, para);
+
+                if (rows == 0)
+                {
+                    return OperationResult.ErrorResult("不存在的文章");
+                }
+
+                this.CategoryService.ClearCache();
+                return OperationResult.SuccessResult();
+            }
+        } 
 
         private List<ArticleModel> QueryByCondition(int pageIndex, int pageSize, out int total, string where, string orderBy, object parameter)
         {

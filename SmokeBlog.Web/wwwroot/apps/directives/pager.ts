@@ -2,7 +2,9 @@
     export function Pager(): ng.IDirective {
         function link(scope, element, attrs) {
             scope.change = function (page) {
-                scope.pageChanged({ page: page });
+                if (page != scope.page) {
+                    scope.pageChanged({ page: page });
+                }
             }
 
             scope.$watch('page', () => {
@@ -24,6 +26,10 @@
                 var total = scope.total || 0;
 
                 var pages = Math.ceil(total / pageSize);
+
+                if (pages == 0) {
+                    pages = 1;
+                }
 
                 scope.pages = pages;
             }

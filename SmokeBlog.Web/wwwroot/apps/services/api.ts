@@ -103,6 +103,12 @@
         editCategory(request: BlogAdmin.Api.IEditCategoryRequest, callback: IRequestCallback) {
             this.post('/api/category/edit', request, callback);
         }
+        deleteCategory(ids: number[], callback: IRequestCallback) {
+            var data = {
+                id: ids.join(',')
+            };
+            this.post('/api/category/delete', data, callback);
+        }
         getArticleList(request: BlogAdmin.Api.IGetArticleListRequest, callback: IPagedRequestCallback) {
             this.get('/api/article/query', request, callback);
         }
@@ -114,6 +120,13 @@
         }
         editArticle(request: BlogAdmin.Api.IEditArticleRequest, callback: IRequestCallback) {
             this.post('/api/article/edit', request, callback);
+        }
+        changeArticleStatus(request: BlogAdmin.Api.IChangeArticleStatusRequest, callback: IRequestCallback) {
+            var data = {
+                id: request.ids.join(','),
+                status: request.status
+            };
+            this.post('/api/article/changestatus', data, callback);
         }
     }
 }

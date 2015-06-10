@@ -61,5 +61,18 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
             var result = OperationResult<CategoryData>.SuccessResult(model);
             return this.ApiResponse(result);
         }
+
+        [HttpPost("delete")]
+        public IActionResult Delete(DeleteCategoryRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.CategoryService.Delete(model);
+
+            return this.ApiResponse(result);
+        }
     }
 }

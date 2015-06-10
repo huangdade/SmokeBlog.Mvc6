@@ -44,13 +44,13 @@ var BlogAdmin;
                 var opt = {
                     data: data
                 };
-                this.request(url, 1 /* Post */, opt, callback);
+                this.request(url, Method.Post, opt, callback);
             };
             Api.prototype.get = function (url, params, callback) {
                 var opt = {
                     params: params
                 };
-                this.request(url, 0 /* Get */, opt, callback);
+                this.request(url, Method.Get, opt, callback);
             };
             Api.prototype.getUserList = function (callback) {
                 this.get('/api/user/all', null, callback);
@@ -87,6 +87,12 @@ var BlogAdmin;
             Api.prototype.editCategory = function (request, callback) {
                 this.post('/api/category/edit', request, callback);
             };
+            Api.prototype.deleteCategory = function (ids, callback) {
+                var data = {
+                    id: ids.join(',')
+                };
+                this.post('/api/category/delete', data, callback);
+            };
             Api.prototype.getArticleList = function (request, callback) {
                 this.get('/api/article/query', request, callback);
             };
@@ -98,6 +104,13 @@ var BlogAdmin;
             };
             Api.prototype.editArticle = function (request, callback) {
                 this.post('/api/article/edit', request, callback);
+            };
+            Api.prototype.changeArticleStatus = function (request, callback) {
+                var data = {
+                    id: request.ids.join(','),
+                    status: request.status
+                };
+                this.post('/api/article/changestatus', data, callback);
             };
             return Api;
         })();

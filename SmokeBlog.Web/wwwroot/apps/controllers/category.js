@@ -3,12 +3,17 @@ var BlogAdmin;
     var Controllers;
     (function (Controllers) {
         var CategoryList = (function () {
-            function CategoryList($scope, $api, $modal) {
+            function CategoryList($scope, $api, $modal, $dialog) {
+                var _this = this;
                 this.$scope = $scope;
                 this.$api = $api;
                 this.$modal = $modal;
+                this.$dialog = $dialog;
                 $scope.vm = this;
                 $scope.$emit('changeMenu', 'article', 'categorylist');
+                $scope.$watch('vm.checkAll', function () {
+                    _this.toggleCheckStatus();
+                });
                 this.init();
                 this.data = {
                     parentID: 3
@@ -19,7 +24,25 @@ var BlogAdmin;
                 this.loading = true;
                 this.$api.getCategoryList(function (response) {
                     _this.loading = false;
-                    _this.categoryList = response.data;
+                    if (response.success) {
+                        var data = response.data;
+                        var list = [];
+                        _.each(data, function (parent) {
+                            list.push({ id: parent.id, name: parent.name });
+                            _.each(parent.children, function (child) {
+                                list.push({ id: child.id, name: child.name, isChild: true });
+                                ;
+                            });
+                        });
+                        _this.categoryList = list;
+                        _this.checkAll = false;
+                    }
+                });
+            };
+            CategoryList.prototype.toggleCheckStatus = function () {
+                var _this = this;
+                _.each(this.categoryList, function (item) {
+                    item.checked = _this.checkAll;
                 });
             };
             CategoryList.prototype.addCategory = function () {
@@ -35,6 +58,9 @@ var BlogAdmin;
                     _this.init();
                 });
             };
+            CategoryList.prototype.hasItemChecked = function () {
+                return _.any(this.categoryList, { checked: true });
+            };
             CategoryList.prototype.editCategory = function (category) {
                 var _this = this;
                 this.$modal.open({
@@ -48,6 +74,30 @@ var BlogAdmin;
                     }
                 }).result.then(function (v) {
                     _this.init();
+                });
+            };
+            CategoryList.prototype.deleteCategory = function () {
+                var _this = this;
+                var ids = _.map(_.where(this.categoryList, { checked: true }), function (item) {
+                    return item.id;
+                });
+                if (ids.length == 0) {
+                    this.$dialog.error('请选择分类');
+                    return false;
+                }
+                if (this.loading) {
+                    return;
+                }
+                this.loading = true;
+                this.$api.deleteCategory(ids, function (response) {
+                    _this.loading = false;
+                    if (response.success) {
+                        _this.$dialog.success('操作成功');
+                        _this.init();
+                    }
+                    else {
+                        _this.$dialog.error(response.errorMessage);
+                    }
                 });
             };
             return CategoryList;
@@ -79,7 +129,9 @@ var BlogAdmin;
                 var arr = [function (callback) {
                         self.$api.getCategoryList(function (response) {
                             if (response.success) {
-                                self.parentList = response.data;
+                                self.parentList = _.filter(response.data, function (item) {
+                                    return item.id != self.id;
+                                });
                                 callback(null, response.data);
                             }
                             else {

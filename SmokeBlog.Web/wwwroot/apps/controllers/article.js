@@ -42,6 +42,7 @@ var BlogAdmin;
                     _this.loading = false;
                     _this.total = response.total;
                     _this.articleList = response.data;
+                    _this.checkAll = false;
                 });
             };
             ArticleList.prototype.hasItemChecked = function () {
@@ -67,6 +68,34 @@ var BlogAdmin;
             };
             ArticleList.prototype.addArticle = function () {
                 this.$location.path('modifyarticle');
+            };
+            ArticleList.prototype.changeStatus = function (status) {
+                var _this = this;
+                var ids = _.map(_.where(this.articleList, { checked: true }), function (item) {
+                    return item.id;
+                });
+                if (ids.length == 0) {
+                    this.$dialog.error('请选择文章');
+                    return false;
+                }
+                if (this.loading) {
+                    return;
+                }
+                this.loading = true;
+                var request = {
+                    ids: ids,
+                    status: status
+                };
+                this.$api.changeArticleStatus(request, function (response) {
+                    _this.loading = false;
+                    if (response.success) {
+                        _this.$dialog.success('操作成功');
+                        _this.loadData();
+                    }
+                    else {
+                        _this.$dialog.error(response.errorMessage);
+                    }
+                });
             };
             return ArticleList;
         })();
@@ -226,4 +255,6 @@ var BlogAdmin;
         Controllers.ModifyArticle = ModifyArticle;
     })(Controllers = BlogAdmin.Controllers || (BlogAdmin.Controllers = {}));
 })(BlogAdmin || (BlogAdmin = {}));
-angular.module('blogAdmin.controllers').controller('articleListCtrl', BlogAdmin.Controllers.ArticleList).controller('modifyArticleCtrl', BlogAdmin.Controllers.ModifyArticle);
+angular.module('blogAdmin.controllers')
+    .controller('articleListCtrl', BlogAdmin.Controllers.ArticleList)
+    .controller('modifyArticleCtrl', BlogAdmin.Controllers.ModifyArticle);

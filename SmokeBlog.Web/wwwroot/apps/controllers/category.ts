@@ -3,10 +3,15 @@
         loading: boolean;
         categoryList: any[];
         data: any;
-        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modal: ng.ui.bootstrap.IModalService) {
+        checkAll: boolean;
+        constructor(private $scope, private $api: BlogAdmin.Services.Api, private $modal: ng.ui.bootstrap.IModalService, private $dialog: BlogAdmin.Services.Dialog) {
             $scope.vm = this;
 
             $scope.$emit('changeMenu', 'article', 'categorylist');
+
+            $scope.$watch('vm.checkAll', () => {
+                this.toggleCheckStatus();
+            })
 
             this.init();
             this.data = {
@@ -19,8 +24,30 @@
             this.$api.getCategoryList(response=> {
                 this.loading = false;
 
-                this.categoryList = response.data;
+                if (response.success) {
+                    var data = response.data;
+                    var list = [];
+
+                    _.each<any>(data, parent=> {
+                        list.push({ id: parent.id, name: parent.name });
+
+                        _.each<any>(parent.children, child=> {
+                            list.push({ id: child.id, name: child.name, isChild: true });
+                            ;
+                        });
+                    });
+
+
+                    this.categoryList = list;
+
+                    this.checkAll = false;
+                }
             });
+        }
+        private toggleCheckStatus() {
+            _.each(this.categoryList, item=> {
+                item.checked = this.checkAll;
+            })
         }
         addCategory() {
             this.$modal.open({
@@ -34,6 +61,9 @@
                 this.init();
             });
         }       
+        hasItemChecked() {
+            return _.any(this.categoryList, { checked: true });
+        }
         editCategory(category) {
             this.$modal.open({
                 backdrop: "static",
@@ -46,6 +76,35 @@
                 }
             }).result.then(v=> {
                 this.init();
+            });
+        }
+        deleteCategory() {
+            var ids = _.map(_.where(this.categoryList, { checked: true }), item=> {
+                return item.id;
+            });
+
+            if (ids.length == 0) {
+                this.$dialog.error('请选择分类');
+                return false;
+            }
+
+            if (this.loading) {
+                return;
+            }
+
+            this.loading = true;
+
+            this.$api.deleteCategory(ids, response=> {
+                this.loading = false;
+
+                if (response.success) {
+                    this.$dialog.success('操作成功');
+                    this.init();
+                }
+                else
+                {
+                    this.$dialog.error(response.errorMessage);
+                }
             });
         }
     }
@@ -80,7 +139,9 @@
             var arr = [function (callback) {
                 self.$api.getCategoryList(response=> {
                     if (response.success) {
-                        self.parentList = response.data;
+                        self.parentList = _.filter<any>(response.data, item=> {                            
+                            return item.id != self.id;
+                        });
                         callback(null, response.data);
                     }
                     else {

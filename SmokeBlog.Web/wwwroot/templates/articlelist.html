@@ -12,9 +12,9 @@
 
     <div class="toolbar-grid clearfix">
         <div class="pull-left">
-            <button ng-disabled="!vm.hasItemChecked()" ng-click="processChecked('delete')" class="btn btn-danger btn-sm ng-binding"><i class="fa fa-times"></i>删除</button>
-            <button ng-disabled="!vm.hasItemChecked()" ng-click="processChecked('publish')" class="btn btn-success btn-sm ng-binding"><i class="fa fa-check"></i>发布</button>
-            <button ng-disabled="!vm.hasItemChecked()" ng-click="processChecked('unpublish')" class="btn btn-warning btn-sm ng-binding"><i class="fa fa-minus"></i>取消发布</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.changeStatus(0)" class="btn btn-danger btn-sm ng-binding"><i class="fa fa-times"></i>删除</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.changeStatus(2)" class="btn btn-success btn-sm ng-binding"><i class="fa fa-check"></i>发布</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.changeStatus(1)" class="btn btn-warning btn-sm ng-binding"><i class="fa fa-minus"></i>取消发布</button>
         </div>
         <div class="pull-right btn-flt-r hmin767"><button class="btn btn-default btn-sm"><i class="fa fa-cog fa-lg"></i><span>过滤器</span></button></div>
         <div class="pull-right filterbar flt-r clearfix">

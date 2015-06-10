@@ -44,6 +44,7 @@
 
                 this.total = response.total;
                 this.articleList = response.data;
+                this.checkAll = false;
             });
         }
         hasItemChecked() {
@@ -71,6 +72,39 @@
         }
         addArticle() {
             this.$location.path('modifyarticle');
+        }
+        changeStatus(status) {
+            var ids = _.map(_.where(this.articleList, { checked: true }), item=> {
+                return item.id;
+            });
+
+            if (ids.length == 0) {
+                this.$dialog.error('请选择文章');
+                return false;
+            }
+
+            if (this.loading) {
+                return;
+            }
+
+            this.loading = true;
+
+            var request = {
+                ids: ids,
+                status: status
+            };
+
+            this.$api.changeArticleStatus(request, response=> {
+                this.loading = false;
+
+                if (response.success) {
+                    this.$dialog.success('操作成功');
+                    this.loadData();
+                }
+                else {
+                    this.$dialog.error(response.errorMessage);
+                }
+            })
         }
     }
 

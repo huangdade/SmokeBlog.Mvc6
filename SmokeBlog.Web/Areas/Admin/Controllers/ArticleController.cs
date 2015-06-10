@@ -74,5 +74,18 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
 
             return this.ApiResponse(result);
         }
+
+        [HttpPost("changestatus")]
+        public IActionResult ChangeStatus(ChangeStatusRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.ArticleService.ChangeStatus(model);
+
+            return this.ApiResponse(result);
+        }
     }
 }
