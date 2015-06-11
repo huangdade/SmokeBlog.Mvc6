@@ -257,7 +257,7 @@ WHERE ID IN @IDs;
 SELECT @Total = COUNT(1) FROM [Article] WITH(NOLOCK)
 #strWhere#;
 
-DECLARE @tb TABLE
+DECLARE @tbArticle TABLE
 (
     ID INT PRIMARY KEY
 );
@@ -266,17 +266,32 @@ DECLARE @tb TABLE
 (
     SELECT ID, Row_Number() OVER(#strOrder#) AS RowID FROM [Article] Article WITH(NOLOCK) #strWhere#
 )
-INSERT INTO @tb
+INSERT INTO @tbArticle
 SELECT ID FROM ids WHERE RowID > @Start AND RowID <= @End;
 
-SELECT Article.ID, Article.Title, Article.Content, Article.Summary, Article.[From], Article.PostDate, Article.Status, Article.AllowComment, [User].ID, [User].UserName, [User].Nickname
-FROM @tb A
+DECLARE @tbComments TABLE
+(
+    ID INT PRIMARY KEY,
+    Total INT,
+    Pass INT,
+    Junk INT
+);
+
+INSERT INTO @tbComments
+SELECT ArticleID AS ID, COUNT(1) AS Total, SUM(CASE Status WHEN 1 THEN 1 ELSE 0 END) AS Pass, SUM(CASE Status WHEN 2 THEN 1 ELSE 0 END) AS Junk
+FROM [Comment] WITH(NOLOCK) 
+WHERE ArticleID IN (SELECT ID FROM @tbArticle)
+GROUP BY ArticleID
+
+SELECT Article.ID, Article.Title, Article.Content, Article.Summary, Article.[From], Article.PostDate, Article.Status, Article.AllowComment, [User].ID, [User].UserName, [User].Nickname, D.ID, D.Total, D.Pass, D.Junk
+FROM @tbArticle A
 JOIN Article WITH(NOLOCK) ON A.ID = Article.ID
 JOIN [User] WITH(NOLOCK) ON Article.UserID=[User].ID
+LEFT JOIN @tbComments D ON A.ID = D.ID
 #strOrder#;
 
 SELECT CategoryID, ArticleID FROM CategoryArticle WITH(NOLOCK)
-WHERE ArticleID IN (SELECT ID FROM @tb);
+WHERE ArticleID IN (SELECT ID FROM @tbArticle);
 ";
 
                 if (string.IsNullOrEmpty(where))
@@ -296,9 +311,10 @@ WHERE ArticleID IN (SELECT ID FROM @tb);
 
                 using (var reader = conn.QueryMultiple(sql, para))
                 {
-                    var articleList = reader.Read<ArticleModel, UserModel, ArticleModel>((article, user) =>
+                    var articleList = reader.Read<ArticleModel, UserModel, ArticleComments, ArticleModel>((article, user, comments) =>
                     {
                         article.User = user;
+                        article.Comments = comments;
                         return article;
                     }).ToList();
 

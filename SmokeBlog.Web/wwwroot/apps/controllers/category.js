@@ -28,9 +28,9 @@ var BlogAdmin;
                         var data = response.data;
                         var list = [];
                         _.each(data, function (parent) {
-                            list.push({ id: parent.id, name: parent.name });
+                            list.push({ id: parent.id, name: parent.name, articles: parent.articles });
                             _.each(parent.children, function (child) {
-                                list.push({ id: child.id, name: child.name, isChild: true });
+                                list.push({ id: child.id, name: child.name, articles: child.articles, isChild: true });
                                 ;
                             });
                         });

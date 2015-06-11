@@ -13,8 +13,6 @@ namespace SmokeBlog.Core.Models.Category
 
         public string Name { get; set; }
 
-        public int PublishedArticles { get; set; }
-
-        public int TotalArticles { get; set; }
+        public CategoryArticles Articles { get; set; }
     }
 }

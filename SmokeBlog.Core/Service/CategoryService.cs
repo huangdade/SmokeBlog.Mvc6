@@ -34,20 +34,25 @@ namespace SmokeBlog.Core.Service
 ;WITH tb AS
 (
 	SELECT 
-	CategoryID,
-	SUM(CASE B.Status WHEN 2 THEN 1 ELSE 0 END) AS PublishedArticles,
-	COUNT(1) AS TotalArticles
+	CategoryID AS ID,
+	SUM(CASE B.Status WHEN 2 THEN 1 ELSE 0 END) AS Publish,
+    SUM(CASE B.Status WHEN 0 THEN 1 ELSE 0 END) AS [Delete],
+	COUNT(1) AS Total
 	FROM CategoryArticle A WITH(NOLOCK)
 	JOIN Article B WITH(NOLOCK) ON A.ArticleID = B.ID
 	GROUP BY A.CategoryID
 )
 SELECT 
-A.ID, A.Name, A.ParentID, B.PublishedArticles, B.TotalArticles
+A.ID, A.Name, A.ParentID, B.ID, B.Publish, B.Total, B.[Delete]
 FROM Category A WITH(NOLOCK)
-left JOIN tb B ON A.ID = B.CategoryID
+left JOIN tb B ON A.ID = B.ID
 ";
 
-                    list = conn.Query<CategoryData>(sql).ToList();
+                    list = conn.Query<CategoryData, CategoryArticles, CategoryData>(sql, (category, articles)=> 
+                    {
+                        category.Articles = articles;
+                        return category;
+                    }).ToList();
 
                     this.Cache.Set(CategoryListCacheKey, list);
                 }
@@ -179,8 +184,7 @@ WHERE ID=@ID;
                 {
                     ID = item.ID,
                     Name = item.Name,
-                    TotalArticles = item.TotalArticles,
-                    PublishedArticles = item.PublishedArticles,
+                    Articles = item.Articles,
                     Children = new List<NestedCategoryModel>()
                 };
 
@@ -192,8 +196,7 @@ WHERE ID=@ID;
                     {
                         ID = item2.ID,
                         Name = item2.Name,
-                        PublishedArticles = item2.PublishedArticles,
-                        TotalArticles = item2.TotalArticles
+                        Articles = item2.Articles
                     });
                 }
 

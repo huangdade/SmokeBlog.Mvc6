@@ -26,5 +26,7 @@ namespace SmokeBlog.Core.Models.Article
         public User.UserModel User { get; set; }
 
         public List<Category.CategoryModel> CategoryList { get; set; }
+
+        public ArticleComments Comments { get; set; }
     }
 }
