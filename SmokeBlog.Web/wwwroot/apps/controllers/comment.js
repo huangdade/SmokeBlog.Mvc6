@@ -4,10 +4,16 @@ var BlogAdmin;
     (function (Controllers) {
         var CommentList = (function () {
             function CommentList($scope, $api, $dialog) {
+                var _this = this;
                 this.$scope = $scope;
                 this.$api = $api;
                 this.$dialog = $dialog;
                 $scope.vm = this;
+                $scope.$emit('changeMenu', 'article', 'commentlist');
+                $scope.$watch('vm.request.status', function () {
+                    _this.request.pageIndex = 1;
+                    _this.loadData();
+                });
                 this.request = {
                     pageIndex: 1,
                     pageSize: 20,
@@ -31,9 +37,18 @@ var BlogAdmin;
                     }
                 });
             };
+            CommentList.prototype.hasItemChecked = function () {
+                return _.any(this.commentList, { checked: true });
+            };
             CommentList.prototype.changePage = function (page) {
                 this.request.pageIndex = page;
                 this.loadData();
+            };
+            CommentList.prototype.search = function (e) {
+                if (e.keyCode == 13) {
+                    this.request.pageIndex = 1;
+                    this.loadData();
+                }
             };
             return CommentList;
         })();

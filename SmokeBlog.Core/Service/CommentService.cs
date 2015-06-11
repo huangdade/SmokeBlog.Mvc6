@@ -65,7 +65,10 @@ SELECT @@IDENTITY;
             using (var conn = this.OpenConnection())
             {
                 string sql = @"
-SELECT @Total=COUNT(1) FROM [Comment] WITH(NOLOCK) #strWhere#;
+SELECT @Total=COUNT(1) 
+FROM [Comment] Comment WITH(NOLOCK)
+JOIN [Article] Article WITH(NOLOCK) ON Comment.ArticleID=Article.ID
+#strWhere#;
 
 ;WITH ids AS
 (

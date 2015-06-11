@@ -21,8 +21,9 @@
             <div class="btn-toolbar pull-right">
                 <div class="btn-group">
                     <button ng-class="{active: vm.request.status == null}" class="btn btn-default btn-sm" ng-click="vm.request.status = null">全部</button>
-                    <button ng-class="{active: vm.request.status == 2}" class="btn btn-default btn-sm" ng-click="vm.request.status = 2">已发布</button>
-                    <button ng-class="{active: vm.request.status == 1}" class="btn btn-default btn-sm" ng-click="vm.request.status = 1">稿件</button>
+                    <button ng-class="{active: vm.request.status == 0}" class="btn btn-default btn-sm" ng-click="vm.request.status = 0">未审核</button>
+                    <button ng-class="{active: vm.request.status == 1}" class="btn btn-default btn-sm" ng-click="vm.request.status = 1">审核通过</button>
+                    <button ng-class="{active: vm.request.status == 2}" class="btn btn-default btn-sm" ng-click="vm.request.status = 2">垃圾评论</button>
                 </div>
             </div>
             <span class="pull-right lbl-show ng-binding">显示 :</span>
@@ -38,7 +39,7 @@
                 <th class="table-item-title">内容</th>
                 <th style="width:200px;">作者</th>
                 <th style="width:120px;">创建于</th>
-                <th style="width:60px;">状态</th>
+                <th style="width:80px;">状态</th>
             </tr>
         </thead>
         <tbody>
@@ -47,15 +48,16 @@
                     <input type="checkbox" ng-model="comment.checked" />
                 </td>
                 <td class="table-item-title">
-                    评论: <a href="#">{{comment.source.title}}</a>:
+                    评论: <a href="#">{{comment.source.title}}</a>
 
-                    <div class="well-lg">{{comment.content}}</div>
+                    <div class="text-success">{{comment.content}}</div>
                 </td>
                 <td>{{comment.nickname}}</td>
                 <td style="width:150px;">{{comment.postDate}}</td>
                 <td>
-                    <span ng-if="comment.status == 1">未发布</span>
-                    <span ng-if="comment.status == 2">已发布</span>
+                    <span ng-if="comment.status == 0" class="text-muted">未审核</span>
+                    <span ng-if="comment.status == 1" class="text-success">审核通过</span>
+                    <span ng-if="comment.status == 2" class="text-danger">垃圾评论</span>
                 </td>
             </tr>
         </tbody>

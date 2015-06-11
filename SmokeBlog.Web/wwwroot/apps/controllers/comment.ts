@@ -8,6 +8,13 @@
         constructor(private $scope, private $api: BlogAdmin.Services.Api, private $dialog: BlogAdmin.Services.Dialog) {
             $scope.vm = this;
 
+            $scope.$emit('changeMenu', 'article', 'commentlist');
+
+            $scope.$watch('vm.request.status',() => {
+                this.request.pageIndex = 1;
+                this.loadData();
+            })
+
             this.request = {
                 pageIndex: 1,
                 pageSize: 20,
@@ -32,9 +39,18 @@
                 }
             })
         }
+        hasItemChecked() {
+            return _.any(this.commentList, { checked: true });
+        }
         changePage(page) {
             this.request.pageIndex = page;
             this.loadData();
+        }
+        search(e) {
+            if (e.keyCode == 13) {
+                this.request.pageIndex = 1;
+                this.loadData();
+            }
         }
     }
 }

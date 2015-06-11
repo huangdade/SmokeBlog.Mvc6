@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmokeBlog.Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace SmokeBlog.Core.Models.Comment
 
         public string PostIP { get; set; }
 
-        public byte Status { get; set; }
+        public CommentStatus Status { get; set; }
 
         public bool NotifyOnReply { get; set; }
 
