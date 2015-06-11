@@ -22,6 +22,7 @@
                 {
                     key: "article", name: "文章", url: "articlelist", submenus: [
                         { key: "articlelist", name: "文章管理", url: "articlelist" },
+                        { key: "commentlist", name: "评论管理", url: "commentlist" },
                         { key: "categorylist", name: "分类管理", url: "categorylist" }
                     ]
                 },

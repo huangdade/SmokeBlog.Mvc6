@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNet.Mvc;
 using SmokeBlog.Core.Models;
 using SmokeBlog.Core.Models.Article;
+using SmokeBlog.Core.Models.Comment;
 using SmokeBlog.Core.Service;
 using SmokeBlog.Web.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmokeBlog.Core.Extensions;
 
 namespace SmokeBlog.Web.Controllers
 {
@@ -16,16 +18,29 @@ namespace SmokeBlog.Web.Controllers
 
         private ArticleService ArticleService { get; set; }
 
-        public HomeController(UserService userService, ArticleService articleService)
+        private CommentService CommentService { get; set; }
+
+        public HomeController(UserService userService, ArticleService articleService, CommentService commentService)
         {
             this.UserService = userService;
             this.ArticleService = articleService;
+            this.CommentService = commentService;
         }
 
         [Route("")]
         public IActionResult Index()
         {
             //Response.Cookies.Delete("test");
+
+            var model2 = new AddCommentRequest
+            {
+                ArticleID = 2,
+                Content = "回复下试试",
+                Email = "t1@t.cn",
+                Nickname = "昵称",
+                PostIP = this.Context.GetClientIP(),
+                NotifyOnReply = true
+            };
 
             var model = new AddArticleRequest
             {
@@ -39,6 +54,10 @@ namespace SmokeBlog.Web.Controllers
                 Title = "Hello World!",
                 UserID = 1
             };
+
+            //var result = this.CommentService.Add(model2);
+
+            //return new ObjectResult(result);
 
             //int total;
 

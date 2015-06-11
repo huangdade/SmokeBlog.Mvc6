@@ -1,0 +1,67 @@
+﻿<div class="container">
+    <div class="page-header clearfix">
+        <h2 class="page-title pull-left">
+            评论管理
+            <spinner loading="vm.loading"></spinner>
+        </h2>
+    </div>
+
+    <div class="toolbar-grid clearfix">
+        <div class="pull-left">
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.changeStatus(0)" class="btn btn-danger btn-sm ng-binding"><i class="fa fa-times"></i>删除</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.changeStatus(2)" class="btn btn-success btn-sm ng-binding"><i class="fa fa-check"></i>发布</button>
+            <button ng-disabled="!vm.hasItemChecked()" ng-click="vm.changeStatus(1)" class="btn btn-warning btn-sm ng-binding"><i class="fa fa-minus"></i>取消发布</button>
+        </div>
+        <div class="pull-right btn-flt-r hmin767"><button class="btn btn-default btn-sm"><i class="fa fa-cog fa-lg"></i><span>过滤器</span></button></div>
+        <div class="pull-right filterbar flt-r clearfix">
+            <div class="active-flt-r"></div>
+            <div class="navbar-left search-grid pull-right">
+                <input type="text" ng-model="vm.request.keywords" ng-keypress="vm.search($event)" class="input-sm form-control pull-right" placeholder="搜索">
+            </div>
+            <div class="btn-toolbar pull-right">
+                <div class="btn-group">
+                    <button ng-class="{active: vm.request.status == null}" class="btn btn-default btn-sm" ng-click="vm.request.status = null">全部</button>
+                    <button ng-class="{active: vm.request.status == 2}" class="btn btn-default btn-sm" ng-click="vm.request.status = 2">已发布</button>
+                    <button ng-class="{active: vm.request.status == 1}" class="btn btn-default btn-sm" ng-click="vm.request.status = 1">稿件</button>
+                </div>
+            </div>
+            <span class="pull-right lbl-show ng-binding">显示 :</span>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover table-responsive">
+        <thead>
+            <tr>
+                <th style="width:40px;">
+                    <input type="checkbox" ng-model="vm.checkAll" />
+                </th>
+                <th class="table-item-title">内容</th>
+                <th style="width:200px;">作者</th>
+                <th style="width:120px;">创建于</th>
+                <th style="width:60px;">状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="comment in vm.commentList">
+                <td>
+                    <input type="checkbox" ng-model="comment.checked" />
+                </td>
+                <td class="table-item-title">
+                    评论: <a href="#">{{comment.source.title}}</a>:
+
+                    <div class="well-lg">{{comment.content}}</div>
+                </td>
+                <td>{{comment.nickname}}</td>
+                <td style="width:150px;">{{comment.postDate}}</td>
+                <td>
+                    <span ng-if="comment.status == 1">未发布</span>
+                    <span ng-if="comment.status == 2">已发布</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <blog-pager page-changed="vm.changePage(page)" page="vm.request.pageIndex" page-size="vm.request.pageSize" total="vm.total"></blog-pager>
+    </div>
+</div>

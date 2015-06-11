@@ -51,6 +51,12 @@
         ids: number[];
         status: number;
     }
+    export interface IQueryCommentRequest {
+        pageIndex: number;
+        pageSize: number;
+        keywords: string;
+        status: number;
+    }
 }
 
 interface JQuery {

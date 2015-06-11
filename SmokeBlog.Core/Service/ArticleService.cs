@@ -11,6 +11,7 @@ using System.Text;
 using SmokeBlog.Core.Models.User;
 using SmokeBlog.Core.Enums;
 using SmokeBlog.Core.Models.CategoryArticle;
+using SmokeBlog.Core.Extensions;
 
 namespace SmokeBlog.Core.Service
 {
@@ -137,23 +138,23 @@ VALUES ( @ArticleID, @CategoryID );
             }
         }
 
-        public List<ArticleModel> Query(int pageIndex, int pageSize, out int total, ArticleStatus? status, string keywords)
+        public List<ArticleModel> Query(QueryArticleRequest model, out int total)
         {
             StringBuilder sb = new StringBuilder("WHERE Status!=0");
             DynamicParameters para = new DynamicParameters();
 
-            if (status.HasValue)
+            if (model.Status.HasValue)
             {
                 sb.Append(" AND Status=@Status");
-                para.Add("@Status", (byte)status.Value);
+                para.Add("@Status", (byte)model.Status.Value);
             }
-            if (keywords != null)
+            if (model.Keywords != null)
             {
                 sb.Append(" AND Title LIKE @Keywords");
-                para.Add("@Keywords", "%" + keywords + "%");
+                para.Add("@Keywords", "%" + model.Keywords + "%");
             }
 
-            var list = this.QueryByCondition(pageIndex, pageSize, out total, sb.ToString(), null, para);
+            var list = this.QueryByCondition(model.PageIndex, model.PageSize, out total, sb.ToString(), null, para);
 
             return list;
         }
@@ -232,7 +233,21 @@ WHERE ID IN @IDs;
                 this.CategoryService.ClearCache();
                 return OperationResult.SuccessResult();
             }
-        } 
+        }
+
+        public bool IsArticleExisted(int id)
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"SELECT 1 FROM [Article] WHERE ID=@ID";
+                var para = new
+                {
+                    ID = id
+                };
+
+                return conn.Exist(sql, para);
+            }
+        }
 
         private List<ArticleModel> QueryByCondition(int pageIndex, int pageSize, out int total, string where, string orderBy, object parameter)
         {

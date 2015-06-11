@@ -128,6 +128,9 @@
             };
             this.post('/api/article/changestatus', data, callback);
         }
+        queryComment(request: BlogAdmin.Api.IQueryCommentRequest, callback: IPagedRequestCallback) {
+            this.get('/api/comment/query', request, callback);
+        }
     }
 }
 

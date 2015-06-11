@@ -17,6 +17,7 @@ namespace SmokeBlog.Core
                 .AddTransient<AuthService>()
                 .AddTransient<CategoryService>()
                 .AddTransient<ArticleService>()
+                .AddTransient<CommentService>()
                 .AddScoped<Security.ISecurityManager, Security.DefaultSecurityManager>();
 
             MapperConfig.Configure();

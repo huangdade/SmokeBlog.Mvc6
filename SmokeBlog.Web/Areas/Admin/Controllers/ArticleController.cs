@@ -23,7 +23,7 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
         public IActionResult Query(QueryArticleRequest request)
         {
             int total;
-            var list = this.ArticleService.Query(request.PageIndex, request.PageSize, out total, request.Status, request.Keywords);
+            var list = this.ArticleService.Query(request, out total);
 
             var result = PagedOperationResult<ArticleModel>.SuccessResult(list, total);
 
