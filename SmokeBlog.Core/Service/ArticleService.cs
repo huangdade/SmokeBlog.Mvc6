@@ -173,14 +173,43 @@ VALUES ( @ArticleID, @CategoryID );
             return list;
         }
 
+        public List<ArticleModel> QueryByAuthor(int userID, int pageIndex, int pageSize, out int total)
+        {
+            string where = "WHERE Status=2 AND UserID=@UserID";
+
+            var para = new
+            {
+                UserID = userID
+            };
+
+            var list = this.QueryByCondition(pageIndex, pageSize, out total, where, "ORDER BY PostDate DESC", para);
+
+            return list;
+        }
+
         public ArticleModel Get(int id)
         {
             using (var conn = this.OpenConnection())
             {
                 string sql = @"
-SELECT Article.ID, Article.Title, Article.Content, Article.Summary, Article.[From], Article.PostDate, Article.Status, Article.AllowComment, [User].ID, [User].UserName, [User].Nickname
+DECLARE @tbComments TABLE
+(
+    ID INT PRIMARY KEY,
+    Total INT,
+    Pass INT,
+    Junk INT
+);
+
+INSERT INTO @tbComments
+SELECT ArticleID AS ID, COUNT(1) AS Total, SUM(CASE Status WHEN 1 THEN 1 ELSE 0 END) AS Pass, SUM(CASE Status WHEN 2 THEN 1 ELSE 0 END) AS Junk
+FROM [Comment] WITH(NOLOCK) 
+WHERE ArticleID = @ID
+GROUP BY ArticleID
+
+SELECT Article.ID, Article.Title, Article.Content, Article.Summary, Article.[From], Article.PostDate, Article.Status, Article.AllowComment, [User].ID, [User].UserName, [User].Nickname, A.ID, A.Total, A.Pass, A.Junk
 FROM Article WITH(NOLOCK) 
 JOIN [User] WITH(NOLOCK) ON Article.UserID=[User].ID
+LEFT JOIN @tbComments A ON Article.ID = A.ID
 WHERE Article.ID = @ID;
 
 SELECT CategoryID, ArticleID FROM CategoryArticle WITH(NOLOCK)
@@ -194,9 +223,10 @@ WHERE ArticleID = @ID;
 
                 using (var reader = conn.QueryMultiple(sql, para))
                 {
-                    var article = reader.Read<ArticleModel, UserModel, ArticleModel>((a, u) =>
+                    var article = reader.Read<ArticleModel, UserModel, ArticleComments, ArticleModel>((a, u, ac) =>
                     {
                         a.User = u;
+                        a.Comments = ac;
                         return a;
                     }).FirstOrDefault();
 

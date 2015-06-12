@@ -1,1 +1,45 @@
-﻿
+﻿@model SmokeBlog.Web.ViewModels.Article.ArticleListViewModel
+@inject SmokeBlog.Core.Security.ISecurityManager SecurityManager
+
+@{
+    Layout = "~/Views/Shared/_FrontendLayout.cshtml";
+}
+
+@foreach (var article in Model.ArticleList)
+{
+    <article class="post" id="article_@article.ID">
+        <header class="post-header">
+            <h2 class="post-title">
+                <a href="@Url.Action("ViewArticle", "Article", new { id = article.ID })">@article.Title</a>
+            </h2>
+            <div class="post-info clearfix">
+                <span class="post-date">
+                    <i class="fa fa-calendar"></i>
+                    @article.PostDate.ToString("yyyy年MM月dd日")
+                </span>
+                <span class="post-author">
+                    <i class="fa fa-user"></i>
+                    <a href="@Url.Action("QueryByAuthor", "Article", new { id = article.User.ID })">@article.User.Nickname</a>
+                </span>
+                <span class="post-category">
+                    <i class="fa fa-folder"></i>
+                    @foreach (var cat in article.CategoryList)
+                    {
+                        <a href="@Url.Action("QueryByCategory", "Article", new { id = cat.ID })">@cat.Name</a>
+                    }
+                </span>
+                <a rel="nofollow" class="pull-right post-comment-link" href="@Url.Action("ViewArticle", "Article", new { id = article.ID })#comment">
+                    <i class="fa fa-comment"></i>
+                    (@article.Comments.Pass)
+                </a>
+            </div>
+        </header>
+        <section class="post-body text">
+            @Html.Raw(article.Content)
+        </section>
+    </article>
+}
+
+<div class="text-center">
+    <pager total="Model.Total" page-index="Model.PageIndex" page-size="Model.PageSize"></pager>
+</div>

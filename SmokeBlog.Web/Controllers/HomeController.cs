@@ -40,7 +40,7 @@ namespace SmokeBlog.Web.Controllers
 
             var articleList = this.ArticleService.Query(request, out total);
 
-            var vm = new IndexViewModel
+            var vm = new ViewModels.Article.ArticleListViewModel
             {
                 ArticleList = articleList,
                 PageIndex = request.PageIndex,
@@ -48,30 +48,7 @@ namespace SmokeBlog.Web.Controllers
                 Total = total
             };
 
-            return this.View(vm);
-        }
-
-        [HttpGet("category/{id:int}")]
-        public IActionResult Category(int id, int? page)
-        {
-            if (page == null || page < 1)
-            {
-                page = 1;
-            }
-
-            int total;
-
-            var articleList = this.ArticleService.QueryByCategory(id, page.Value, 20, out total);
-
-            var vm = new IndexViewModel
-            {
-                ArticleList = articleList,
-                PageIndex = page.Value,
-                PageSize = 20,
-                Total = total
-            };
-
-            return this.View("Index", vm);
+            return this.View("~/Views/Article/ArticleList.cshtml", vm);
         }
     }
 }
