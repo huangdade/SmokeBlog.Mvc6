@@ -37,5 +37,9 @@
         <section class="post-body text">
             @Html.Raw(article.Content)
         </section>
-    </article>
+    </article>    
 }
+
+<div class="text-center">
+    <pager total="Model.Total" page-index="Model.PageIndex" page-size="Model.PageSize"></pager>
+</div>

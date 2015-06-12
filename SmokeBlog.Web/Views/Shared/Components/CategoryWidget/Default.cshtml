@@ -1,0 +1,23 @@
+﻿@model List<SmokeBlog.Core.Models.Category.CategoryData>
+
+<div class="widget categorylist">
+
+    <h4 class="widget-header">
+        Category list
+        <span class="pull-right"></span>
+    </h4>
+
+    <div class="widget-content">
+        <ul id="categorylist">
+            @foreach (var cat in Model)
+            {
+            <li>
+                <a href="@Url.Action("Category", "Home", new { id = cat.ID })" rel="nofollow">
+                    <img src="/images/rss.png" alt="@(cat.Name)" class="rssButton" />
+                </a>
+                <a href="@Url.Action("Category", "Home", new { id = cat.ID })" title="@cat.Name">@cat.Name (@cat.Articles.Publish)</a>
+            </li>
+            }
+        </ul>
+    </div>
+</div>

@@ -159,6 +159,20 @@ VALUES ( @ArticleID, @CategoryID );
             return list;
         }
 
+        public List<ArticleModel> QueryByCategory(int categoryID, int pageIndex, int pageSize, out int total)
+        {
+            string where = "WHERE Status=2 AND ID IN (SELECT ArticleID FROM [CategoryArticle] WHERE CategoryID=@CategoryID)";
+
+            var para = new
+            {
+                CategoryID = categoryID
+            };
+
+            var list = this.QueryByCondition(pageIndex, pageSize, out total, where, "ORDER BY PostDate DESC", para);
+            
+            return list;
+        }
+
         public ArticleModel Get(int id)
         {
             using (var conn = this.OpenConnection())

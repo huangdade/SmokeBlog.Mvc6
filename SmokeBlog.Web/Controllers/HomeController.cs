@@ -23,13 +23,16 @@ namespace SmokeBlog.Web.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult Index()
+        public IActionResult Index(int? page)
         {
-            //Response.Cookies.Delete("test");
+            if (page == null || page < 1)
+            {
+                page = 1;
+            }
 
             var request = new QueryArticleRequest
             {
-                PageIndex = 1,
+                PageIndex = page.Value,
                 PageSize = 20,
                 Status = Core.Enums.ArticleStatus.Publish
             };
@@ -46,6 +49,29 @@ namespace SmokeBlog.Web.Controllers
             };
 
             return this.View(vm);
+        }
+
+        [HttpGet("category/{id:int}")]
+        public IActionResult Category(int id, int? page)
+        {
+            if (page == null || page < 1)
+            {
+                page = 1;
+            }
+
+            int total;
+
+            var articleList = this.ArticleService.QueryByCategory(id, page.Value, 20, out total);
+
+            var vm = new IndexViewModel
+            {
+                ArticleList = articleList,
+                PageIndex = page.Value,
+                PageSize = 20,
+                Total = total
+            };
+
+            return this.View("Index", vm);
         }
     }
 }
