@@ -1,0 +1,8 @@
+﻿@model List<SmokeBlog.Core.Models.Comment.NestedCommentModel>
+
+<ul class="media-list">
+    @foreach (var comment in Model)
+    {
+        @Component.Invoke("CommentItem", comment)
+    }
+</ul>

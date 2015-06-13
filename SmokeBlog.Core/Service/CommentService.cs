@@ -15,10 +15,13 @@ namespace SmokeBlog.Core.Service
     {
         private ArticleService ArticleService { get; set; }
 
-        public CommentService(IConfiguration configuration, ArticleService articleService)
+        private Cache.ICache Cache { get; set; }
+
+        public CommentService(IConfiguration configuration, ArticleService articleService, Cache.ICache cache)
             : base(configuration)
         {
             this.ArticleService = articleService;
+            this.Cache = cache;
         }
 
         public OperationResult<int?> Add(AddCommentRequest model)
@@ -55,6 +58,9 @@ SELECT @@IDENTITY;
                 };
 
                 var id = conn.ExecuteScalar<int>(sql, para);
+
+                string cacheKey = this.GetArticleCommentsCacheKey(model.ArticleID);
+                this.Cache.Delete(cacheKey);
 
                 return OperationResult<int?>.SuccessResult(id);
             }
@@ -120,6 +126,88 @@ ORDER BY A.ID DESC
 
         }
 
+        public List<CommentData> GetCommentList(int articleID)
+        {
+            string cacheKey = this.GetArticleCommentsCacheKey(articleID);
+
+            var list = this.Cache.Get<List<CommentData>>(cacheKey);
+
+            if (list == null)
+            {
+
+                using (var conn = this.OpenConnection())
+                {
+                    string sql = @"
+SELECT ID,Content,ReplyTo,Email,Nickname,PostDate,PostIP,Status,NotifyOnReply
+FROM [Comment] WITH(NOLOCK)
+WHERE ArticleID=@ArticleID
+";
+                    var para = new
+                    {
+                        ArticleID = articleID
+                    };
+
+                    list = conn.Query<CommentData>(sql, para).ToList();
+
+                    this.Cache.Set(cacheKey, list);
+                }
+            }
+
+            return list;
+        }
+
+        public List<NestedCommentModel> QueryByArticle(int articleID)
+        {
+            var list = this.GetCommentList(articleID);
+
+            var result = new List<NestedCommentModel>();
+
+            foreach (var comment in list)
+            {
+                var model = comment.ToNestedCommentModel();
+
+                result.Add(model);
+            }
+
+            return result;
+        }
+
+        public List<NestedCommentModel> QueryNestedByArticle(int articleID)
+        {
+            var list = this.GetCommentList(articleID);
+
+            var result = new List<NestedCommentModel>();
+
+            var parent = list.Where(t => t.ReplyTo == null);
+
+            foreach (var item in parent)
+            {
+                var comment = FillReplies(item, list);
+                result.Add(comment);
+            }
+
+            return result;
+        }
+
+        private NestedCommentModel FillReplies(CommentData entity, List<CommentData> list)
+        {
+            var model = entity.ToNestedCommentModel();
+
+            var replies = list.Where(t => t.ReplyTo == model.ID);
+
+            if (replies.Any())
+            {
+                model.Replies = new List<NestedCommentModel>();
+                foreach (var item in replies)
+                {
+                    var reply = FillReplies(item, list);
+                    model.Replies.Add(reply);
+                }
+            }
+
+            return model;
+        }
+
         private bool IsCommentExisted(int id)
         {
             using (var conn = this.OpenConnection())
@@ -132,6 +220,12 @@ ORDER BY A.ID DESC
 
                 return conn.Exist(sql, para);
             }
+        }
+
+        private string GetArticleCommentsCacheKey(int articleID)
+        {
+            string key = string.Format("Cache_Article_Comments_{0}", articleID.ToString());
+            return key;
         }
     }
 }

@@ -1,0 +1,32 @@
+﻿@model SmokeBlog.Core.Models.Comment.NestedCommentModel
+
+<li class="media comment-item">
+    <div class="pull-left comment-gravatar ">
+        <img src="http://gravatar.duoshuo.com/avatar/0cc175b9c0f1b6a831c399e269772661.jpg?d=wavatar" width="72">
+        <div class="carrow"></div>
+    </div>
+    <div class="media-body">
+        <div class="comment-content ">
+            <div class="comment-header clearfix">
+                <h4 class="media-heading pull-left"><span class="fn">@Model.Nickname</span></h4>
+                <small class="pull-right text-muted text-uppercase">@Model.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</small>
+            </div>
+
+            <p>@Model.Content</p>
+            <div class="text-right reply-to">
+
+            </div>
+        </div>
+        <div class="media" id="replies_@Model.ID">
+            <ul class="media-list">
+                @if (Model.Replies?.Count > 0)
+                {
+                    @foreach (var reply in Model.Replies)
+                    {
+                        @Component.Invoke("CommentItem", reply)
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</li>
