@@ -1,49 +1,72 @@
 ﻿@model List<SmokeBlog.Core.Models.Comment.CommentData>
+@inject SmokeBlog.Core.Security.ISecurityManager SecurityManager
 
-<ul class="media-list">
-    @foreach (var comment in Model)
+@{
+    var total = Model.Count(t => t.Status == SmokeBlog.Core.Enums.CommentStatus.Pass);
+    if (SecurityManager.IsAuthorized)
     {
-        <li class="media comment-item" id="comment_@comment.ID">
-            <div class="pull-left comment-gravatar ">
-                <img src="http://gravatar.duoshuo.com/avatar/0cc175b9c0f1b6a831c399e269772661.jpg?d=wavatar" width="72">
-                <div class="carrow"></div>
-            </div>
-            <div class="media-body">
-                <div class="comment-content ">
-                    <div class="comment-header clearfix">
-                        <h4 class="media-heading pull-left"><span class="fn">@comment.Nickname</span></h4>
-                        <small class="pull-right text-muted text-uppercase">@comment.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</small>
-                    </div>
-                    @{ 
-                        SmokeBlog.Core.Models.Comment.CommentData replyTo = null;
-                        if (comment.ReplyTo.HasValue)
-                        {
-                            replyTo = Model.SingleOrDefault(t => t.ID == comment.ReplyTo);
-                        }
-                    }
-
-                    @if (replyTo != null)
-                    {
-                    <blockquote class="reply-to">
-                        <div class="header">
-                            <i>@replyTo.Nickname</i>
-                            发表于
-                            <i>@replyTo.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</i>
-                        </div>
-                        <p class="content">
-                            @replyTo.Content
-                        </p>
-
-                    </blockquote>
-                    }
-                    <p>
-                        @comment.Content
-                    </p>
-                    <div class="text-right reply-to">
-                        <a href="javascript:void(0)" onclick="replyTo(@comment.ID)">回复</a>
-                    </div>
-                </div>
-            </div>
-        </li>
+        total = Model.Count;
     }
-</ul>
+}
+
+@if (total > 0)
+{
+    <h3 class="well-global-title">
+        评论 (@total)
+        <a id="commenttoggle" style="float: right; width: 20px; height: 20px; border: 1px solid #ccc; text-decoration: none; text-align: center" href="javascript:toggle_visibility('commentlist', 'commenttoggle');">-</a>
+    </h3>
+
+    <div id="commentlist">
+        <ul class="media-list">
+            @foreach (var comment in Model)
+            {
+                <li class="media comment-item" id="comment_@comment.ID">
+                    <div class="pull-left comment-gravatar ">
+                        <img src="http://gravatar.duoshuo.com/avatar/0cc175b9c0f1b6a831c399e269772661.jpg?d=wavatar" width="72">
+                        <div class="carrow"></div>
+                    </div>
+                    <div class="media-body">
+                        <div class="comment-content ">
+                            <div class="comment-header clearfix">
+                                <h4 class="media-heading pull-left"><span class="fn">@comment.Nickname</span></h4>
+                                <small class="pull-right text-muted text-uppercase">@comment.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</small>
+                            </div>
+                            @{
+                                SmokeBlog.Core.Models.Comment.CommentData replyTo = null;
+                                if (comment.ReplyTo.HasValue)
+                                {
+                                    replyTo = Model.SingleOrDefault(t => t.ID == comment.ReplyTo);
+                                }
+                            }
+
+                            @if (replyTo != null)
+                            {
+                                <blockquote class="reply-to">
+                                    <div class="header">
+                                        <i>@replyTo.Nickname</i>
+                                        发表于
+                                        <i>@replyTo.PostDate.ToString("yyyy-MM-dd HH:mm:ss")</i>
+                                    </div>
+                                    <p class="content">
+                                        @replyTo.Content
+                                    </p>
+
+                                </blockquote>
+                            }
+                            <p>
+                                @comment.Content
+                            </p>
+                            <div class="text-right reply-to">
+                                <a href="javascript:void(0)" onclick="replyTo(@comment.ID)">回复</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+             }
+        </ul>
+    </div>
+}
+else
+{
+    <h4 class="text-center">暂无评论</h4>
+}
