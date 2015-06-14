@@ -156,58 +156,6 @@ WHERE ArticleID=@ArticleID
             return list;
         }
 
-        public List<NestedCommentModel> QueryByArticle(int articleID)
-        {
-            var list = this.GetCommentList(articleID);
-
-            var result = new List<NestedCommentModel>();
-
-            foreach (var comment in list)
-            {
-                var model = comment.ToNestedCommentModel();
-
-                result.Add(model);
-            }
-
-            return result;
-        }
-
-        public List<NestedCommentModel> QueryNestedByArticle(int articleID)
-        {
-            var list = this.GetCommentList(articleID);
-
-            var result = new List<NestedCommentModel>();
-
-            var parent = list.Where(t => t.ReplyTo == null);
-
-            foreach (var item in parent)
-            {
-                var comment = FillReplies(item, list);
-                result.Add(comment);
-            }
-
-            return result;
-        }
-
-        private NestedCommentModel FillReplies(CommentData entity, List<CommentData> list)
-        {
-            var model = entity.ToNestedCommentModel();
-
-            var replies = list.Where(t => t.ReplyTo == model.ID);
-
-            if (replies.Any())
-            {
-                model.Replies = new List<NestedCommentModel>();
-                foreach (var item in replies)
-                {
-                    var reply = FillReplies(item, list);
-                    model.Replies.Add(reply);
-                }
-            }
-
-            return model;
-        }
-
         private bool IsCommentExisted(int id)
         {
             using (var conn = this.OpenConnection())
