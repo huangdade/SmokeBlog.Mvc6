@@ -274,3 +274,7 @@ table { width: 100%; }
 .footer .widgets-footer .widget:last-child { margin: 0; }
 .footer .end-line { min-height: 50px; background-color: #111; line-height: 50px; text-transform: uppercase; font-size: 12px; }
 .footer .end-line p { margin: 0; color: #AAA; }
+
+.reply-to .header, .reply-to .content{
+    font-size:12px;
+}

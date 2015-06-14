@@ -74,6 +74,12 @@ namespace SmokeBlog.Web.Controllers
                 return this.HttpNotFound();
             }
 
+            string nickname = this.Request.Cookies.Get("comment_nickname");
+            string email = this.Request.Cookies.Get("comment_email");
+
+            ViewBag.Comment_Nickname = nickname;
+            ViewBag.Comment_Email = email;
+
             return this.View(article);
         }
     }

@@ -21,7 +21,7 @@ namespace SmokeBlog.Web.Controllers
         [HttpGet("view/{articleID:int}/comments")]
         public IActionResult Query(int articleID)
         {
-            var commentList = this.CommentService.QueryNestedByArticle(articleID);
+            var commentList = this.CommentService.GetCommentList(articleID);
 
             return this.View("CommentList", commentList);
         }
@@ -32,6 +32,9 @@ namespace SmokeBlog.Web.Controllers
             model.PostIP = this.Context.GetClientIP();
 
             var result = this.CommentService.Add(model);
+
+            this.Response.Cookies.Append("comment_nickname", model.Nickname);
+            this.Response.Cookies.Append("comment_email", model.Email);
 
             var or = new ObjectResult(result);
             return or;

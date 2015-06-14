@@ -9,7 +9,7 @@ namespace SmokeBlog.Web.ViewComponents
 {
     public class CommentItem : ViewComponent
     {
-        public IViewComponentResult Invoke(NestedCommentModel comment)
+        public IViewComponentResult Invoke(CommentData comment)
         {
             return this.View(comment);
         }
