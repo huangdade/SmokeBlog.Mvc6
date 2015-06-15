@@ -1,0 +1,20 @@
+﻿@model List<SmokeBlog.Core.Models.Article.ArticleModel>
+
+<div class="widget recentposts">
+
+    <h4 class="widget-header">
+        最新文章
+    </h4>
+
+    <div class="widget-content">
+        <ul class="recentPosts">
+            @foreach (var article in Model)
+            {
+            <li>
+                <a href="@Url.Action("ViewArticle", "Article", new { id = article.ID })">@article.Title</a>
+                <span>评论: @article.Comments.Pass</span>
+            </li>
+            }
+        </ul>
+    </div>
+</div>

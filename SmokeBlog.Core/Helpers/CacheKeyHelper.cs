@@ -24,5 +24,11 @@ namespace SmokeBlog.Core.Helpers
             string key = "Cache_CategoryList";
             return key;
         }
+
+        public static string GetLatestArticlesCacheKey()
+        {
+            string key = "Cache_Article_Latest";
+            return key;
+        }
     }
 }

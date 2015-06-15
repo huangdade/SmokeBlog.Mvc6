@@ -12,6 +12,7 @@ using SmokeBlog.Core.Models.User;
 using SmokeBlog.Core.Enums;
 using SmokeBlog.Core.Models.CategoryArticle;
 using SmokeBlog.Core.Extensions;
+using SmokeBlog.Core.Cache;
 
 namespace SmokeBlog.Core.Service
 {
@@ -19,10 +20,13 @@ namespace SmokeBlog.Core.Service
     {
         private CategoryService CategoryService { get; set; }
 
-        public ArticleService(IConfiguration configuration, CategoryService categoryService)
+        private ICache Cache { get; set; }
+
+        public ArticleService(IConfiguration configuration, CategoryService categoryService, ICache cache)
             : base(configuration)
         {
             this.CategoryService = categoryService;
+            this.Cache = cache;
         }
 
         public OperationResult<int?> Add(AddArticleRequest model)
@@ -291,6 +295,19 @@ WHERE ID IN @IDs;
 
                 return conn.Exist(sql, para);
             }
+        }
+
+        public List<ArticleModel> GetLatestArticleList(int count)
+        {
+            string cacheKey = Helpers.CacheKeyHelper.GetLatestArticlesCacheKey();
+
+            var list = this.Cache.Get<List<ArticleModel>>(cacheKey, () =>
+            {
+                int total;
+                return this.QueryByCondition(1, 100, out total, "WHERE Article.Status=2", "ORDER BY Article.PostDate DESC", null);                
+            });
+
+            return list.Take(count).ToList();
         }
 
         private List<ArticleModel> QueryByCondition(int pageIndex, int pageSize, out int total, string where, string orderBy, object parameter)
