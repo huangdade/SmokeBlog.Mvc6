@@ -15,6 +15,12 @@
                 this.loadData();
             })
 
+            $scope.$watch('vm.checkAll',() => {
+                _.each(this.commentList, item=> {
+                    item.checked = this.checkAll;
+                });
+            });
+
             this.request = {
                 pageIndex: 1,
                 pageSize: 20,
@@ -51,6 +57,75 @@
                 this.request.pageIndex = 1;
                 this.loadData();
             }
+        }
+        requestCallback(response: BlogAdmin.Services.IApiResponse) {
+            this.loading = false;
+
+            if (response.success) {
+                this.$dialog.success('操作成功');
+                this.loadData();
+            }
+            else {
+                this.$dialog.error(response.errorMessage);
+            }
+        }
+        changeStatus(status) {
+            var ids = this.getSelectComments();
+
+            if (ids.length == 0) {
+                this.$dialog.error('请选择评论');
+                return false;
+            }
+
+            if (this.loading) {
+                return;
+            }
+
+            this.loading = true;
+
+            var request = {
+                ids: ids,
+                status: status
+            };
+
+            this.$api.changeCommentStatus(request, response=> {
+                this.requestCallback(response);
+            })
+        }
+        deleteComment() {
+            var ids = this.getSelectComments();
+
+            if (ids.length == 0) {
+                this.$dialog.error('请选择评论');
+                return false;
+            }
+
+            if (this.loading) {
+                return;
+            }
+
+            this.loading = true;
+
+            this.$api.deleteComment(ids, response=> {
+                this.requestCallback(response);
+            })
+        }
+        deleteJunk() {
+            if (this.loading) {
+                return;
+            }
+
+            this.loading = true;
+
+            this.$api.deleteJunkComment(response=> {
+                this.requestCallback(response);
+            })
+        }
+        private getSelectComments() {
+            var ids = _.map(_.where(this.commentList, { checked: true }), item=> {
+                return item.id;
+            });
+            return ids;
         }
     }
 }

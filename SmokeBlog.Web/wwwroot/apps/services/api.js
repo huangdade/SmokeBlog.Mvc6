@@ -115,6 +115,22 @@ var BlogAdmin;
             Api.prototype.queryComment = function (request, callback) {
                 this.get('/api/comment/query', request, callback);
             };
+            Api.prototype.changeCommentStatus = function (request, callback) {
+                var data = {
+                    id: request.ids.join(','),
+                    status: request.status
+                };
+                this.post('/api/comment/changestatus', data, callback);
+            };
+            Api.prototype.deleteComment = function (ids, callback) {
+                var data = {
+                    id: ids.join(',')
+                };
+                this.post('/api/comment/delete', data, callback);
+            };
+            Api.prototype.deleteJunkComment = function (callbacl) {
+                this.post('/api/comment/deletejunk', null, callbacl);
+            };
             return Api;
         })();
         Services.Api = Api;

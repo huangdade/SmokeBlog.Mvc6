@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Runtime.Caching;
 
 namespace SmokeBlog.Core.Cache
 {
@@ -9,31 +10,31 @@ namespace SmokeBlog.Core.Cache
     {
         private static readonly System.Runtime.Caching.MemoryCache cache = System.Runtime.Caching.MemoryCache.Default;
 
-        public void Delete(string key)
+        public void Remove(string key)
         {
             cache.Remove(key);
         }
 
-        public object Get(string key)
-        {
-            return cache.Get(key);
-        }
-
         public T Get<T>(string key)
         {
-            var obj = this.Get(key);
-
-            if (obj == null)
-            {
-                return default(T);
-            }
-
-            return (T)obj;
+            return (T)cache[key];
         }
 
-        public void Set(string key, object value)
+        public void Set(string key, object value, int seconds)
         {
-            cache.Set(key, value, DateTime.Now.AddMinutes(20));
+            var policy = new CacheItemPolicy
+            {
+                AbsoluteExpiration = DateTime.Now.AddSeconds(seconds)
+            };
+
+            var item = new CacheItem(key, value);
+
+            cache.Set(item, policy);
+        }
+
+        public bool IsSet(string key)
+        {
+            return cache.Contains(key);
         }
     }
 }

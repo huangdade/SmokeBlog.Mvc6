@@ -7,14 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using SmokeBlog.Core.Cache;
 
 namespace SmokeBlog.Core.Service
 {
     public class CategoryService : ServiceBase
     {
-        private Cache.ICache Cache { get; set; }
-
-        private static readonly string CategoryListCacheKey = "Cache_CategoryList";
+        private ICache Cache { get; set; }
 
         public CategoryService(IConfiguration configuration, Cache.ICache cache)
             : base(configuration)
@@ -24,9 +23,9 @@ namespace SmokeBlog.Core.Service
 
         public List<CategoryData> GetCategoryList()
         {
-            var list = this.Cache.Get<List<CategoryData>>(CategoryListCacheKey);
+            string cacheKey = Helpers.CacheKeyHelper.GetCategoryListCacheKey();
 
-            if (list == null)
+            var list = this.Cache.Get<List<CategoryData>>(cacheKey, ()=> 
             {
                 using (var conn = this.OpenConnection())
                 {
@@ -48,22 +47,22 @@ FROM Category A WITH(NOLOCK)
 left JOIN tb B ON A.ID = B.ID
 ";
 
-                    list = conn.Query<CategoryData, CategoryArticles, CategoryData>(sql, (category, articles)=> 
+                    return conn.Query<CategoryData, CategoryArticles, CategoryData>(sql, (category, articles) =>
                     {
                         category.Articles = articles;
                         return category;
                     }).ToList();
-
-                    this.Cache.Set(CategoryListCacheKey, list);
                 }
-            }
+            });
 
             return list;
         }
 
         public void ClearCache()
         {
-            this.Cache.Delete(CategoryListCacheKey);
+            string cacheKey = Helpers.CacheKeyHelper.GetCategoryListCacheKey();
+
+            this.Cache.Remove(cacheKey);
         }
 
         private bool CheckCategoryName(string name, int? id)

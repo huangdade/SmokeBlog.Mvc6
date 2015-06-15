@@ -57,6 +57,10 @@
         keywords: string;
         status: number;
     }
+    export interface IChangeCommentStatusRequest {
+        ids: number[];
+        status: number;
+    }
 }
 
 interface JQuery {

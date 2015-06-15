@@ -35,5 +35,39 @@ namespace SmokeBlog.Web.Areas.Admin.Controllers
 
             return this.ApiResponse(result);
         }
+
+        [HttpPost("changestatus")]
+        public IActionResult ChangeStatus(ChangeStatusRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.CommentService.ChangeStatus(model);
+
+            return this.ApiResponse(result);
+        }
+
+        [HttpPost("delete")]
+        public IActionResult Delete(DeleteCommentRequest model)
+        {
+            if (model == null)
+            {
+                return this.BadRequest();
+            }
+
+            var result = this.CommentService.Delete(model);
+
+            return this.ApiResponse(result);
+        }
+
+        [HttpPost("deletejunk")]
+        public IActionResult DeleteJunk()
+        {
+            var result = this.CommentService.DeleteJunk();
+
+            return this.ApiResponse(result);
+        }
     }
 }

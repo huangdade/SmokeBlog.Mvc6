@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Dapper;
 using SmokeBlog.Core.Extensions;
 using System.Text;
+using SmokeBlog.Core.Cache;
 
 namespace SmokeBlog.Core.Service
 {
@@ -15,7 +16,7 @@ namespace SmokeBlog.Core.Service
     {
         private ArticleService ArticleService { get; set; }
 
-        private Cache.ICache Cache { get; set; }
+        private ICache Cache { get; set; }
 
         public CommentService(IConfiguration configuration, ArticleService articleService, Cache.ICache cache)
             : base(configuration)
@@ -59,8 +60,8 @@ SELECT @@IDENTITY;
 
                 var id = conn.ExecuteScalar<int>(sql, para);
 
-                string cacheKey = this.GetArticleCommentsCacheKey(model.ArticleID);
-                this.Cache.Delete(cacheKey);
+                string cacheKey = Helpers.CacheKeyHelper.GetArticleCommentsCacheKey(model.ArticleID);
+                this.Cache.Remove(cacheKey);
 
                 return OperationResult<int?>.SuccessResult(id);
             }
@@ -128,13 +129,10 @@ ORDER BY A.ID DESC
 
         public List<CommentData> GetCommentList(int articleID)
         {
-            string cacheKey = this.GetArticleCommentsCacheKey(articleID);
+            string cacheKey = Helpers.CacheKeyHelper.GetArticleCommentsCacheKey(articleID);
 
-            var list = this.Cache.Get<List<CommentData>>(cacheKey);
-
-            if (list == null)
+            var list = this.Cache.Get<List<CommentData>>(cacheKey, ()=>
             {
-
                 using (var conn = this.OpenConnection())
                 {
                     string sql = @"
@@ -147,13 +145,135 @@ WHERE ArticleID=@ArticleID
                         ArticleID = articleID
                     };
 
-                    list = conn.Query<CommentData>(sql, para).ToList();
+                    return conn.Query<CommentData>(sql, para).ToList();                    
+                }
+            });
+
+            return list;
+        }
+
+        public OperationResult ChangeStatus(ChangeStatusRequest model)
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+UPDATE [Comment] SET [Status]=@Status
+WHERE ID IN @IDs;
+
+SELECT DISTINCT ArticleID FROM [Comment] WITH(NOLOCK)
+WHERE ID IN @IDs;
+";
+                var para = new
+                {
+                    Status = model.Status,
+                    IDs = model.CommentIDList
+                };
+
+                var articleIDList = conn.Query<int>(sql, para).ToList();
+
+                if (articleIDList.Count == 0)
+                {
+                    return OperationResult.ErrorResult("不存在的评论");
+                }
+
+                foreach (var articleID in articleIDList)
+                {
+                    string cacheKey = Helpers.CacheKeyHelper.GetArticleCommentsCacheKey(articleID);
+                    this.Cache.Remove(cacheKey);
+                }
+                
+                return OperationResult.SuccessResult();
+            }
+        }
+
+        public OperationResult DeleteJunk()
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+SELECT DISTINCT ArticleID
+FROM [Comment] WITH(NOLOCK)
+WHERE Status = 2;
+
+DELETE FROM [Comment]
+WHERE Status = 2;
+";
+
+                var articleIDList = conn.Query<int>(sql).ToList();
+
+                foreach (var articleID in articleIDList)
+                {
+                    string cacheKey = Helpers.CacheKeyHelper.GetArticleCommentsCacheKey(articleID);
+                    this.Cache.Remove(cacheKey);
+                }
+
+                return OperationResult.SuccessResult();
+            }
+        }
+
+        public OperationResult Delete(DeleteCommentRequest model)
+        {
+            using (var conn = this.OpenConnection())
+            {
+                string sql = @"
+SELECT DISTINCT ArticleID 
+FROM [Comment] WITH(NOLOCK)
+WHERE ID IN @IDs;
+
+UPDATE [Comment]
+SET ReplyTo=NULL
+WHERE ReplyTo IN @IDs;
+
+DELETE FROM [Comment]
+WHERE ID IN @IDs;
+";
+                var para = new
+                {
+                    IDs = model.CommentIDList
+                };
+
+                var articleIDList = conn.Query<int>(sql, para).ToList();
+
+                if (articleIDList.Count == 0)
+                {
+                    return OperationResult.ErrorResult("不存在的评论");
+                }
+
+                foreach (var articleID in articleIDList)
+                {
+                    string cacheKey = Helpers.CacheKeyHelper.GetArticleCommentsCacheKey(articleID);
+                    this.Cache.Remove(cacheKey);
+                }
+
+                return OperationResult.SuccessResult();
+            }
+        }
+
+        public List<CommentData> GetLatestCommentList(int count)
+        {
+            string cacheKey = Helpers.CacheKeyHelper.GetLatestCommentsCacheKey();
+            var list = this.Cache.Get<List<CommentData>>(cacheKey);
+
+            if (list == null)
+            {
+                using (var conn = this.OpenConnection())
+                {
+                    string sql = @"
+SELECT TOP 100 A.ID,A.Content,A.ReplyTo,A.Email,A.Nickname,A.PostDate,A.PostIP,A.Status,A.NotifyOnReply,B.ID,B.Title
+FROM [Comment] WITH(NOLOCK)
+ORDER BY ID DESC
+";
+                    list = conn.Query<CommentData, CommentSource, CommentData>(sql, (cd, cs) =>
+                    {
+                        cd.Source = cs;
+                        return cd;
+                    }).ToList();
 
                     this.Cache.Set(cacheKey, list);
                 }
             }
 
-            return list;
+            return list.Take(count).ToList();
         }
 
         private bool IsCommentExisted(int id)
@@ -168,12 +288,6 @@ WHERE ArticleID=@ArticleID
 
                 return conn.Exist(sql, para);
             }
-        }
-
-        private string GetArticleCommentsCacheKey(int articleID)
-        {
-            string key = string.Format("Cache_Article_Comments_{0}", articleID.ToString());
-            return key;
         }
     }
 }

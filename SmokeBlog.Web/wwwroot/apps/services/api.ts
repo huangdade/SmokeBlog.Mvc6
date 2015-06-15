@@ -131,6 +131,22 @@
         queryComment(request: BlogAdmin.Api.IQueryCommentRequest, callback: IPagedRequestCallback) {
             this.get('/api/comment/query', request, callback);
         }
+        changeCommentStatus(request: BlogAdmin.Api.IChangeCommentStatusRequest, callback: IRequestCallback) {
+            var data = {
+                id: request.ids.join(','),
+                status: request.status
+            };
+            this.post('/api/comment/changestatus', data, callback);
+        }
+        deleteComment(ids: number[], callback: IRequestCallback) {
+            var data = {
+                id: ids.join(',')
+            };
+            this.post('/api/comment/delete', data, callback);
+        }
+        deleteJunkComment(callbacl: IRequestCallback) {
+            this.post('/api/comment/deletejunk', null, callbacl);
+        }
     }
 }
 

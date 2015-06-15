@@ -12,10 +12,10 @@
             @foreach (var cat in Model)
             {
             <li>
-                <a href="@Url.Action("Category", "Home", new { id = cat.ID })" rel="nofollow">
+                <a href="@Url.Action("QueryByCategory", "Article", new { id = cat.ID })" rel="nofollow">
                     <img src="/images/rss.png" alt="@(cat.Name)" class="rssButton" />
                 </a>
-                <a href="@Url.Action("Category", "Home", new { id = cat.ID })" title="@cat.Name">@cat.Name (@cat.Articles.Publish)</a>
+                <a href="@Url.Action("QueryByCategory", "Article", new { id = cat.ID })" title="@cat.Name">@cat.Name (@cat.Articles.Publish)</a>
             </li>
             }
         </ul>

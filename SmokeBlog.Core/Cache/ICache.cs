@@ -7,12 +7,12 @@ namespace SmokeBlog.Core.Cache
 {
     public interface ICache
     {
-        void Set(string key, object value);
+        void Set(string key, object value, int seconds);
 
-        object Get(string key);
+        bool IsSet(string key);
 
         T Get<T>(string key);
 
-        void Delete(string key);
+        void Remove(string key);
     }
 }
