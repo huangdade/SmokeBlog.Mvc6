@@ -23,7 +23,7 @@ namespace SmokeBlog.Web.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult Index(int? page)
+        public IActionResult Index(int? page, string keywords = null)
         {
             if (page == null || page < 1)
             {
@@ -34,7 +34,8 @@ namespace SmokeBlog.Web.Controllers
             {
                 PageIndex = page.Value,
                 PageSize = 20,
-                Status = Core.Enums.ArticleStatus.Publish
+                Status = Core.Enums.ArticleStatus.Publish,
+                Keywords = keywords
             };
             int total;
 
@@ -47,6 +48,8 @@ namespace SmokeBlog.Web.Controllers
                 PageSize = request.PageSize,
                 Total = total
             };
+
+            ViewBag.Keywords = keywords;
 
             return this.View("~/Views/Article/ArticleList.cshtml", vm);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Runtime.Caching;
+using System.Text.RegularExpressions;
 
 namespace SmokeBlog.Core.Cache
 {
@@ -13,6 +14,21 @@ namespace SmokeBlog.Core.Cache
         public void Remove(string key)
         {
             cache.Remove(key);
+        }
+
+        public void RemoveByPattern(string pattern)
+        {
+            var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            var keysToRemove = new List<String>();
+
+            foreach (var item in cache)
+                if (regex.IsMatch(item.Key))
+                    keysToRemove.Add(item.Key);
+
+            foreach (string key in keysToRemove)
+            {
+                Remove(key);
+            }
         }
 
         public T Get<T>(string key)

@@ -21,7 +21,7 @@ namespace SmokeBlog.Web.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (PageIndex <= 0 || PageSize <= 0 || Total <= 0)
+            if (PageIndex <= 0 || PageSize <= 0 || Total < 0)
             {
                 this.SetErrorMessage(output, "错误的分页参数");
                 return;

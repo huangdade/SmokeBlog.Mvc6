@@ -14,5 +14,7 @@ namespace SmokeBlog.Core.Cache
         T Get<T>(string key);
 
         void Remove(string key);
+
+        void RemoveByPattern(string pattern);
     }
 }
