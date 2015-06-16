@@ -9,9 +9,7 @@ namespace SmokeBlog.Core.Service
 {
     public abstract class ServiceBase
     {
-        protected IConfiguration Configuration { get; private set; }
-
-        private static string ConnectionString { get; set; }
+        protected IConfiguration Configuration { get; private set; }        
 
         protected ServiceBase(IConfiguration configuration)
         {
@@ -25,18 +23,14 @@ namespace SmokeBlog.Core.Service
 
         protected IDbConnection OpenConnection()
         {
-            if (string.IsNullOrWhiteSpace(ConnectionString))
-            {
-                var connectionString = string.Format("Server={0};Database={1};UID={2};PWD={3}",
-                    this.Configuration.Get("ConnectionString:Server"),
-                    this.Configuration.Get("ConnectionString:Database"),
-                    this.Configuration.Get("ConnectionString:UserID"),
-                    this.Configuration.Get("ConnectionString:Password")
-                    );
-                ConnectionString = connectionString;
-            }
+            var connectionString = string.Format("Server={0};Database={1};UID={2};PWD={3}",
+                this.Configuration.Get("ConnectionString:Server"),
+                this.Configuration.Get("ConnectionString:Database"),
+                this.Configuration.Get("ConnectionString:UserID"),
+                this.Configuration.Get("ConnectionString:Password")
+                );
 
-            var conn = new System.Data.SqlClient.SqlConnection(ConnectionString);
+            var conn = new System.Data.SqlClient.SqlConnection(connectionString);
             conn.Open();
 
             return conn;

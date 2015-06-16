@@ -86,7 +86,7 @@ namespace SmokeBlog.Web.Middlewares
 
         private async Task RenderPage(HttpContext context, InstallModel model)
         {
-            string file = Path.Combine(ApplicationEnviroment.ApplicationBasePath, "Install.html");
+            string file = Path.Combine(ApplicationEnviroment.ApplicationBasePath, "Install/Install.html");
             var html = File.ReadAllText(file);
 
             html = html.Replace("{Server}", model.Server ?? string.Empty);
@@ -107,7 +107,7 @@ namespace SmokeBlog.Web.Middlewares
 
         private async Task RenderSuccessPage(HttpContext context)
         {
-            string file = Path.Combine(ApplicationEnviroment.ApplicationBasePath, "InstallSuccess.html");
+            string file = Path.Combine(ApplicationEnviroment.ApplicationBasePath, "Install/InstallSuccess.html");
             var html = File.ReadAllText(file);
 
             await this.RenderHtml(context, html);

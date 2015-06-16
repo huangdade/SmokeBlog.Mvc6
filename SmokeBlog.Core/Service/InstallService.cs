@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 
 namespace SmokeBlog.Core.Service
 {
@@ -13,17 +14,20 @@ namespace SmokeBlog.Core.Service
     {
         private IApplicationEnvironment ApplicationEnvironment { get; set; }
 
-        public InstallService(IConfiguration configuration, IApplicationEnvironment applicationEnvironment)
+        private UserService UserService { get; set; }
+
+        public InstallService(IConfiguration configuration, IApplicationEnvironment applicationEnvironment, UserService userService)
             : base(configuration)
         {
             this.ApplicationEnvironment = applicationEnvironment;
+            this.UserService = userService;
         }
 
         public bool NeedInstall()
         {
-            bool nnedInstall = string.IsNullOrWhiteSpace(this.Configuration.Get("ConnectionString:Server")) || string.IsNullOrWhiteSpace(this.Configuration.Get("ConnectionString:Database"));
+            bool needInstall = string.IsNullOrWhiteSpace(this.Configuration.Get("ConnectionString:Server")) || string.IsNullOrWhiteSpace(this.Configuration.Get("ConnectionString:Database"));
 
-            return nnedInstall;
+            return needInstall;
         }
 
         public OperationResult Install(string server, string database, string userID, string password)
@@ -40,6 +44,27 @@ namespace SmokeBlog.Core.Service
             {
                 try
                 {
+                    this.Configuration.Set("ConnectionString:Server", server);
+                    this.Configuration.Set("ConnectionString:Database", database);
+                    this.Configuration.Set("ConnectionString:UserID", userID);
+                    this.Configuration.Set("ConnectionString:Password", password);
+
+                    string sqlPath = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "Install/database.sql");
+                    string sql = File.ReadAllText(sqlPath);
+
+                    using (var conn = this.OpenConnection())
+                    {
+                        conn.Execute(sql);
+                    }
+
+                    this.UserService.Add(new Models.User.AddUserRequest
+                    {
+                        Email = "admin@admin.com",
+                        UserName = "admin",
+                        Password = "admin",
+                        Nickname = "管理员"
+                    });
+
                     var data = new
                     {
                         ConnectionString = new
@@ -59,15 +84,15 @@ namespace SmokeBlog.Core.Service
                         writer.Write(json);
                     }
 
-                    this.Configuration.Set("ConnectionString:Server", server);
-                    this.Configuration.Set("ConnectionString:Database", database);
-                    this.Configuration.Set("ConnectionString:UserID", userID);
-                    this.Configuration.Set("ConnectionString:Password", password);
-
                     return OperationResult.SuccessResult();
                 }
                 catch (Exception ex)
                 {
+                    this.Configuration.Set("ConnectionString:Server", string.Empty);
+                    this.Configuration.Set("ConnectionString:Database", string.Empty);
+                    this.Configuration.Set("ConnectionString:UserID", string.Empty);
+                    this.Configuration.Set("ConnectionString:Password", string.Empty);
+
                     return OperationResult.ErrorResult(ex.Message);
                 }
             }
