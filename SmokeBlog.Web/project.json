@@ -29,11 +29,13 @@
     "bower_components",
     "**.xproj",
     "**.user",
-    "**.vspscc"
+    "**.vspscc",
+    "config"
   ],
   "exclude": [
     "wwwroot",
     "node_modules",
-    "bower_components"
+    "bower_components",
+    "config"
   ]
 }

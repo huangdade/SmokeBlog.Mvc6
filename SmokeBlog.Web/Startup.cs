@@ -13,6 +13,8 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNet.Authorization;
 using System.Security.Claims;
+using Microsoft.Framework.Runtime;
+using System.IO;
 
 namespace SmokeBlog.Web
 {
@@ -20,12 +22,19 @@ namespace SmokeBlog.Web
     {
         private IConfiguration Configuration { get; set; }
 
-        public Startup()
+        private IApplicationEnvironment ApplicationEnviroment { get; set; }
+
+        public Startup(IApplicationEnvironment enviroment)
         {
             this.Configuration = new Configuration()
-                .AddJsonFile("config.json")
-                .AddEnvironmentVariables()
-                .AddUserSecrets();
+                .AddJsonFile("config/database.json", true)
+                .AddEnvironmentVariables();
+
+#if DEBUG
+            this.Configuration.Set("Debug", "True");
+#else
+            this.Configuration.Set("Debug", "False");
+#endif
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -56,6 +65,9 @@ namespace SmokeBlog.Web
         public void Configure(IApplicationBuilder app)
         {
             app.UseStaticFiles();
+
+            app.UseMiddleware<Middlewares.InstallMiddleware>();
+
             app.UseMvc(route=>
             {
                 route.MapRoute("Admin", "admin/{*path}", new

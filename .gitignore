@@ -9,3 +9,6 @@ SmokeBlog.Web/bower_components/
 
 #ignore npm files
 SmokeBlog.Web/node_modules/
+
+#ignore config files
+SmokeBlog.Web/config
