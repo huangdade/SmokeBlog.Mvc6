@@ -44,58 +44,83 @@ namespace SmokeBlog.Core.Service
             {
                 try
                 {
-                    this.Configuration.Set("ConnectionString:Server", server);
-                    this.Configuration.Set("ConnectionString:Database", database);
-                    this.Configuration.Set("ConnectionString:UserID", userID);
-                    this.Configuration.Set("ConnectionString:Password", password);
+                    this.SetConfiguration(server, database, userID, password);
 
-                    string sqlPath = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "Install/database.sql");
-                    string sql = File.ReadAllText(sqlPath);
+                    this.InitDatabase();
 
-                    using (var conn = this.OpenConnection())
-                    {
-                        conn.Execute(sql);
-                    }
+                    this.AddAdministrator();
 
-                    this.UserService.Add(new Models.User.AddUserRequest
-                    {
-                        Email = "admin@admin.com",
-                        UserName = "admin",
-                        Password = "admin",
-                        Nickname = "管理员"
-                    });
-
-                    var data = new
-                    {
-                        ConnectionString = new
-                        {
-                            Server = server,
-                            Database = database,
-                            UserID = userID,
-                            Password = password
-                        }
-                    };
-
-                    string json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-                    string path = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "config/database.json");
-
-                    using (var writer = new StreamWriter(path))
-                    {
-                        writer.Write(json);
-                    }
+                    this.SaveConfiguration(server, database, userID, password);
 
                     return OperationResult.SuccessResult();
                 }
                 catch (Exception ex)
                 {
-                    this.Configuration.Set("ConnectionString:Server", string.Empty);
-                    this.Configuration.Set("ConnectionString:Database", string.Empty);
-                    this.Configuration.Set("ConnectionString:UserID", string.Empty);
-                    this.Configuration.Set("ConnectionString:Password", string.Empty);
+                    this.ClearConfiguration();
 
                     return OperationResult.ErrorResult(ex.Message);
                 }
             }
+        }
+
+        private void InitDatabase()
+        {
+            string sqlPath = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "Install/database.sql");
+            string sql = File.ReadAllText(sqlPath);
+
+            using (var conn = this.OpenConnection())
+            {
+                conn.Execute(sql);
+            }
+        }
+
+        private void AddAdministrator()
+        {
+            this.UserService.Add(new Models.User.AddUserRequest
+            {
+                Email = "admin@admin.com",
+                UserName = "admin",
+                Password = "admin",
+                Nickname = "管理员"
+            });
+        }
+
+        private void SaveConfiguration(string server, string database, string userID, string password)
+        {
+            var data = new
+            {
+                ConnectionString = new
+                {
+                    Server = server,
+                    Database = database,
+                    UserID = userID,
+                    Password = password
+                }
+            };
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+            string path = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "config/database.json");
+
+            using (var writer = new StreamWriter(path))
+            {
+                writer.Write(json);
+            }
+        }
+
+        private void SetConfiguration(string server, string database, string userID, string password)
+        {
+            this.Configuration.Set("ConnectionString:Server", server);
+            this.Configuration.Set("ConnectionString:Database", database);
+            this.Configuration.Set("ConnectionString:UserID", userID);
+            this.Configuration.Set("ConnectionString:Password", password);
+        }
+
+        private void ClearConfiguration()
+        {
+            this.Configuration.Set("ConnectionString:Server", string.Empty);
+            this.Configuration.Set("ConnectionString:Database", string.Empty);
+            this.Configuration.Set("ConnectionString:UserID", string.Empty);
+            this.Configuration.Set("ConnectionString:Password", string.Empty);
         }
     }
 }
