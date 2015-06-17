@@ -101,6 +101,9 @@ namespace SmokeBlog.Core.Service
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
             string path = Path.Combine(ApplicationEnvironment.ApplicationBasePath, "config/database.json");
 
+            string directoryName = Path.GetDirectoryName(path);
+            Directory.CreateDirectory(directoryName);
+
             using (var stream = File.Create(path))
             using (var writer = new StreamWriter(stream))
             {
